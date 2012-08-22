@@ -42,7 +42,7 @@ class ShaderPhong : public RendererNativeOSX {
 	printf("error reading .obj file...\n");
 	exit(0);
       } else {
-	//s->dump();
+	s->dump();
 
 	for (unsigned i=0; i< s->meshes(); i++) {
 	  modelMeshBuffer[i].init(loadModel(s, i), posLoc, normalLoc, -1, -1);
@@ -75,7 +75,8 @@ class ShaderPhong : public RendererNativeOSX {
 
       loadProgram(program, "resources/phong");
 
-      loadScene(scene, "resources/ducky.obj");
+      //loadScene(scene, "resources/ducky.obj");
+      loadScene(scene, "resources/test3.obj");
 
       proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
       view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
@@ -113,6 +114,9 @@ class ShaderPhong : public RendererNativeOSX {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
      
       model.rotate(0.01, 0, 1);
+
+      model.rotate(0.02, 0, 2);
+      model.rotate(0.015, 1, 2);
       draw(model);
     }
 };

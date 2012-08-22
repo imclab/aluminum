@@ -13,20 +13,21 @@ public:
 
   RendererNativeOSX();
 
+  //basic windowing
   static void start(void* app);
   void start();
 
   virtual void onCreate();
   virtual void onFrame();
- 
+
   int width;
   int height; 
-  //Graphics g;
 
   NSGLView* view;
   void accessView();
 
-  //virtual ~RendererNativeOSX(){} 
+  
+
   
 protected:
   
