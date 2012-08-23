@@ -15,6 +15,7 @@ namespace al{
       Texture() {}
       static Texture& loadTextureData2D(Texture &texture, std::string file);
 
+      Texture(int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
       Texture(GLubyte* data, int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
       void create2D();
       Texture& update() ;
@@ -37,6 +38,10 @@ Texture& unbind ();
 
       void dump();
 
+       int width;
+      int height;
+      int depth; //only for GL_TEXTURE_3D
+
     protected:
 
       GLuint texID;
@@ -46,10 +51,7 @@ Texture& unbind ();
       GLint internalFormat; //GL_RGBA, GL_R3_G3_B2, etc
       GLenum pixelFormat; //e.g. GL_RGBA, GL_BGRA
       GLenum type; //e.g. GL_UNSIGNED_BYTE, GL_FLOAT
-      int width;
-      int height;
-      int depth; //only for GL_TEXTURE_3D
-
+     
       GLint mWrapMode;
       GLint mMinFilter;
       GLint mMaxFilter;

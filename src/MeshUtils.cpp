@@ -1,77 +1,53 @@
-#include "Asset.hpp"
+#include "MeshUtils.hpp"
 
 #include <map>
 #include <iostream>
 
 using namespace al;
 
-Vec4f vec4FromAIColor4D(aiColor4D& v) {
-	return Vec4f(v.r, v.g, v.b, v.a);
-}
-
-Vec3f vec3FromAIVector3D(aiVector3D& v) {
-	return Vec3f(v.x, v.y, v.z);
-}
-
-Vec2f vec2FromAIVector3D(aiVector3D& v) {
-	return Vec2f(v.x, v.y);
-}
 
 
-void initLogStream() {
-	static bool initializedLog = false;
-	static struct aiLogStream logStream;
-	if (!initializedLog) {
-		initializedLog = true;
-		// get a handle to the predefined STDOUT log stream and attach
-		// it to the logging system. It will be active for all further
-		// calls to aiImportFile(Ex) and aiApplyPostProcessing.
-		logStream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
-		aiAttachLogStream(&logStream);
-	}
+
+void MeshUtils :: loadMeshes(std::vector<MeshData>& md, const std::string& path, ImportPreset preset) {
+
+  Scene* s = MeshUtils::importScene(path, preset);
+
+  for (unsigned int i=0; i< s->meshes(); i++) {
+
+    MeshData modelMesh;
+    s->meshAlt(i, modelMesh);
+    modelMesh.transform(Mat4f::identity().scale(s->getScaleVal()));
+    md.push_back(modelMesh);
+  }
+
 }
 
 
-int countNodes(const aiNode * n) {
-	int count = 1;
-	for (unsigned int i=0; i<n->mNumChildren; i++) {
-		count += countNodes(n->mChildren[i]);
-	}
-	return count;
-}
+MeshUtils::Scene* MeshUtils :: importScene(const std::string& path, ImportPreset preset) {
 
-
-
-
-
-
-
-Scene * Scene :: import(const std::string& path, ImportPreset preset) {
-
+  static struct aiLogStream logStream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
+  aiAttachLogStream(&logStream);
   //aiEnableVerboseLogging(true);
+
   Assimp::Importer importer;
 
-  initLogStream();
+  int flags;
+  switch (preset) {
+    case FAST:
+      flags = aiProcessPreset_TargetRealtime_Fast;
+      break;
+    case QUALITY:
+      flags = aiProcessPreset_TargetRealtime_Quality;
+      break;
+    case MAX_QUALITY:
+      flags = aiProcessPreset_TargetRealtime_MaxQuality;
+      break;
+    default:
+      break;
+  }
 
-  /*
-     int flags;
-     switch (preset) {
-     case FAST:
-     flags = aiProcessPreset_TargetRealtime_Fast;
-     break;
-     case QUALITY:
-     flags = aiProcessPreset_TargetRealtime_Quality;
-     break;
-     case MAX_QUALITY:
-     flags = aiProcessPreset_TargetRealtime_MaxQuality;
-     break;
-     default:
-     break;
-     }*/
-
-  int flags = aiProcessPreset_TargetRealtime_MaxQuality;
   /* 
-     int flags =  aiProcess_Triangulate            |
+     flags =  aiProcess_Triangulate            |
      aiProcess_JoinIdenticalVertices  |
      aiProcess_GenSmoothNormals |
      aiProcess_FindInvalidData |
@@ -88,18 +64,38 @@ Scene * Scene :: import(const std::string& path, ImportPreset preset) {
   }
 }
 
-Scene :: Scene(const aiScene * _scene) {
+
+
+Vec4f vec4FromAIColor4D(aiColor4D& v) {
+  return Vec4f(v.r, v.g, v.b, v.a);
+}
+
+Vec3f vec3FromAIVector3D(aiVector3D& v) {
+  return Vec3f(v.x, v.y, v.z);
+}
+
+Vec2f vec2FromAIVector3D(aiVector3D& v) {
+  return Vec2f(v.x, v.y);
+}
+
+Vec3f vec3FromAIVector2D(aiVector2D& v) {
+  return Vec3f(v.x, v.y, 0.0);
+}
+
+
+MeshUtils::Scene :: Scene(const aiScene * _scene) {
   scene = _scene;
 }
 
-Scene :: ~Scene() {
+MeshUtils::Scene :: ~Scene() {
 }
 
-unsigned int Scene :: meshes() const {
+unsigned int MeshUtils::Scene :: meshes() const {
   return scene->mNumMeshes;
 }
 
-void Scene :: mesh(unsigned int i, MeshData& mesh) const {
+
+void MeshUtils::Scene :: mesh(unsigned int i, MeshData& mesh) const {
   if (i < meshes()) {
     aiMesh * amesh = scene->mMeshes[i];
     if (amesh) {
@@ -120,9 +116,20 @@ void Scene :: mesh(unsigned int i, MeshData& mesh) const {
 	  }
 	  if(hastexcoords) {
 	    mesh.texCoord(vec3FromAIVector3D(amesh->mTextureCoords[0][index]));
+	    //mesh.texCoord(vec3FromAIVector2D(amesh->mTextureCoords[0][index]));
 	  }
+
+
+	  // Vec3f vtx = vec3FromAIVector3D(amesh->mVertices[index]);
+	  // printf(" %d : %f/%f/%f", index, vtx.x, vtx.y ,vtx.z);
+	  // Vec3f vn = vec3FromAIVector3D(amesh->mNormals[index]);
+	  // printf(" (%f/%f/%f)", vn.x, vn.y ,vn.z);
+
+
 	  mesh.vertex(vec3FromAIVector3D(amesh->mVertices[index]));
+
 	}
+	//printf("\n");
       }
 
       // Mat4f xfm;
@@ -136,7 +143,8 @@ void Scene :: mesh(unsigned int i, MeshData& mesh) const {
   }
 }
 
-void Scene :: meshAlt(unsigned int i, MeshData& mesh) const {
+//creates the IBO for the mesh
+void MeshUtils::Scene :: meshAlt(unsigned int i, MeshData& mesh) const {
   if (i < meshes()) {
     //aiMesh * amesh = mImpl->scene->mMeshes[i];
     aiMesh * amesh = scene->mMeshes[i];
@@ -157,6 +165,7 @@ void Scene :: meshAlt(unsigned int i, MeshData& mesh) const {
 	}
 	if(hastexcoords) {
 	  mesh.texCoord(vec3FromAIVector3D(amesh->mTextureCoords[0][index]));
+	  //mesh.texCoord(vec3FromAIVector2D(amesh->mTextureCoords[0][index]));
 	}
 	mesh.vertex(vec3FromAIVector3D(amesh->mVertices[index]));			
       }
@@ -170,13 +179,12 @@ void Scene :: meshAlt(unsigned int i, MeshData& mesh) const {
 	  //printf("face idx %d\n", tface -> mIndices[i] ); 
 	}
       }
-
       // mesh.compress();
     }
   }
 }
 
-std::string Scene :: meshName(unsigned int i) const {
+std::string MeshUtils::Scene :: meshName(unsigned int i) const {
   if (i < meshes()) {
     //aiMesh * amesh = mImpl->scene->mMeshes[i];
     aiMesh * amesh = scene->mMeshes[i];
@@ -213,7 +221,7 @@ void get_bounding_box_for_node(const aiScene * scene, const struct aiNode* nd, V
 
 
 
-float Scene :: getScaleVal() const {
+float MeshUtils::Scene :: getScaleVal() const {
   Vec3f min, max;
   getBounds(min,max);
   Vec3f scene_center = (min + max) / 2.f;
@@ -226,7 +234,7 @@ float Scene :: getScaleVal() const {
   return scaleVal;
 }
 
-void Scene :: getBounds(Vec3f& min, Vec3f& max) const {
+void MeshUtils::Scene :: getBounds(Vec3f& min, Vec3f& max) const {
   aiMatrix4x4 trafo;
   aiIdentityMatrix4(&trafo);
   min.set(1e10f, 1e10f, 1e10f);
@@ -246,7 +254,7 @@ void dumpNode(aiNode * x, std::string indent) {
   }
 }
 
-void Scene :: dump() const {
+void MeshUtils::Scene :: dump() const {
   printf("==================================================\n");
   printf("Scene\n");
 

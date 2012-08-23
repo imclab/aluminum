@@ -6,12 +6,14 @@
 #include "RendererNativeOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
-#include "Asset.hpp"
-#include "Shader.hpp"
+#include "MeshUtils.hpp"
+#include "Program.hpp"
+#include <vector>
 
 using namespace al;
 
-class ShaderPhong : public RendererNativeOSX {
+class ModelExample : public RendererNativeOSX {
+
   public:
 
     Vec3f diffuse = Vec3f(0.0,1.0,0.0);
@@ -20,37 +22,25 @@ class ShaderPhong : public RendererNativeOSX {
     float lightPosX = -1.0f;
     Mat4f model, view, proj;
 
-    ShaderProgram program;
+    Program program;
     GLuint vao[1];
     GLint posLoc=0;
     GLint normalLoc=1;
 
-    Scene* scene;
-    MeshBuffer modelMeshBuffer[4];
+    std::vector<MeshData> md;
+    std::vector<MeshBuffer> mb;
+      
 
+    void loadMeshes(const std::string& name) {    
+      
+      MeshUtils::loadMeshes(md, name);
 
-    MeshData loadModel(Scene* s, int which) {
-      MeshData modelMesh;
-      scene->mesh(which, modelMesh);
-      return modelMesh.transform(Mat4f::identity().scale(scene->getScaleVal()));
-    }
-
-    void loadScene(Scene *&s, const std::string& name) {    
-      s = Scene::import(name);
-
-      if (s==0) {
-	printf("error reading .obj file...\n");
-	exit(0);
-      } else {
-	s->dump();
-
-	for (unsigned i=0; i< s->meshes(); i++) {
-	  modelMeshBuffer[i].init(loadModel(s, i), posLoc, normalLoc, -1, -1);
-	}
+      for (unsigned long i = 0; i < md.size(); i++) {
+	mb.push_back((MeshBuffer()).init(md[i], posLoc, normalLoc, -1, -1));
       }
     }
 
-    void loadProgram(ShaderProgram &p, const std::string& name) {
+    void loadProgram(Program &p, const std::string& name) {
 
       p.create();
 
@@ -75,8 +65,9 @@ class ShaderPhong : public RendererNativeOSX {
 
       loadProgram(program, "resources/phong");
 
-      //loadScene(scene, "resources/ducky.obj");
-      loadScene(scene, "resources/test3.obj");
+      loadMeshes("resources/ducky.obj");
+      //loadScene(scene, "resources/test3.obj");
+      //loadScene(scene, "resources/toyplane.obj");
 
       proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
       view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
@@ -84,11 +75,13 @@ class ShaderPhong : public RendererNativeOSX {
       model.rotate(M_PI/2, 0,2).rotate(45.0, 1,2).rotate(8.0, 0,1);
 
       glEnable(GL_DEPTH_TEST);
-      glViewport(0, 0, width, height);
-      glClearColor(0.3,0.3,0.3,1.0);
+     
     }
 
     void draw(Mat4f model) {
+      glViewport(0, 0, width, height);
+      glClearColor(0.3,0.3,0.3,1.0);
+
 
       lightPosX += 0.02f;
       if (lightPosX > 1.0) { lightPosX = -1.0f; }
@@ -103,16 +96,20 @@ class ShaderPhong : public RendererNativeOSX {
 	glUniform3fv(program.uniform("diffuse"), 1, diffuse.ptr()); 
 	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
 
-	for (unsigned i=0; i< scene->meshes(); i++) {
-	  modelMeshBuffer[i].draw();
+	for (unsigned long i = 0; i < mb.size(); i++) {
+	  mb[i].draw();	
 	}
+
+	/*for (unsigned i=0; i< scene->meshes(); i++) {*/
+	/*  modelMeshBuffer[i].draw();*/
+	/*}*/
 
       } program.end();
     }
 
     void onFrame(){
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-     
+
       model.rotate(0.01, 0, 1);
 
       model.rotate(0.02, 0, 2);
@@ -122,6 +119,6 @@ class ShaderPhong : public RendererNativeOSX {
 };
 
 int main() {
-  ShaderPhong().start(); 
+  ModelExample().start(); 
   return 0;
 }

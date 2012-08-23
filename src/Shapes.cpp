@@ -26,85 +26,78 @@ int addTetrahedron(MeshData& m){
 
 int addCube(MeshData& m, bool withNormalsAndTexcoords, float l){
 	if (withNormalsAndTexcoords) {
-		m.normal	( 1, 0, 0);
-		m.texCoord	( 0, 0);
-		m.vertex	( l,-l, l);
-		m.normal	( 1, 0, 0);
-		m.texCoord	( 1, 0);
-		m.vertex	( l,-l,-l);
-		m.normal	( 1, 0, 0);
-		m.texCoord	( 1, 1);
-		m.vertex	( l, l,-l);
-		m.normal	( 1, 0, 0);
-		m.texCoord	( 0, 1);
-		m.vertex	( l, l, l);
+
+	Vec3f v0 = Vec3f(-1,-1,1);
+	Vec3f v1 = Vec3f(-1,1,1);
+	Vec3f v2 = Vec3f(1,-1,1);
+	Vec3f v3 = Vec3f(1,1,1);
+	Vec3f v4 = Vec3f(-1,-1,-1);
+	Vec3f v5 = Vec3f(-1,1,-1);
+	Vec3f v6 = Vec3f(1,-1,-1);
+	Vec3f v7 = Vec3f(1,1,-1);
+
+	Vec3f n0 = Vec3f(0,0,1);
+	Vec3f n1 = Vec3f(0,0,-1);
+	Vec3f n2 = Vec3f(0,1,0);
+	Vec3f n3 = Vec3f(0,-1,0);
+	Vec3f n4 = Vec3f(1,0,0);
+	Vec3f n5 = Vec3f(-1,0,0);
+
+	Vec3f t0 = Vec3f(0,0,0);
+	Vec3f t1 = Vec3f(0,1,0);
+	Vec3f t2 = Vec3f(1,0,0);
+	Vec3f t3 = Vec3f(1,1,0);
+
+	//right 
+	m.vertex(v2); m.normal(n4); m.texCoord(t0);
+	m.vertex(v3); m.normal(n4); m.texCoord(t1);
+	m.vertex(v6); m.normal(n4); m.texCoord(t2);
+	m.vertex(v6); m.normal(n4); m.texCoord(t2);
+	m.vertex(v3); m.normal(n4); m.texCoord(t1);
+	m.vertex(v7); m.normal(n4); m.texCoord(t3);
+	
+	//left 
+	m.vertex(v4); m.normal(n5); m.texCoord(t0);
+	m.vertex(v5); m.normal(n5); m.texCoord(t1);
+	m.vertex(v0); m.normal(n5); m.texCoord(t2);
+	m.vertex(v0); m.normal(n5); m.texCoord(t2);
+	m.vertex(v5); m.normal(n5); m.texCoord(t1);
+	m.vertex(v1); m.normal(n5); m.texCoord(t3);
 		
-		m.normal	(-1, 0, 0);
-		m.texCoord	( 0, 0);
-		m.vertex	(-l, l, l);
-		m.normal	(-1, 0, 0);
-		m.texCoord	( 1, 0);
-		m.vertex	(-l, l,-l);
-		m.normal	(-1, 0, 0);
-		m.texCoord	( 1, 1);
-		m.vertex	(-l,-l,-l);
-		m.normal	(-1, 0, 0);
-		m.texCoord	( 0, 1);
-		m.vertex	(-l,-l, l);
+	//front
+	m.vertex(v0); m.normal(n0); m.texCoord(t0);
+	m.vertex(v1); m.normal(n0); m.texCoord(t1);
+	m.vertex(v2); m.normal(n0); m.texCoord(t2);
+	m.vertex(v2); m.normal(n0); m.texCoord(t2);
+	m.vertex(v1); m.normal(n0); m.texCoord(t1);
+	m.vertex(v3); m.normal(n0); m.texCoord(t3);
 		
-		m.normal	( 0, 1, 0);
-		m.texCoord	( 0, 0);
-		m.vertex	(-l, l, l);
-		m.normal	( 0, 1, 0);
-		m.texCoord	( 1, 0);
-		m.vertex	( l, l, l);
-		m.normal	( 0, 1, 0);
-		m.texCoord	( 1, 1);
-		m.vertex	( l, l,-l);
-		m.normal	( 0, 1, 0);
-		m.texCoord	( 0, 1);
-		m.vertex	(-l, l,-l);
+	//back
+	m.vertex(v4); m.normal(n1); m.texCoord(t0);
+	m.vertex(v5); m.normal(n1); m.texCoord(t1);
+	m.vertex(v6); m.normal(n1); m.texCoord(t2);
+	m.vertex(v6); m.normal(n1); m.texCoord(t2);
+	m.vertex(v5); m.normal(n1); m.texCoord(t1);
+	m.vertex(v7); m.normal(n1); m.texCoord(t3);
+	
+	//top
+	m.vertex(v1); m.normal(n2); m.texCoord(t0);
+	m.vertex(v5); m.normal(n2); m.texCoord(t1);
+	m.vertex(v3); m.normal(n2); m.texCoord(t2);
+	m.vertex(v3); m.normal(n2); m.texCoord(t2);
+	m.vertex(v5); m.normal(n2); m.texCoord(t1);
+	m.vertex(v7); m.normal(n2); m.texCoord(t3);
 		
-		m.normal	( 0,-1, 0);
-		m.texCoord	( 0, 0);
-		m.vertex	(-l,-l,-l);
-		m.normal	( 0,-1, 0);
-		m.texCoord	( 1, 0);
-		m.vertex	( l,-l,-l);
-		m.normal	( 0,-1, 0);
-		m.texCoord	( 1, 1);
-		m.vertex	( l,-l, l);
-		m.normal	( 0,-1, 0);
-		m.texCoord	( 0, 1);
-		m.vertex	(-l,-l, l);
-		
-		m.normal	( 0, 0, 1);
-		m.texCoord	( 0, 0);
-		m.vertex	(-l,-l, l);
-		m.normal	( 0, 0, 1);
-		m.texCoord	( 1, 0);
-		m.vertex	( l,-l, l);
-		m.normal	( 0, 0, 1);
-		m.texCoord	( 1, 1);
-		m.vertex	( l, l, l);
-		m.normal	( 0, 0, 1);
-		m.texCoord	( 0, 1);
-		m.vertex	(-l, l, l);
-		
-		m.normal	( 0, 0,-1);
-		m.texCoord	( 0, 0);
-		m.vertex	(-l, l,-l);
-		m.normal	( 0, 0,-1);
-		m.texCoord	( 1, 0);
-		m.vertex	( l, l,-l);
-		m.normal	( 0, 0,-1);
-		m.texCoord	( 1, 1);
-		m.vertex	( l,-l,-l);
-		m.normal	( 0, 0,-1);
-		m.texCoord	( 0, 1);
-		m.vertex	(-l,-l,-l);
-		
-		return 6*4;
+	//bottom
+	m.vertex(v0); m.normal(n3); m.texCoord(t0);
+	m.vertex(v4); m.normal(n3); m.texCoord(t1);
+	m.vertex(v2); m.normal(n3); m.texCoord(t2);
+	m.vertex(v2); m.normal(n3); m.texCoord(t2);
+	m.vertex(v4); m.normal(n3); m.texCoord(t1);
+	m.vertex(v6); m.normal(n3); m.texCoord(t3);
+
+	return 6*6;
+
 	} else {
 	
 	
@@ -138,28 +131,7 @@ int addCube(MeshData& m, bool withNormalsAndTexcoords, float l){
 		
 		m.index(indices, sizeof(indices)/sizeof(*indices), m.vertices().size()-Nv);
 
-//		if(withNormalsAndTexcoords){
-//			m.normal();
-//		}
-
 		return Nv;
-
-//		static const float vertices[] = {
-//			-l, l,-l,	 l, l,-l,	// 0  1
-//			-l,-l,-l,	 l,-l,-l,	// 2  3
-//			-l, l, l,	 l, l, l,	// 4  5
-//			-l,-l, l,	 l,-l, l,	// 6  7
-//		};	
-//
-//		static const int indices[] = {
-//			6,5,4, 6,7,5, 7,1,5, 7,3,1, 
-//			3,0,1, 3,2,0, 2,4,0, 2,6,4,
-//			4,1,0, 4,5,1, 2,3,6, 3,7,6
-//		};
-//		int Nv = sizeof(vertices)/sizeof(*vertices)/3;
-//		m.vertex(vertices, Nv);
-//		m.index(indices, sizeof(indices)/sizeof(*indices), m.vertices().size()-Nv);
-//		return Nv;
 	}
 }
 

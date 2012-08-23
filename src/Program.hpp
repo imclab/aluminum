@@ -89,7 +89,7 @@ private:
 
 /// A program object represents a useable part of render pipeline. 
 /// Links shaders to one program object
-class ShaderProgram : public ShaderBase{
+class Program : public ShaderBase{
 public:
 
 	/*!
@@ -137,37 +137,37 @@ public:
 	};
 	*/
 
-	ShaderProgram()
+	Program()
 	//:	mInPrim(Graphics::TRIANGLES), mOutPrim(Graphics::TRIANGLES), mOutVertices(3),
 	//	mActive(true)
 	{}
 	
 	/// Any attached shaders will automatically be detached, but not deleted.
-	//virtual ~ShaderProgram(){ destroy(); }
-	virtual ~ShaderProgram(){ } //agf
+	//virtual ~Program(){ destroy(); }
+	virtual ~Program(){ } //agf
 
-	ShaderProgram& create();
+	Program& create();
 	  	
 	/// input Shader s will be compiled if necessary:
-	ShaderProgram& attach(Shader& s);
-	const ShaderProgram& detach(const Shader& s) const;
+	Program& attach(Shader& s);
+	const Program& detach(const Shader& s) const;
 	
 	// These parameters must be set before attaching geometry shaders
 	//void setGeometryInputPrimitive(Graphics::Primitive prim) { mInPrim = prim; }
 	//void setGeometryOutputPrimitive(Graphics::Primitive prim) { mOutPrim = prim; }
 	//void setGeometryOutputVertices(unsigned int i) { mOutVertices = i; }
 
-	const ShaderProgram& link(bool validate=true) const;
-	const ShaderProgram& use();
+	const Program& link(bool validate=true) const;
+	const Program& use();
 
 	/// Get whether program is active
 	bool active() const { return mActive; }
 
 	/// Set whether program is active
-	ShaderProgram& active(bool v){ mActive=v; return *this; }	
+	Program& active(bool v){ mActive=v; return *this; }	
 
 	/// Toggle active state
-	ShaderProgram& toggleActive(){ mActive^=true; return *this; }
+	Program& toggleActive(){ mActive^=true; return *this; }
 
 	bool begin();
 	void end() const;
@@ -176,80 +176,80 @@ public:
 	bool linked() const;
 
 	void listParams() const;
-	const ShaderProgram& uniform(const char * name, int v0) const;
-	const ShaderProgram& uniform(const char * name, float v0) const;
-	const ShaderProgram& uniform(const char * name, double v0) const { return uniform(name, (float)v0); }
-	const ShaderProgram& uniform(const char * name, float v0, float v1) const;
-	const ShaderProgram& uniform(const char * name, float v0, float v1, float v2) const;
-	const ShaderProgram& uniform(const char * name, float v0, float v1, float v2, float v3) const;
+	const Program& uniform(const char * name, int v0) const;
+	const Program& uniform(const char * name, float v0) const;
+	const Program& uniform(const char * name, double v0) const { return uniform(name, (float)v0); }
+	const Program& uniform(const char * name, float v0, float v1) const;
+	const Program& uniform(const char * name, float v0, float v1, float v2) const;
+	const Program& uniform(const char * name, float v0, float v1, float v2, float v3) const;
 	
 	
-	const ShaderProgram& uniform(int location, int v0) const;
-	const ShaderProgram& uniform(int location, float v0) const;
-	const ShaderProgram& uniform(int location, double v0) const { return uniform(location, (float)v0); }
-	const ShaderProgram& uniform(int location, float v0, float v1) const;
-	const ShaderProgram& uniform(int location, float v0, float v1, float v2) const;
-	const ShaderProgram& uniform(int location, float v0, float v1, float v2, float v3) const;
+	const Program& uniform(int location, int v0) const;
+	const Program& uniform(int location, float v0) const;
+	const Program& uniform(int location, double v0) const { return uniform(location, (float)v0); }
+	const Program& uniform(int location, float v0, float v1) const;
+	const Program& uniform(int location, float v0, float v1, float v2) const;
+	const Program& uniform(int location, float v0, float v1, float v2, float v3) const;
 	
 	
 	template<typename T>
-	const ShaderProgram& uniform(const char * name, const Vec<2,T>& v) const {
+	const Program& uniform(const char * name, const Vec<2,T>& v) const {
 		return uniform(name, v.x, v.y);
 	}
 	template<typename T>
-	const ShaderProgram& uniform(const char * name, const Vec<3,T>& v) const {
+	const Program& uniform(const char * name, const Vec<3,T>& v) const {
 		return uniform(name, v.x, v.y, v.z);
 	}
 	template<typename T>
-	const ShaderProgram& uniform(const char * name, const Vec<4,T>& v) const {
+	const Program& uniform(const char * name, const Vec<4,T>& v) const {
 		return uniform(name, v.x, v.y, v.z, v.w);
 	}
 	template<typename T>
-	const ShaderProgram& uniform(const char * name, const Quat<T>& q) const {
+	const Program& uniform(const char * name, const Quat<T>& q) const {
 		// note wxyz => xyzw for GLSL vec4:
 		return uniform(name, q.x, q.y, q.z, q.w);
 	}
 
-	const ShaderProgram& uniform1(const char * name, const float * v, int count=1) const;
-	const ShaderProgram& uniform2(const char * name, const float * v, int count=1) const;
-	const ShaderProgram& uniform3(const char * name, const float * v, int count=1) const;
-	const ShaderProgram& uniform4(const char * name, const float * v, int count=1) const;
+	const Program& uniform1(const char * name, const float * v, int count=1) const;
+	const Program& uniform2(const char * name, const float * v, int count=1) const;
+	const Program& uniform3(const char * name, const float * v, int count=1) const;
+	const Program& uniform4(const char * name, const float * v, int count=1) const;
 
-	const ShaderProgram& uniformMatrix4(const char * name, const float * v, bool transpose=0) const;
+	const Program& uniformMatrix4(const char * name, const float * v, bool transpose=0) const;
 
-	const ShaderProgram& attribute(const char * name, float v0) const;
-	const ShaderProgram& attribute(const char * name, float v0, float v1) const;
-	const ShaderProgram& attribute(const char * name, float v0, float v1, float v2) const;
-	const ShaderProgram& attribute(const char * name, float v0, float v1, float v2, float v3) const;
+	const Program& attribute(const char * name, float v0) const;
+	const Program& attribute(const char * name, float v0, float v1) const;
+	const Program& attribute(const char * name, float v0, float v1, float v2) const;
+	const Program& attribute(const char * name, float v0, float v1, float v2, float v3) const;
 
-	const ShaderProgram& attribute(int location, float v0) const;
-	const ShaderProgram& attribute(int location, float v0, float v1) const;
-	const ShaderProgram& attribute(int location, float v0, float v1, float v2) const;
-	const ShaderProgram& attribute(int location, float v0, float v1, float v2, float v3) const;
+	const Program& attribute(int location, float v0) const;
+	const Program& attribute(int location, float v0, float v1) const;
+	const Program& attribute(int location, float v0, float v1, float v2) const;
+	const Program& attribute(int location, float v0, float v1, float v2, float v3) const;
 
-	const ShaderProgram& attribute1(const char * name, const float * v) const;
-	const ShaderProgram& attribute2(const char * name, const float * v) const;
-	const ShaderProgram& attribute3(const char * name, const float * v) const;
-	const ShaderProgram& attribute4(const char * name, const float * v) const;
-	const ShaderProgram& attribute1(int location, const double * v) const;
-	const ShaderProgram& attribute2(int location, const double * v) const;
-	const ShaderProgram& attribute3(int location, const double * v) const;
-	const ShaderProgram& attribute4(int location, const double * v) const;
+	const Program& attribute1(const char * name, const float * v) const;
+	const Program& attribute2(const char * name, const float * v) const;
+	const Program& attribute3(const char * name, const float * v) const;
+	const Program& attribute4(const char * name, const float * v) const;
+	const Program& attribute1(int location, const double * v) const;
+	const Program& attribute2(int location, const double * v) const;
+	const Program& attribute3(int location, const double * v) const;
+	const Program& attribute4(int location, const double * v) const;
 	
 	template<typename T>
-	const ShaderProgram& attribute(int location, const Vec<2,T>& v) const {
+	const Program& attribute(int location, const Vec<2,T>& v) const {
 		return attribute(location, v.x, v.y);
 	}
 	template<typename T>
-	const ShaderProgram& attribute(int location, const Vec<3,T>& v) const {
+	const Program& attribute(int location, const Vec<3,T>& v) const {
 		return attribute(location, v.x, v.y, v.z);
 	}
 	template<typename T>
-	const ShaderProgram& attribute(int location, const Vec<4,T>& v) const {
+	const Program& attribute(int location, const Vec<4,T>& v) const {
 		return attribute(location, v.x, v.y, v.z, v.w);
 	}
 	template<typename T>
-	const ShaderProgram& attribute(int location, const Quat<T>& q) const {
+	const Program& attribute(int location, const Quat<T>& q) const {
 		// note wxyz => xyzw for GLSL vec4:
 		return attribute(location, q.x, q.y, q.z, q.w);
 	}

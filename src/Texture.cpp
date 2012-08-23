@@ -54,6 +54,28 @@ namespace al{
   }
 
 
+  //empty rgba texture...
+  Texture::Texture(int _w, int _h, GLint _internalFormat, GLenum _pixelFormat, GLenum _type) {
+
+    //printf("in Texture::Texture(GLubyte* _data, int _w, int _h, GLenum _format, GLenum _type)\n");
+
+    width = _w;
+    height = _h;
+    internalFormat = _internalFormat; //GL_RGBA, GL_RED, etc  (the format of the openGL pixel buffer)
+    pixelFormat = _pixelFormat; //GL_RGB, GL_RGBA, GL_LUMINANCE, etc  (the format of the image data)
+    type = _type; //GL_UNSIGNED_BYTE, GL_FLOAT, etc
+    kind(GL_TEXTURE_2D);
+
+    wrapMode(GL_REPEAT); //GL_CLAMP_TO_EDGE;
+    minFilter(GL_LINEAR);
+    maxFilter(GL_LINEAR);
+
+    data = (GLubyte*) malloc (_w*_h*4*sizeof(GLubyte));
+
+    create2D();
+  }
+
+
   Texture::Texture(GLubyte* _data, int _w, int _h, GLint _internalFormat, GLenum _pixelFormat, GLenum _type) {
 
     //printf("in Texture::Texture(GLubyte* _data, int _w, int _h, GLenum _format, GLenum _type)\n");

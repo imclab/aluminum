@@ -4,9 +4,8 @@
 //#include <Cocoa/Cocoa.h>
 #include <OpenGL/gl3.h>
 #include <OpenGL/gl3ext.h>
-//#include "allocore/al_Allocore.hpp"
-#include "allocore/graphics/al_Shader.hpp"
 
+#include "Shader.hpp"
 #include "NSGLView.h"
 #include "RendererNativeOSX.h"
 #include "MeshBuffer.hpp"
@@ -19,15 +18,20 @@
 
 using namespace al;
 
-class ShaderPhong : RendererNativeOSX {
+class FrontBack : public RendererNativeOSX {
   public:
 
     ShaderProgram program;
     GLuint vao[2];
-    GLint posLoc, normalLoc;
-    Mat4f mv, mv2, proj;
+    GLint posLoc = 0;
+    GLint normalLoc = 1;
+    Mat4f model, view1, view2, proj;
     MeshData mesh1, mesh2, mesh3;
     MeshBuffer mb1, mb2;
+
+ Vec3f diffuse = Vec3f(0.0,1.0,0.0);
+    Vec3f specular = Vec3f(1.0,1.0,1.0);
+    Vec3f ambient = Vec3f(0.0,0.0,0.3);
 
     /*
        Vec3f vertices[6] = {
@@ -49,18 +53,21 @@ class ShaderPhong : RendererNativeOSX {
 
       float angle = 45.0f;
 
-      addSphere(mesh1, 1.0, 100, 100);
+      addCube(mesh1, true, 0.25);
+
+    //  addSphere(mesh1, 0.5, 100, 100);
       mesh1.primitive(GL_TRIANGLES);
 
+/*
       Mat4f xfm;
       xfm.setIdentity();
       //xfm.rotate(M_PI/2, 0,2).rotate(angle, 1,2).rotate(angle*8, 0,1);
       //xfm.scale(Vec3f(1.5, 0.2, 0.5));
       xfm.scale(Vec3f(0.3, 0.3, 0.5));
       xfm.translate(Vec3f(0.0, 0.0, 0.0));
-
-      mesh1.transform(xfm);
-      mesh1.generateNormals();
+*/
+   //   mesh1.transform(xfm);
+  //    mesh1.generateNormals();
     }
 
 
@@ -104,6 +111,40 @@ class ShaderPhong : RendererNativeOSX {
      
     }
 
+   void loadProgram(ShaderProgram &p, const std::string& name) {
+
+      p.create();
+
+      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
+      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
+
+      p.attach(sv);
+
+      glBindAttribLocation(p.id(), posLoc, "vertexPosition");
+      glBindAttribLocation(p.id(), normalLoc, "vertexNormal");
+      //glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
+
+      p.attach(sf);
+
+      p.link();
+
+      p.listParams();
+
+
+      if (sv.log() != NULL) {
+	printf("vert %s\n", sv.log());
+	exit(0);
+      }
+      if (sf.log() != NULL) {
+	printf("frag %s\n", sf.log());
+	exit(0);
+      }
+
+
+      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
+    }
+
+    /*
     void loadShaders() {
 
       SearchPaths searchpaths;
@@ -143,7 +184,7 @@ class ShaderPhong : RendererNativeOSX {
 
       program.listParams();
     }
-
+    */
  
     void onCreate() {
 
@@ -155,14 +196,15 @@ class ShaderPhong : RendererNativeOSX {
       createMesh2();
       createMesh3();
 
-      loadShaders();
+      loadProgram(program, "resources/phong");
     
       mb1.init(mesh1, posLoc, normalLoc, -1, -1); 
       mb2.init(mesh2, posLoc, normalLoc, -1, -1); 
 
       proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      mv = Matrix4f::lookAt(Vec3f(0.0,0.0,-2.5), Vec3f(0,0,0), Vec3f(0,1,0) );
-      mv2 = Matrix4f::lookAt(Vec3f(0.0,0.0,2.5), Vec3f(0.0,0,0), Vec3f(0,1,0) );
+      model = Matrix4f::identity();
+      view1 = Matrix4f::lookAt(Vec3f(0.0,0.0,-2.5), Vec3f(0,0,0), Vec3f(0,1,0) );
+      view2 = Matrix4f::lookAt(Vec3f(0.0,0.0,2.5), Vec3f(0.0,0,0), Vec3f(0,1,0) );
      // mv = Matrix4f::lookAt(Vec3f(0.0,0.0,0.0), Vec3f(0,0,-1.0), Vec3f(0,1,0) );
      // mv2 = Matrix4f::lookAt(Vec3f(0.0,0.0,0.0), Vec3f(0.0,0,1.0), Vec3f(0,1,0) );
 
@@ -172,19 +214,29 @@ class ShaderPhong : RendererNativeOSX {
 
    
     float pos = -1.0f;
-    void draw(Mat4f modelview) {
+    void draw(Mat4f view) {
 
       pos += 0.01f;
       if (pos > 1.0) { pos = -1.0f; }
 
       program.begin(); {
-	program.uniformMatrix4("mv", &modelview[0], false);
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
+	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
+
+	glUniform3f(program.uniform("lightPos"), pos, 0.0f, 0.0f);
+	glUniform3fv(program.uniform("ambient"), 1, ambient.ptr()); 
+	glUniform3fv(program.uniform("diffuse"), 1, diffuse.ptr()); 
+	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
+/*
+	program.uniformMatrix4("model", &model[0], false);
+	program.uniformMatrix4("view", &view[0], false);
 	program.uniformMatrix4("proj", &proj[0], false);
 	program.uniform("lightPos", pos, 0.5f, 0.0); 
 	program.uniform("ambient", 0.0f, 0.0f, 0.4f); 
 	program.uniform("diffuse", 0.5f, 0.0f, 0.0f); 
 	program.uniform("specular", 1.0f, 1.0f, 1.0f); 
-
+*/
 	mb1.draw();
 	mb2.draw();
   
@@ -198,7 +250,7 @@ int frameNum = 0;
       //printf("num vertices = %d\n", mesh.vertices().size());
       //printf("num indices = %d\n", mesh.indices().size());
 
-
+/*
     if (frameNum == 100) {
 printf("update!\n");
 //      mb2.update(mesh3, posLoc, normalLoc, -1, -1); 
@@ -206,7 +258,7 @@ printf("update!\n");
       mb1.update(mesh1, posLoc, normalLoc, -1, -1); 
     }
   frameNum++;
-
+*/
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_SCISSOR_TEST);
       glEnable(GL_BLEND);
@@ -215,19 +267,19 @@ printf("update!\n");
       glScissor(0,0,width,height/2);
       // glClearColor(1.0,0.0,0.0,1.0);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      draw(mv2);
+      draw(view1);
 
       glViewport(0, height/2, width, height/2);
       glScissor(0, height/2, width, height/2);
       //glClearColor(0.0,1.0,0.0,0.2);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      draw(mv);
+      draw(view2);
     }
 };
 
 int main(){ 
 
-  [NSGLView start:new ShaderPhong()];
+FrontBack().start(); 
 
   return 0;
 }
