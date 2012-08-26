@@ -1,6 +1,7 @@
 #include "Program.hpp"
 
 #include <stdio.h>
+#include <string.h>
 #include <map>
 #include <string>
 #include <iostream>

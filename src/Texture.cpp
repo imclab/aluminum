@@ -45,9 +45,13 @@ namespace al{
     texture.internalFormat = GL_RGBA;
     texture.pixelFormat = pixFormat;
     texture.type = GL_UNSIGNED_BYTE;
-    texture.wrapMode(GL_REPEAT); //GL_CLAMP_TO_EDGE;
+    texture.wrapMode(GL_CLAMP_TO_EDGE);
     texture.minFilter(GL_LINEAR);
     texture.maxFilter(GL_LINEAR);
+
+for (int i = 0; i < texture.width*texture.height; i++) {
+	printf("%d \n", texture.data[i]);
+}
 
     return texture;
     //return Texture(bits, width, height, GL_RGBA, pixFormat, GL_UNSIGNED_BYTE); 
@@ -57,7 +61,7 @@ namespace al{
   //empty rgba texture...
   Texture::Texture(int _w, int _h, GLint _internalFormat, GLenum _pixelFormat, GLenum _type) {
 
-    //printf("in Texture::Texture(GLubyte* _data, int _w, int _h, GLenum _format, GLenum _type)\n");
+    printf("in Texture::Texture(GLubyte* _data, int _w, int _h, GLenum _format, GLenum _type)\n");
 
     width = _w;
     height = _h;
@@ -70,7 +74,9 @@ namespace al{
     minFilter(GL_LINEAR);
     maxFilter(GL_LINEAR);
 
-    data = (GLubyte*) malloc (_w*_h*4*sizeof(GLubyte));
+    data = new GLubyte[width * height * 4];
+
+    //data = (GLubyte*) malloc (_w*_h*4*sizeof(GLubyte));
 
     create2D();
   }
@@ -88,7 +94,7 @@ namespace al{
     type = _type; //GL_UNSIGNED_BYTE, GL_FLOAT, etc
     kind(GL_TEXTURE_2D);
 
-    wrapMode(GL_REPEAT); //GL_CLAMP_TO_EDGE;
+    wrapMode(GL_CLAMP_TO_EDGE);
     minFilter(GL_LINEAR);
     maxFilter(GL_LINEAR);
 
@@ -100,6 +106,9 @@ namespace al{
     printf("\tkind = %d\n", kind());
     printf("\tminFilter = %d, maxFilter = %d\n", minFilter(), maxFilter());
     printf("\twrapMode = %d\n", wrapMode());
+    printf("\twidth/height = %d/%d\n", width, height);
+	
+
   }
 
   void Texture::create2D() {
@@ -114,7 +123,11 @@ namespace al{
       glTexParameteri(kind(), GL_TEXTURE_WRAP_S, wrapMode());
       glTexParameteri(kind(), GL_TEXTURE_WRAP_T, wrapMode());
 
-      glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, data);
+//for (int i = 0; i < width*height; i++) {
+//	printf("%d \n", data[i]);
+//}
+
+      glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, &data[0]);
 
     } glBindTexture(kind(), 0);
 
