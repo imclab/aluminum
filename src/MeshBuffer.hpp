@@ -7,9 +7,7 @@
 #include "allocore/types/al_Buffer.hpp"
 #include "MeshData.hpp"
 
-
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include "Includes.hpp"
 
 
 namespace al{

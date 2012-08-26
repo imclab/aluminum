@@ -25,10 +25,11 @@ to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in a
 #include "RendererNativeOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
-#include "Asset.hpp"
-#include "Shader.hpp"
+#include "MeshUtils.hpp"
+#include "Program.hpp"
 
 #include "Texture.hpp"
+#include <vector>
 
 using namespace al;
 
@@ -41,28 +42,24 @@ class TextureExample : public RendererNativeOSX {
     float lightPosX = -1.0f;
     Mat4f model, view, proj;
 
-    ShaderProgram program;
-    GLuint vao[1];
+    Program program;
+    
     GLint posLoc=0;
     GLint normalLoc=1;
     GLint texCoordLoc=2;
 
-    Scene* scene;
-    MeshBuffer modelMeshBuffer[4];
-
     Texture texture;
 
-    MeshData loadModel(Scene* s, int which) {
-      MeshData modelMesh;
-      scene->mesh(which, modelMesh);
-      return modelMesh.transform(Mat4f::identity().scale(scene->getScaleVal()));
-    }
+    std::vector<MeshData> md;
+    std::vector<MeshBuffer> mb;
+      
 
-    void loadScene(Scene *&s, const std::string& name) {    
-      s = Scene::import(name);
+    void loadMeshes(const std::string& name) {    
+      
+      MeshUtils::loadMeshes(md, name);
 
-      for (unsigned i=0; i< s->meshes(); i++) {
-	modelMeshBuffer[i].init(loadModel(s, i), posLoc, normalLoc, texCoordLoc, -1);
+      for (unsigned long i = 0; i < md.size(); i++) {
+	mb.push_back((MeshBuffer()).init(md[i], posLoc, normalLoc, texCoordLoc, -1));
       }
     }
 
@@ -71,7 +68,7 @@ class TextureExample : public RendererNativeOSX {
     } 
 
 
-    void loadProgram(ShaderProgram &p, const std::string& name) {
+    void loadProgram(Program &p, const std::string& name) {
 
       p.create();
 
@@ -99,8 +96,7 @@ class TextureExample : public RendererNativeOSX {
 
       loadProgram(program, "resources/texture");
 
-      loadScene(scene, "resources/ducky.obj");
-      //loadScene(scene, "resources/bunny_small.obj");
+      loadMeshes("resources/ducky.obj");
 
       proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
       view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
@@ -127,8 +123,8 @@ class TextureExample : public RendererNativeOSX {
 
 	glUniform1i(program.uniform("tex0"), 0);
 
-	for (unsigned i=0; i< scene->meshes(); i++) {
-	  modelMeshBuffer[i].draw();
+	for (unsigned long i = 0; i < mb.size(); i++) {
+	  mb[i].draw();	
 	}
 
 	texture.unbind(GL_TEXTURE0);

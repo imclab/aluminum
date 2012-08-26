@@ -23,7 +23,6 @@ class ModelExample : public RendererNativeOSX {
     Mat4f model, view, proj;
 
     Program program;
-    GLuint vao[1];
     GLint posLoc=0;
     GLint normalLoc=1;
 

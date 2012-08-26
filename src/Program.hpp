@@ -3,8 +3,7 @@
 
 #include <string>
 
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include "Includes.hpp"
 
 #include "allocore/math/al_Vec.hpp"
 #include "allocore/math/al_Matrix4.hpp"

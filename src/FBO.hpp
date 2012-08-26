@@ -2,8 +2,7 @@
 #define INCLUDE_AL_FBO2_HPP
 
 #include <string>
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include "Includes.hpp"
 #include "Texture.hpp"
 
 namespace al{

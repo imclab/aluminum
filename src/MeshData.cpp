@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+#include "Includes.hpp"
 #include "MeshData.hpp"
 
 namespace al{

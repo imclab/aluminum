@@ -1,10 +1,6 @@
 #import "NSGLView.h"
 #import <OpenGL/gl3.h>
-//#include "allocore/al_Allocore.hpp"
 #include "RendererNativeOSX.h"
-
-//#import "OpenGLRenderer.h"
-
 
 
 @interface NSGLView (PrivateMethods)
