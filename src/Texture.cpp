@@ -50,7 +50,7 @@ namespace al{
     texture.maxFilter(GL_LINEAR);
 
 for (int i = 0; i < texture.width*texture.height; i++) {
-	printf("%d \n", texture.data[i]);
+	if (texture.data[i] != 0) {	printf("%d \n", texture.data[i]); }
 }
 
     return texture;
