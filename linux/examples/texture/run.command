@@ -16,7 +16,7 @@ pwd
 #prob won't need sysroot option if we do that (?)
 #g++ -I/usr/include/i386-linux-gnu/ -xc++ -D__LINUX__ -DLINUX -I../linux//include -DOSC_HOST_LITTLE_ENDIAN -I/usr/include/ -I/usr/local/include/ -I/opt/local/include/ -I/usr/local/include/ -I./ -isysroot  -O3  -L/opt/local/lib/ -lglut -lassimp -lfreeimage  -lm -I./ -I$LINUX_DIR -I$SRC_DIR  $SRC_DIR/*.cpp $LINUX_DIR/*.cpp $EXAMPLE_DIR/*.cpp -o $EXAMPLE_DIR/Basic
 
-g++ $SRC_DIR/*.cpp $LINUX_DIR/*.cpp $EXAMPLE_DIR/*.cpp -std=c++11 -I/usr/include/c++/4.6/x86_64-linux-gnu/ -I/usr/include/x86_64-linux-gnu/ -I/usr/include/c++/4.6/ -I/usr/include/ -I/usr/local/include/ -isysroot -lGL -lglut -lassimp -lfreeimage  -lm -I./ -I$LINUX_DIR -I$SRC_DIR   -o $EXAMPLE_DIR/$OUTPUT_FILE
+g++ $SRC_DIR/*.cpp $LINUX_DIR/*.cpp $EXAMPLE_DIR/*.cpp -std=c++11 -I/usr/include/c++/4.6/x86_64-linux-gnu/ -I/usr/include/x86_64-linux-gnu/ -I/usr/include/c++/4.6/ -I/usr/include/ -I/usr/local/include/ -isysroot -lGL -lglut -lassimp -L/usr/lib/x86_64-linux-gnu/ -ljpeg -lfreeimage  -lm -I./ -I$LINUX_DIR -I$SRC_DIR   -o $EXAMPLE_DIR/$OUTPUT_FILE
 
 #cd $EXAMPLE_DIR && ./Model && rm ./Model
 cd $EXAMPLE_DIR && ./$OUTPUT_FILE

@@ -4,14 +4,13 @@ RendererLinux::RendererLinux() {
   printf("in RendererLinux constructor\n");
 }
 
-void RendererLinux::start(void* app) {
-	printf("in RendererLinux::start(app)\n");
-  FreeGlutGLView::start(app);
-}
 void RendererLinux::start() {
 	printf("in RendererLinux::start()\n");
   FreeGlutGLView::start(this);
-	printf("ok we did that...\n");
+}
+void RendererLinux::start(std::string name) {
+	printf("in RendererLinux::start(name)\n");
+  FreeGlutGLView::start(this, name);
 }
 
 

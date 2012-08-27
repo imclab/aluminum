@@ -122,6 +122,6 @@ class TextureExample : public RendererLinux {
 };
 
 int main() {
-  TextureExample().start(); 
+  TextureExample().start("allomin::TextureExample"); 
   return 0;
 }

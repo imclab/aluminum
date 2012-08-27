@@ -44,7 +44,7 @@ Texture& unbind ();
 
       GLuint texID;
 
-      GLubyte* data;
+      const GLubyte* data;
       GLenum mKind; //GL_TEXTURE_2D, GL_TEXTURE_3D, or GL_TEXTURE_CUBE_MAP 
       GLint internalFormat; //GL_RGBA, GL_R3_G3_B2, etc
       GLenum pixelFormat; //e.g. GL_RGBA, GL_BGRA
