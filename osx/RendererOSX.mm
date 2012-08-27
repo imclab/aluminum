@@ -10,24 +10,24 @@ int RendererOSX::start(void* app) {
   return 0;
 }
 
-
 int RendererOSX::start() {
   [CocoaGL start:this];
   return 0;
 }
 
-void RendererOSX::toggleFullScreen() {
-  [view toggleFullScreen];
-}
-
 void RendererOSX::onFrame() { }
 void RendererOSX::onCreate() { }
  
-void RendererOSX::accessView() {
-  printf("about to access object-c view...\n");
-  [view printView];
+CocoaGL* RendererOSX::getView() {
+ // printf("about to access object-c view...\n");
+ // [view printView];
+  return view;
 }
 
+
+void RendererOSX::toggleFullScreen() {
+  [view toggleFullScreen];
+}
 
 void RendererOSX::mouseDragged(int px, int py) {
   printf("mouseDragged not handled...\n");

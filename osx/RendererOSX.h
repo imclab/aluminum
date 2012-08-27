@@ -29,18 +29,8 @@ public:
   virtual void mouseMoved(int px, int py);
   virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function);
 
-
-
+  CocoaGL* getView();
   CocoaGL* view;
-  void accessView();
-
-  
-
-  
-protected:
-  
-private:
-
 };
 
 

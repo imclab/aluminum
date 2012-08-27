@@ -26,7 +26,7 @@
 
 
 - (void)mouseMoved:(NSEvent *)mouseEvent {
-  CGDisplayShowCursor(kCGDirectMainDisplay);
+
   NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
   ((RendererOSX*)renderer)->mouseMoved(currmouse.x, currmouse.y);
 }
@@ -45,39 +45,39 @@
 
 - (void)keyDown:(NSEvent*)keyDownEvent {
 
-   char key = [keyDownEvent keyCode];
+  char key = [keyDownEvent keyCode];
 
-   if (key == kVK_Escape) {
+  if (key == kVK_Escape) {
     //printf("quitting...");
     //exit(0);
-   }
+  }
 
-   bool shift = false;
-   bool control = false;
-   bool command = false;
-   bool option = false;
-   bool function = false;
+  bool shift = false;
+  bool control = false;
+  bool command = false;
+  bool option = false;
+  bool function = false;
 
-   if ([keyDownEvent modifierFlags] & NSShiftKeyMask) {
-     shift = true;
-   }
-   if ([keyDownEvent modifierFlags] & NSControlKeyMask) {
-     control = true;
-   }
-   if ([keyDownEvent modifierFlags] & NSAlternateKeyMask) {
-     option = true;
-   }
-   if ([keyDownEvent modifierFlags] & NSCommandKeyMask) {
-     command = true;
-   }
-   if ([keyDownEvent modifierFlags] & NSFunctionKeyMask) {
-     function = true;
-   }
-   // printf("command/shift/option/control/func = %d/%d/%d/%d/%d\n", command, shift, option, control, function);
+  if ([keyDownEvent modifierFlags] & NSShiftKeyMask) {
+    shift = true;
+  }
+  if ([keyDownEvent modifierFlags] & NSControlKeyMask) {
+    control = true;
+  }
+  if ([keyDownEvent modifierFlags] & NSAlternateKeyMask) {
+    option = true;
+  }
+  if ([keyDownEvent modifierFlags] & NSCommandKeyMask) {
+    command = true;
+  }
+  if ([keyDownEvent modifierFlags] & NSFunctionKeyMask) {
+    function = true;
+  }
+  // printf("command/shift/option/control/func = %d/%d/%d/%d/%d\n", command, shift, option, control, function);
 
-   ((RendererOSX*)renderer)->keyDown(key, shift, control, command, option, function);
+  ((RendererOSX*)renderer)->keyDown(key, shift, control, command, option, function);
 
-   //keyIsPressed = YES;
+  //keyIsPressed = YES;
 }
 
 
@@ -111,56 +111,67 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 
 
 - (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *) theApplication {
-  exit(0);
-  return false;
+  return true;
 }
 
 - (void) toggleFullScreen {
-  
+
   [self.window toggleFullScreen:nil];
-  CGDisplayHideCursor(kCGDirectMainDisplay);
+  CGDisplayShowCursor(kCGDirectMainDisplay);
+  cursorOn = true;
 }
 
+- (void) fullscreen:(id)sender {
+  [self toggleFullScreen];  
+}
+
+- (void) cursor:(id)sender {
+  if (cursorOn) {
+    CGDisplayHideCursor(kCGDirectMainDisplay);
+    cursorOn = false;
+  } else {
+    CGDisplayShowCursor(kCGDirectMainDisplay);
+    cursorOn = true;
+  }
+}
+
+- (void) stereo:(id)sender {
+  if (stereoOn) {
+    printf("turning stereo OFF\n");
+    stereoOn = false;
+  } else {
+    printf("turning stereo ON\n");
+    stereoOn = true;
+  }
+}
 
 +(CocoaGL* )start:(void*) _renderer {
+  return [CocoaGL start:_renderer 
+    name:[[NSProcessInfo processInfo] processName]
+    width:500
+    height:500
+    xpos:50
+    ypos:40];
+}
 
-  // Sets up a minimal Cocoa window and set its content to be a OpenGL renderer
++(CocoaGL* )start:(void*) _renderer 
+  name:(NSString*)_name 
+  width:(int)_width
+  height:(int)_height
+  xpos:(int)_xpos
+  ypos:(int)_ypos {
+
+
+  // Set up a minimal Cocoa window and set its content to be a OpenGL renderer
 
   [NSAutoreleasePool new];
- [NSApplication sharedApplication];
-
-//[[NSApplication sharedApplication]
-//        setPresentationOptions:NSFullScreenWindowMask];
-
-
+  [NSApplication sharedApplication];
   [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-id appName = [[NSProcessInfo processInfo] processName];
-/* 
- id menubar = [[NSMenu new] autorelease];
-  id appMenuItem = [[NSMenuItem new] autorelease];
-  [menubar addItem:appMenuItem];
-  [NSApp setMainMenu:menubar];
-  id appMenu = [[NSMenu new] autorelease];
-    
+  id appName = _name; 
 
-  id quitTitle = [@"Quit " stringByAppendingString:appName];
-  id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle
-    action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
-  [appMenu addItem:quitMenuItem];
-  [appMenuItem setSubmenu:appMenu];
-  */
+  // Set up the OpenGL view with the appropriate attributes
 
-  id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
-    styleMask:NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask backing:NSBackingStoreBuffered defer:NO]
-    autorelease];
-  [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
-  [window setTitle:appName];
-  [window makeKeyAndOrderFront:nil];
-
-[window setCollectionBehavior:
-          NSWindowCollectionBehaviorFullScreenPrimary];
-
-  NSRect glRect = NSMakeRect(0, 0, 200, 200);
+  NSRect glRect = NSMakeRect(0, 0, _width, _height);
 
   NSOpenGLPixelFormatAttribute attrs[] = {
     NSOpenGLPFADoubleBuffer,
@@ -176,19 +187,80 @@ id appName = [[NSProcessInfo processInfo] processName];
 
   NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
   CocoaGL* glView = [[CocoaGL alloc] initWithFrame:glRect pixelFormat:format renderer:_renderer];
+
+  // Tell this view to be the delegate for Menu Items
+
+  [NSApp setDelegate: glView]; //to handle window closing listener, and potentially other delegate functionality
+
+
+  // Set up the menu bar
+
+  id menubar = [[NSMenu new] autorelease];
+  id appMenuItem = [[NSMenuItem new] autorelease];
+  [menubar addItem:appMenuItem];
+  [NSApp setMainMenu:menubar];
+  id appMenu = [[NSMenu new] autorelease];
+
+  id quitTitle = [@"Quit " stringByAppendingString:appName];
+  id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
+  [appMenu addItem:quitMenuItem];
+
+  id fullTitle = @"Toggle Fullscreen ";
+  id fullMenuItem = [[[NSMenuItem alloc] initWithTitle:fullTitle action:@selector(fullscreen:) keyEquivalent:@"f"] autorelease];
+  [fullMenuItem setTarget:glView];
+  [appMenu addItem:fullMenuItem];
+
+  id cursorTitle = @"Toggle Cursor ";
+  id cursorMenuItem = [[[NSMenuItem alloc] initWithTitle:cursorTitle action:@selector(cursor:) keyEquivalent:@"p"] autorelease];
+  [cursorMenuItem setTarget:glView];
+  [appMenu addItem:cursorMenuItem];
+
+  id stereoTitle = @"Toggle Stereo ";
+  id stereoMenuItem = [[[NSMenuItem alloc] initWithTitle:stereoTitle action:@selector(stereo:) keyEquivalent:@"3"] autorelease];
+  [stereoMenuItem setTarget:glView];
+  [appMenu addItem:stereoMenuItem];
+
+
+  //id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle action:@selector(testing:) keyEquivalent:[NSString stringWithFormat:@"%c", 0x09] ] autorelease];
+  //id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle action:@selector(testing:) keyEquivalent:NSKeyCodeLeftArrow ] autorelease];
+  //[quitMenuItem setKeyEquivalentModifierMask:0];
+  //[quitMenuItem setTarget:glView];
+
+  //[menuItem setKeyEquivalent:@" "];
+
+  [appMenuItem setSubmenu:appMenu];
+
+
+  // Set up the window to have a menu and the OpenGL view
+
+  id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, _width, _height)
+    styleMask:NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask backing:NSBackingStoreBuffered defer:NO]
+    autorelease];
+
+  [window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenPrimary]; //necessary for fullscreen toggling
+  [window cascadeTopLeftFromPoint:NSMakePoint(_xpos, _ypos)];
+
+  int menuBarH = 44;
+  int yBot = [[[NSScreen screens] objectAtIndex:0] frame].size.height - _height - _ypos - menuBarH; //flip y coord
+
+  [window setFrameOrigin:NSMakePoint(_xpos, yBot)]; 
+  [window setTitle:appName];
+  [window makeKeyAndOrderFront:nil];
+
   glView->isDragging = false;
+  glView->cursorOn = true;
+  glView->stereoOn = false;
   [format release];
 
   [window setContentView:glView];
-  [NSApp setDelegate: glView]; //to handle window closing listener
-
 
   [window setAcceptsMouseMovedEvents:YES];
-  [NSApp activateIgnoringOtherApps:YES];
+  [NSApp activateIgnoringOtherApps:YES]; //brings application to front on startup
 
- 
+  // Start the application
   [NSApp run];
 
+  // Return the view (in case we need it from our Renderer class) 
   return glView;
 
 }
