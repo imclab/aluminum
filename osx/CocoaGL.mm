@@ -1,34 +1,86 @@
-#import "NSGLView.h"
-#import <OpenGL/gl3.h>
-#include "RendererNativeOSX.h"
+#import "CocoaGL.h"
+#include "Includes.hpp"
+#include "RendererOSX.h"
 
 
-@interface NSGLView (PrivateMethods)
+@interface CocoaGL (PrivateMethods)
   - (void) initGL;
   - (void) drawView;
 
 
   @end
 
-  @implementation NSGLView
+  @implementation CocoaGL
 
   //OpenGLRenderer* m_renderer;
 
   -(BOOL)acceptsFirstResponder { return YES; }
   -(BOOL)becomeFirstResponder { return YES; }
   -(BOOL)resignFirstResponder { return YES; }
+
   -(void)mouseDragged:(NSEvent*)mouseEvent {
     NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
-    printf("mouseDragged %f/%f\n", currmouse.x, currmouse.y);
 
-    /*if (currmouse.x == prevmouse.x && currmouse.y == prevmouse.y) {*/
-    /*return;*/
-    /*isDragging = NO;*/
-    /*}*/
-
-    /*isDragging = YES;*/
-
+    ((RendererOSX*)renderer)->mouseDragged(currmouse.x, currmouse.y);
   }
+
+
+- (void)mouseMoved:(NSEvent *)mouseEvent {
+  CGDisplayShowCursor(kCGDirectMainDisplay);
+  NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
+  ((RendererOSX*)renderer)->mouseMoved(currmouse.x, currmouse.y);
+}
+
+- (void)mouseDown:(NSEvent*)mouseEvent {
+  NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
+  ((RendererOSX*)renderer)->mouseDown(currmouse.x, currmouse.y);
+}
+
+- (void)mouseUp:(NSEvent*)mouseEvent {
+  NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
+  ((RendererOSX*)renderer)->mouseUp(currmouse.x, currmouse.y);
+}
+
+
+
+- (void)keyDown:(NSEvent*)keyDownEvent {
+
+   char key = [keyDownEvent keyCode];
+
+   if (key == kVK_Escape) {
+    //printf("quitting...");
+    //exit(0);
+   }
+
+   bool shift = false;
+   bool control = false;
+   bool command = false;
+   bool option = false;
+   bool function = false;
+
+   if ([keyDownEvent modifierFlags] & NSShiftKeyMask) {
+     shift = true;
+   }
+   if ([keyDownEvent modifierFlags] & NSControlKeyMask) {
+     control = true;
+   }
+   if ([keyDownEvent modifierFlags] & NSAlternateKeyMask) {
+     option = true;
+   }
+   if ([keyDownEvent modifierFlags] & NSCommandKeyMask) {
+     command = true;
+   }
+   if ([keyDownEvent modifierFlags] & NSFunctionKeyMask) {
+     function = true;
+   }
+   // printf("command/shift/option/control/func = %d/%d/%d/%d/%d\n", command, shift, option, control, function);
+
+   ((RendererOSX*)renderer)->keyDown(key, shift, control, command, option, function);
+
+   //keyIsPressed = YES;
+}
+
+
 
 
 - (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime
@@ -47,7 +99,7 @@
 // This is the renderer output callback function
 static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
 {
-  CVReturn result = [(NSGLView*)displayLinkContext getFrameForTime:outputTime];
+  CVReturn result = [(CocoaGL*)displayLinkContext getFrameForTime:outputTime];
   return result;
 }
 
@@ -57,35 +109,56 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
   return(self);
 }
 
-+(NSGLView* )start:(void*) _renderer {
+
+- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *) theApplication {
+  exit(0);
+  return false;
+}
+
+- (void) toggleFullScreen {
   
+  [self.window toggleFullScreen:nil];
+  CGDisplayHideCursor(kCGDirectMainDisplay);
+}
+
+
++(CocoaGL* )start:(void*) _renderer {
+
   // Sets up a minimal Cocoa window and set its content to be a OpenGL renderer
-  
+
   [NSAutoreleasePool new];
-  [NSApplication sharedApplication];
+ [NSApplication sharedApplication];
+
+//[[NSApplication sharedApplication]
+//        setPresentationOptions:NSFullScreenWindowMask];
+
+
   [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-  id menubar = [[NSMenu new] autorelease];
+id appName = [[NSProcessInfo processInfo] processName];
+/* 
+ id menubar = [[NSMenu new] autorelease];
   id appMenuItem = [[NSMenuItem new] autorelease];
   [menubar addItem:appMenuItem];
   [NSApp setMainMenu:menubar];
   id appMenu = [[NSMenu new] autorelease];
-  id appName = [[NSProcessInfo processInfo] processName];
+    
+
   id quitTitle = [@"Quit " stringByAppendingString:appName];
   id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle
     action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
   [appMenu addItem:quitMenuItem];
   [appMenuItem setSubmenu:appMenu];
+  */
 
   id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
-    styleMask:NSTitledWindowMask|NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO]
+    styleMask:NSTitledWindowMask|NSResizableWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask backing:NSBackingStoreBuffered defer:NO]
     autorelease];
   [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
   [window setTitle:appName];
   [window makeKeyAndOrderFront:nil];
 
-  bool resizable = true;
-  [[window standardWindowButton:NSWindowZoomButton] setHidden:!resizable];
-  [window setShowsResizeIndicator:resizable];
+[window setCollectionBehavior:
+          NSWindowCollectionBehaviorFullScreenPrimary];
 
   NSRect glRect = NSMakeRect(0, 0, 200, 200);
 
@@ -97,18 +170,23 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     //NSOpenGLProfileVersionLegacy,
 
     //NSOpenGLPFAColorFloat,
-    //NSOpenGLPFAStereo, ... etc there are a lot of interesting ones....
+    //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
     0
   };
 
   NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
-  NSGLView* glView = [[NSGLView alloc] initWithFrame:glRect pixelFormat:format renderer:_renderer];
+  CocoaGL* glView = [[CocoaGL alloc] initWithFrame:glRect pixelFormat:format renderer:_renderer];
+  glView->isDragging = false;
   [format release];
 
   [window setContentView:glView];
+  [NSApp setDelegate: glView]; //to handle window closing listener
+
 
   [window setAcceptsMouseMovedEvents:YES];
   [NSApp activateIgnoringOtherApps:YES];
+
+ 
   [NSApp run];
 
   return glView;
@@ -160,10 +238,10 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
   printf("in initGL\n");
 
   char* verGL = (char*)glGetString(GL_VERSION);
-      printf("GL version = %s\n", verGL);
+  printf("GL version = %s\n", verGL);
 
-      char* verGLSL = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-      printf("GLSL version = %s\n", verGLSL);
+  char* verGLSL = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+  printf("GLSL version = %s\n", verGLSL);
 
 }
 
@@ -179,8 +257,8 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
   //need to pass the size of the bounds to set up glViewport properly
   NSRect rect = [self bounds];
 
-  ((RendererNativeOSX*)renderer)->width =  (int)rect.size.width ;
-  ((RendererNativeOSX*)renderer)->height =  (int)rect.size.height ;
+  ((RendererOSX*)renderer)->width =  (int)rect.size.width ;
+  ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
 
   CGLUnlockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
 }
@@ -200,10 +278,10 @@ int firstTime = 0;
   if (firstTime == 0) {
     printf("in drawView... bounds = %f,%f,%f,%f\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 
-    ((RendererNativeOSX*)renderer)->view = self ;
-    ((RendererNativeOSX*)renderer)->width =  (int)rect.size.width ;
-    ((RendererNativeOSX*)renderer)->height =  (int)rect.size.height ;
-    ((RendererNativeOSX*)renderer)->onCreate();
+    ((RendererOSX*)renderer)->view = self ;
+    ((RendererOSX*)renderer)->width =  (int)rect.size.width ;
+    ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
+    ((RendererOSX*)renderer)->onCreate();
 
     firstTime = 1;
   }
@@ -211,7 +289,7 @@ int firstTime = 0;
 
   //glViewport(0, 0, (int)rect.size.width, (int)rect.size.height);
   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  ((RendererNativeOSX*)renderer)->onFrame();
+  ((RendererOSX*)renderer)->onFrame();
   //glFlush();
 
   CGLFlushDrawable((_CGLContextObject*)[[self openGLContext] CGLContextObj]);

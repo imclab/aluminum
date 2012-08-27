@@ -75,56 +75,45 @@ class Basic : public RendererOSX {
     }
 
     virtual void onFrame(){
-      
-      // Clear viewport
+    
       glViewport(0,0,width, height);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-      // Draw our vbos to the screen
-      program.begin(); {
-	program.uniformMatrix4("proj", &proj[0], false);
-	program.uniformMatrix4("mv", &mv[0], false);
-
-	glBindVertexArray( vao ); 
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-	glBindVertexArray( 0 ); 
-      } program.end();
-
-    }
-
-    virtual void mouseDragged(int px, int py) {
-      printf("in Basic: mouseDragged %d/%d\n", px, py);
-    }
-
-    virtual void mouseMoved(int px, int py) {
-      printf("in Basic: mouseMoved %d/%d\n", px, py);
-    }
-
-    virtual void mouseDown(int px, int py) {
-      printf("in Basic: mouseDown %d/%d\n", px, py);
-    }
-
-    virtual void mouseUp(int px, int py) {
-      printf("in Basic: mouseUp %d/%d\n", px, py);
-    }
-   
-    virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
-
-      printf("in Basic: key = %c, shift=%d, control=%d, command=%d, option=%d, function=%d\n", key, shift, control, command, option, function);
-      switch(key) {
-	case kVK_ANSI_A : 
-	printf("you pressed an 'A' \n");
-	toggleFullScreen();
-	break;
       
-	case kVK_ANSI_X : 
-	printf("you pressed an 'X' \n");
-	break;
+      glDrawBuffer(GL_BACK);                                   //draw into both back buffers
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);      //clear color and depth buffers
+
+      glDrawBuffer(GL_BACK_LEFT); { 
+	// Draw our vbos to the screen
+      mv = Matrix4f::lookAt(Vec3f(-0.5,0,-2.5), Vec3f(0,0,0), Vec3f(0,1,0) );
+	program.begin(); {
+	  program.uniformMatrix4("proj", &proj[0], false);
+	  program.uniformMatrix4("mv", &mv[0], false);
+
+	  glBindVertexArray( vao ); 
+	  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	  glBindVertexArray( 0 ); 
+	} program.end();
       }
+
+      glDrawBuffer(GL_BACK_RIGHT); { 
+	// Draw our vbos to the screen
+      mv = Matrix4f::lookAt(Vec3f(0.5,0,-2.5), Vec3f(0,0,0), Vec3f(0,1,0) );
+	program.begin(); {
+	  program.uniformMatrix4("proj", &proj[0], false);
+	  program.uniformMatrix4("mv", &mv[0], false);
+
+	  glBindVertexArray( vao ); 
+	  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	  glBindVertexArray( 0 ); 
+	} program.end();
+      }
+
+
     }
- 
+
 };
 
 int main(){ 
-  return Basic().start(); 
+  //Basic().start(); 
+  Basic().start(); 
+  return 0;
 }
