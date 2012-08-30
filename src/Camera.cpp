@@ -37,11 +37,28 @@ namespace al{
   }
 
   //just temp for debugging
-  void printMatrix(Matrix4f m) {
+  void Camera::printMatrix(Matrix4f m) {
 
-    for (int i = 0; i < 16; i++) {
-      printf("%f ", m[i]);
-    }
+    printf("%+.2f ", m[0]);
+    printf("%+.2f ", m[4]);
+    printf("%+.2f ", m[8]);
+    printf("%+.2f ", m[12]);
+    printf("%+.2f ", m[1]);
+    printf("%+.2f ", m[5]);
+    printf("%+.2f ", m[9]);
+    printf("%+.2f ", m[13]);
+    printf("%+.2f ", m[2]);
+    printf("%+.2f ", m[6]);
+    printf("%+.2f ", m[10]);
+    printf("%+.2f ", m[14]);
+    printf("%+.2f ", m[3]);
+    printf("%+.2f ", m[7]);
+    printf("%+.2f ", m[11]);
+    printf("%+.2f ", m[15]);
+
+    // for (int i = 0; i < 16; i++) {
+    //   printf("%+.2f ", m[i]);
+    // }
     printf("\n");
     /*
        printf("{ %f, %f, %f, %f,\n", m[0], m[4], m[8], m[12]);
@@ -51,13 +68,26 @@ namespace al{
        */
   }
 
-  Matrix4f Camera::reverseView() {
+
+  Matrix4f Camera::reverseRotationMatrix(Matrix4f m) {
+    /*
+    Vec3f vv = ArbitraryRotate(viewVec, 180.0, upVec);
+    Vec3f rv = cross(vv, upVec);
+ 
+    return Matrix4f(
+	rv.x, rv.y, rv.z, 0,
+	upVec.x, upVec.y, upVec.z, 0, 
+	vv.x, vv.y, vv.z, 0,
+	0,0,0,1);
+    */
     return Matrix4f( 
-	-view[0], view[4], view[8], -view[12],
-	-view[1], view[5], view[9], view[13],
-	view[2], -view[6], -view[10], -view[14],
-	view[3], view[7], view[11], view[15]); 
+    	-m[0], -m[4], -m[8], 0,
+	m[1], m[5], m[9], 0,
+	-m[2], -m[6], -m[10], 1,
+        0,0,0,1	); 
+
   }
+
 
   Camera& Camera::transform() {
     Matrix4f rM = Matrix4f(
@@ -69,7 +99,11 @@ namespace al{
     Matrix4f tM = Matrix4f::translate( posVec.x, posVec.y, posVec.z ); 
 
     view = rM * tM;
-    backView = reverseView();
+    backView = reverseRotationMatrix(rM) * tM;
+    
+    //printMatrix(rM);
+    //printMatrix(brM);
+    //printf("\n");
     isTransformed = false;
 
     return *this;
@@ -120,6 +154,7 @@ namespace al{
   Camera& Camera::rotateY (float angle) {
     viewVec = ArbitraryRotate(viewVec, angle, upVec);
     rightVec = cross(viewVec, upVec);
+  //  rightVec *= -1;
     isTransformed = true;
     return *this;
   }

@@ -23,9 +23,9 @@ namespace al{
       Camera& translateY(float dist);
       Camera& translateZ(float dist);
       Camera& rotate(Vec3f angles);
-      Camera& rotateX (float angle);
-      Camera& rotateY (float angle);
-      Camera& rotateZ (float angle);
+      Camera& rotateX(float angle);
+      Camera& rotateY(float angle);
+      Camera& rotateZ(float angle);
 
       float fovy, aspect, nearPlane, farPlane; 
       Matrix4f projection, view, backView;
@@ -33,12 +33,10 @@ namespace al{
 
       bool isTransformed;
 
+      static void printMatrix(Matrix4f m);
     private:
-        Matrix4f reverseView();
+	Matrix4f reverseRotationMatrix(Matrix4f m);
 	Vec3f ArbitraryRotate(Vec3f p, float theta, Vec3f r);
-
-
-     
   };
 }
 #endif
