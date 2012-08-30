@@ -18,10 +18,10 @@ BOOL stereoOn;
 +(CocoaGL* )start:(void*) _renderer;
 +(CocoaGL* )start:(void*) _renderer 
   name:(NSString*)_name 
-  width:(int)_width
-  height:(int)_height
-  xpos:(int)_xpos
-  ypos:(int)_ypos;
+  x:(int)_xpos
+  y:(int)_ypos
+  w:(int)_width
+  h:(int)_height;
 
 -(id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format renderer:(void*) _renderer;
 -(void) printView;

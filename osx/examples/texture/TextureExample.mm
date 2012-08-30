@@ -18,11 +18,7 @@ to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in a
 */
 
 
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
-
-#include "NSGLView.h"
-#include "RendererNativeOSX.h"
+#include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
@@ -33,7 +29,7 @@ to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in a
 
 using namespace al;
 
-class TextureExample : public RendererNativeOSX {
+class TextureExample : public RendererOSX {
   public:
 
     Vec3f diffuse = Vec3f(0.0,1.0,0.0);

@@ -49,7 +49,8 @@ namespace al{
 		texture.internalFormat = GL_RGBA;
 		texture.pixelFormat = pixFormat;
 		texture.type = GL_UNSIGNED_BYTE;
-		texture.wrapMode(GL_CLAMP_TO_EDGE);
+		//texture.wrapMode(GL_CLAMP_TO_EDGE);
+		texture.wrapMode(GL_REPEAT);
 		texture.minFilter(GL_LINEAR);
 		texture.maxFilter(GL_LINEAR);
 

@@ -1,9 +1,5 @@
 
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
-
-#include "NSGLView.h"
-#include "RendererNativeOSX.h"
+#include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
@@ -12,7 +8,7 @@
 
 using namespace al;
 
-class ModelExample : public RendererNativeOSX {
+class ModelExample : public RendererOSX {
 
   public:
 
@@ -118,6 +114,5 @@ class ModelExample : public RendererNativeOSX {
 };
 
 int main() {
-  ModelExample().start(); 
-  return 0;
+  return ModelExample().start(); 
 }

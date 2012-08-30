@@ -1,35 +1,33 @@
 
 #version 150
 
-uniform vec3 ambient;
-uniform vec3 diffuse;
-uniform vec3 specular;
+uniform vec3 ambient, diffuse, specular;
+in vec3 P, N, L;
 
-
-in vec3 normal;
-in vec3 lightDir;
-
-out vec4 outputFrag; 
-
+out vec4 frag; 
 void main(){
 
-  vec3 outColor;
+  vec3 V = normalize(-P); 
+  vec3 H = normalize(-reflect(L,N)); 
+
+  //ambient
+  vec3 outColor = ambient;
+
+  //diffuse light
+  float diff = max(0.0, dot(N, L));
+  outColor += diff * diffuse;
   
-  float diff = max(0.0, dot(normalize(normal), normalize(lightDir)));
-  
-  outColor = diff * diffuse;
-  outColor += ambient;
-  vec3 reflection = normalize(reflect(-normalize(lightDir),normalize(normal)));
-  float spec = max(0.0, dot(normalize(normal), reflection)); 
-  if(diff != 0.0) { 
-    float fSpec = pow(spec, 64.0); 
-    outColor.rgb += (vec3(fSpec, fSpec, fSpec) * specular.rgb); 
-  } 
+  //specular
+  float spec = pow( max(dot(H, V), 0.0), 32.0);
+  outColor += spec * specular;
+  if (spec > 1.0) {
+    frag = vec4(1.0,0.0,0.0,1.0);
+  } else {
 
-  //outColor = (vec3(normal.rgb) + 1.0 ) / 2.0;
-  //outColor = (vec3(lightDir.rrr) + 1.0 ) / 2.0;
-  //outColor = (vec3(reflection.rrr) + 1.0 ) / 2.0;
+  //outColor = (vec3(N.rgb) + 1.0 ) / 2.0;
+  //outColor = (vec3(L.rrr) + 1.0 ) / 2.0;
+  //outColor = (vec3(H.rgb) + 1.0 ) / 2.0;
 
-  outputFrag = vec4(outColor,1.0); 
-
+  frag = clamp(vec4(outColor,1.0), 0.0,1.0); 
+  }
 }

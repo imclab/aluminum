@@ -1,50 +1,18 @@
-
-
 #version 150 
+uniform mat4 proj, view, model;
+uniform vec3 lightPosition;
 
-uniform mat4 proj;
-uniform mat4 view;
-uniform mat4 model;
-uniform vec3 lightPos;
-
-in vec4 vertexPosition; 
-in vec4 vertexNormal;
-
-out vec3 normal;
-out vec3 lightDir;
-
+in vec4 vertexPosition, vertexNormal; 
+out vec3 N, L, P;
 
 void main() {  
   vec4 position = view * model * vertexPosition;
   
-  normal = vec3(view * model * vertexNormal);
-  //lightDir = normalize(vec3(mv * vec4(lightPos.xyz, 1.0)) - position.xyz); 
-  lightDir = normalize(vec3(view * vec4(lightPos.xyz, 1.0)) - position.xyz); 
-  
+  P = position.xyz;
+  N = normalize(vec3(mat3(view) * mat3(model) * vertexNormal.xyz)); 
+  L = normalize(vec3(view * vec4(lightPosition.xyz, 1.0)) - P); 
+
   gl_Position = proj * position; 
 } 
 
-
-
-//in vec4 vertexPosition;
-//in vec4 vertexNormal;
-
-//out vec3 position;
-//out vec3 normal;
-//out vec3 lightDir;
-
-//uniform vec3 lightPos;
-//uniform mat4 mv;
-//uniform mat4 proj;
-
-//void main() {  
- 
-//  position = vec3(mv * vertexPosition);
-
-//  normal = mv * vertexNormal;
- 
-//  lightDir = normalize(lightPos - position));  
-
-//  gl_Position = proj * mv * vertexPosition; 
-//} 
 

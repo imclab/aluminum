@@ -1,5 +1,6 @@
 
 #import "CocoaGL.h"
+#include <string>
 
 #ifndef ALLOCORE_RENDERER_NATIVE_OSX_AGF 
 #define ALLOCORE_RENDERER_NATIVE_OSX_AGF
@@ -12,13 +13,15 @@ public:
   RendererOSX();
 
   //basic windowing
-  static int start(void* app);
   int start();
+  int start(std::string _name, int x, int y, int w, int h);
+
 
   void toggleFullScreen();
 
   virtual void onCreate();
   virtual void onFrame();
+  virtual void onReshape();
 
   int width;
   int height; 

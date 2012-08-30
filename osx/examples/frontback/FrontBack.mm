@@ -1,285 +1,186 @@
 
-
-
-//#include <Cocoa/Cocoa.h>
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
-
-#include "Shader.hpp"
-#include "NSGLView.h"
-#include "RendererNativeOSX.h"
+#include "Program.hpp"
+#include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
 #include "Shapes.hpp"
-
-
-//only needed if we are using interleaved vbos
-#define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
+#include "Camera.hpp"
 
 using namespace al;
 
-class FrontBack : public RendererNativeOSX {
+class FrontBack : public RendererOSX {
   public:
 
-    ShaderProgram program;
+    Camera camera;
+
+    Program program;
     GLuint vao[2];
     GLint posLoc = 0;
     GLint normalLoc = 1;
-    Mat4f model, view1, view2, proj;
+    Mat4f model1, model2, view1, view2;
     MeshData mesh1, mesh2, mesh3;
     MeshBuffer mb1, mb2;
 
- Vec3f diffuse = Vec3f(0.0,1.0,0.0);
+    Vec3f diffuse = Vec3f(0.0,1.0,0.0);
     Vec3f specular = Vec3f(1.0,1.0,1.0);
     Vec3f ambient = Vec3f(0.0,0.0,0.3);
 
-    /*
-       Vec3f vertices[6] = {
-       Vec3f( -1.0, -1.0, 0.0 ), Vec3f( 0.0, 1.0, 0.0  ), Vec3f( 1.0, -1.0, 0.0  ), //vertex
-       Vec3f( 1.0,0.0,0.0), Vec3f(0.0,1.0,0.0), Vec3f(0.0,0.0,1.0), //color
-       };
-     */
+    void createMeshes() {
 
-    void printVersion() {
-      char* verGL = (char*)glGetString(GL_VERSION);
-      printf("GL version = %s\n", verGL);
-
-      char* verGLSL = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-      printf("GLSL version = %s\n", verGLSL);
+      addCube(mesh1, true, 0.5);
+      //addSphere(mesh1, 0.5, 160, 160);
+      
+      //addCube(mesh2, true, 0.5);
+      addSphere(mesh2, 0.5, 100, 100);
     }
 
-
-    void createMesh1() {
-
-      float angle = 45.0f;
-
-      addCube(mesh1, true, 0.25);
-
-    //  addSphere(mesh1, 0.5, 100, 100);
-      mesh1.primitive(GL_TRIANGLES);
-
-/*
-      Mat4f xfm;
-      xfm.setIdentity();
-      //xfm.rotate(M_PI/2, 0,2).rotate(angle, 1,2).rotate(angle*8, 0,1);
-      //xfm.scale(Vec3f(1.5, 0.2, 0.5));
-      xfm.scale(Vec3f(0.3, 0.3, 0.5));
-      xfm.translate(Vec3f(0.0, 0.0, 0.0));
-*/
-   //   mesh1.transform(xfm);
-  //    mesh1.generateNormals();
-    }
-
-
-    void createMesh2() {
-
-      float angle = 45.0f;
-
-      addSphere(mesh2, 1.0, 160, 160);
-
-      //mesh2 = makeSphere(1.0, 8,8 );
-      mesh2.primitive(GL_TRIANGLES);
-
-      Mat4f xfm;
-      xfm.setIdentity();
-      //xfm.rotate(M_PI/2, 0,2).rotate(angle, 1,2).rotate(angle*8, 0,1);
-      //xfm.scale(Vec3f(1.5, 0.2, 0.5));
-      xfm.scale(Vec3f(0.3, 0.3, 0.5));
-      xfm.translate(Vec3f(-0.3, 0.0, 0.0));
-
-      mesh2.transform(xfm);
-      mesh2.generateNormals();
-    }
-
-    void createMesh3() {
-     float angle = 45.0f;
-
-      addSphere(mesh3, 1.0, 16, 16);
-
-      //mesh2 = makeSphere(1.0, 8,8 );
-      mesh3.primitive(GL_TRIANGLES);
-
-      Mat4f xfm;
-      xfm.setIdentity();
-      //xfm.rotate(M_PI/2, 0,2).rotate(angle, 1,2).rotate(angle*8, 0,1);
-      //xfm.scale(Vec3f(1.5, 0.2, 0.5));
-      xfm.scale(Vec3f(0.3, 0.3, 0.5));
-      xfm.translate(Vec3f(-0.3, 0.0, 0.0));
-
-      mesh3.transform(xfm);
-      mesh3.generateNormals();
-     
-    }
-
-   void loadProgram(ShaderProgram &p, const std::string& name) {
+    void loadProgram(Program &p, const std::string& name) {
 
       p.create();
-
-      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
-      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
-
-      p.attach(sv);
-
+     
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
       glBindAttribLocation(p.id(), normalLoc, "vertexNormal");
-      //glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
 
-      p.attach(sf);
-
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
+      //glBindFragDataLocation(id(), 0, "frag"); //agf
+  
       p.link();
+   }
 
-      p.listParams();
-
-
-      if (sv.log() != NULL) {
-	printf("vert %s\n", sv.log());
-	exit(0);
-      }
-      if (sf.log() != NULL) {
-	printf("frag %s\n", sf.log());
-	exit(0);
-      }
-
-
-      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
+    void onReshape() {
+      camera.perspective(45, width/(height*0.5), 0.1, 100.0);
     }
 
-    /*
-    void loadShaders() {
-
-      SearchPaths searchpaths;
-      searchpaths.addSearchPath(searchpaths.appPath() + "../../examples/graphics3.2/");
-
-      Shader shaderV;
-      shaderV.sourceFromFile(searchpaths, "phong.vsh", Shader::VERTEX);
-
-      Shader shaderF;
-      shaderF.sourceFromFile(searchpaths, "phong.fsh", Shader::FRAGMENT);
-
-      program.attach(shaderV);
-
-      //set up attrib ids here manually... must be done before linking
-      posLoc = 0;
-      glBindAttribLocation(program.id(), posLoc, "vertexPosition");
-      normalLoc = 1;
-      glBindAttribLocation(program.id(), normalLoc, "vertexNormal");
-
-      program.attach(shaderF);
-      //set up frag output manually... must be done before linking
-      //glBindFragDataLocation(program.id(), 10, "outputFrag");
-
-      program.link();
-
-      //posLoc = glGetAttribLocation(program.id(), "vertexPosition");
-      //normalLoc = glGetAttribLocation(program.id(), "vertexNormal");
-
-      if (shaderV.log() != NULL) {
-	printf("vert %s\n", shaderV.log());
-	exit(0);
-      }
-      if (shaderF.log() != NULL) {
-	printf("frag %s\n", shaderF.log());
-	exit(0);
-      }
-
-      program.listParams();
-    }
-    */
- 
     void onCreate() {
 
-      printf("in onCreate\n");   
+      camera = Camera(45, width/(height*0.5), 0.1, 100.0);
 
-      //printVersion();
-
-      createMesh1();
-      createMesh2();
-      createMesh3();
+      createMeshes();
 
       loadProgram(program, "resources/phong");
-    
+
       mb1.init(mesh1, posLoc, normalLoc, -1, -1); 
       mb2.init(mesh2, posLoc, normalLoc, -1, -1); 
 
-      proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      model = Matrix4f::identity();
-      view1 = Matrix4f::lookAt(Vec3f(0.0,0.0,-2.5), Vec3f(0,0,0), Vec3f(0,1,0) );
-      view2 = Matrix4f::lookAt(Vec3f(0.0,0.0,2.5), Vec3f(0.0,0,0), Vec3f(0,1,0) );
-     // mv = Matrix4f::lookAt(Vec3f(0.0,0.0,0.0), Vec3f(0,0,-1.0), Vec3f(0,1,0) );
-     // mv2 = Matrix4f::lookAt(Vec3f(0.0,0.0,0.0), Vec3f(0.0,0,1.0), Vec3f(0,1,0) );
-
-      printf("out onCreate()\n");
-    }
-
-
-   
-    float pos = -1.0f;
-    void draw(Mat4f view) {
-
-      pos += 0.01f;
-      if (pos > 1.0) { pos = -1.0f; }
-
-      program.begin(); {
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
-	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
-
-	glUniform3f(program.uniform("lightPos"), pos, 0.0f, 0.0f);
-	glUniform3fv(program.uniform("ambient"), 1, ambient.ptr()); 
-	glUniform3fv(program.uniform("diffuse"), 1, diffuse.ptr()); 
-	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
-/*
-	program.uniformMatrix4("model", &model[0], false);
-	program.uniformMatrix4("view", &view[0], false);
-	program.uniformMatrix4("proj", &proj[0], false);
-	program.uniform("lightPos", pos, 0.5f, 0.0); 
-	program.uniform("ambient", 0.0f, 0.0f, 0.4f); 
-	program.uniform("diffuse", 0.5f, 0.0f, 0.0f); 
-	program.uniform("specular", 1.0f, 1.0f, 1.0f); 
-*/
-	mb1.draw();
-	mb2.draw();
-  
-      } program.end();
-
-    }
-
-int frameNum = 0;
-    void onFrame(){
-
-      //printf("num vertices = %d\n", mesh.vertices().size());
-      //printf("num indices = %d\n", mesh.indices().size());
-
-/*
-    if (frameNum == 100) {
-printf("update!\n");
-//      mb2.update(mesh3, posLoc, normalLoc, -1, -1); 
-    mesh1.vertices()[0] = Vec3f(400.0, 400.0, 400.0);
-      mb1.update(mesh1, posLoc, normalLoc, -1, -1); 
-    }
-  frameNum++;
-*/
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_SCISSOR_TEST);
       glEnable(GL_BLEND);
 
-      glViewport(0, 0, width, height/2);
-      glScissor(0,0,width,height/2);
-      // glClearColor(1.0,0.0,0.0,1.0);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      draw(view1);
+    }
 
-      glViewport(0, height/2, width, height/2);
-      glScissor(0, height/2, width, height/2);
-      //glClearColor(0.0,1.0,0.0,0.2);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      draw(view2);
+    float pos = -0.0f;
+    void draw(Mat4f view) {
+
+      pos += 0.03f;
+      if (pos > 10.0) { pos = -20.0f; }
+
+      program.bind(); {
+	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, camera.projection.ptr());
+
+	glUniform3f(program.uniform("lightPosition"), pos, 0.0f, 0.0f);
+	glUniform3fv(program.uniform("ambient"), 1, ambient.ptr()); 
+	glUniform3fv(program.uniform("diffuse"), 1, diffuse.ptr()); 
+	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
+
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, model1.ptr());
+	mb1.draw();
+
+	glUniform3f(program.uniform("diffuse"), 1.0,0.0,0.0); 
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, model2.ptr());
+	mb2.draw();
+
+      } program.unbind();
+
+    }
+
+    int frameNum = 0;
+    float angX = 0.0;
+    float angY = 0.0;
+    float angZ = 0.0;
+
+    void onFrame(){
+
+      if (camera.isTransformed) {
+	camera.transform();
+      }
+
+      angX += 0.01;
+      angY += 0.007;
+      angZ += 0.003;
+
+      model1.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(0,0,-5));
+      model2.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(0,0,+5));
+
+      glViewport(0, 0, width, height/2); {
+	glScissor(0,0,width,height/2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	draw(camera.view);
+      }
+
+      glViewport(0, height/2, width, height/2); {
+	glScissor(0, height/2, width, height/2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	draw(camera.backView);
+      }
+    }
+
+
+    virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
+
+      switch(key) {
+	case kVK_ANSI_A : 
+	  camera.rotateY(2);
+	  break;
+
+	case kVK_ANSI_D : 
+	  camera.rotateY(-2);
+	  break;
+
+	case kVK_ANSI_W : 
+	  camera.rotateX(2);
+	  break;
+
+	case kVK_ANSI_X : 
+	  camera.rotateX(-2);
+	  break;
+
+	case kVK_ANSI_E : 
+	  camera.rotateZ(2);
+	  break;
+
+	case kVK_ANSI_C : 
+	  camera.rotateZ(-2);
+	  break;
+
+	case kVK_ANSI_T : 
+	  camera.translateZ(0.5);
+	  break;
+
+	case kVK_ANSI_B : 
+	  camera.translateZ(-0.5);
+	  break;
+
+	case kVK_ANSI_Y : 
+	  camera.translateX(0.5);
+	  break;
+
+	case kVK_ANSI_N : 
+	  camera.translateX(-0.5);
+	  break;
+
+	case kVK_ANSI_U : 
+	  camera.translateY(0.5);
+	  break;
+
+	case kVK_ANSI_M : 
+	  camera.translateY(-0.5);
+	  break;
+      }
     }
 };
 
 int main(){ 
-
-FrontBack().start(); 
-
-  return 0;
+  return FrontBack().start(); 
 }

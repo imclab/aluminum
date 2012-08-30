@@ -1,13 +1,9 @@
 #import <Cocoa/Cocoa.h>
 #include "RendererOSX.h"
 
+
 RendererOSX::RendererOSX() { 
   printf("in RendererNativeOSX constructor\n");
-}
-
-int RendererOSX::start(void* app) {
-  [CocoaGL start:app];
-  return 0;
 }
 
 int RendererOSX::start() {
@@ -15,37 +11,48 @@ int RendererOSX::start() {
   return 0;
 }
 
-void RendererOSX::onFrame() { }
-void RendererOSX::onCreate() { }
- 
-CocoaGL* RendererOSX::getView() {
- // printf("about to access object-c view...\n");
- // [view printView];
-  return view;
+int RendererOSX::start(std::string _name, int x, int y, int w, int h) {
+
+  [CocoaGL start:this 
+    name: [NSString stringWithUTF8String:_name.c_str()]
+    x: x
+    y: y
+    w: w
+    h: h
+];
+
+  return 0;
 }
 
+void RendererOSX::onFrame() { }
+void RendererOSX::onCreate() { }
+void RendererOSX::onReshape() { }
+ 
+CocoaGL* RendererOSX::getView() {
+  return view;
+}
 
 void RendererOSX::toggleFullScreen() {
   [view toggleFullScreen];
 }
 
 void RendererOSX::mouseDragged(int px, int py) {
-  printf("mouseDragged not handled...\n");
+  //printf("mouseDragged not handled...\n");
 }
 
 void RendererOSX::mouseDown(int px, int py) {
-  printf("mouseDown not handled...\n");
+  //printf("mouseDown not handled...\n");
 }
 
 void RendererOSX::mouseUp(int px, int py) {
-  printf("mouseUp not handled...\n");
+  //printf("mouseUp not handled...\n");
 }
 
 void RendererOSX::mouseMoved(int px, int py) {
-  printf("mouseMoved not handled...\n");
+  //printf("mouseMoved not handled...\n");
 }
 
 void RendererOSX::keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
-  printf("keyDown not handled\n");
+  //printf("keyDown not handled\n");
 }
 

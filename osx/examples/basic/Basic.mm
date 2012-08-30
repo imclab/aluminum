@@ -126,5 +126,7 @@ class Basic : public RendererOSX {
 };
 
 int main(){ 
-  return Basic().start(); 
+  //return Basic().start(); 
+
+  return Basic().start("Allomin::Basic", 100, 5, 400, 300); 
 }

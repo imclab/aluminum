@@ -5,6 +5,8 @@
 
 namespace al{
 
+
+  int addRectangle(MeshData& m);
 // Platonic solids
 
 /// Add tetrahedron as triangle vertices and indices

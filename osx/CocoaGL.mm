@@ -148,18 +148,19 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 +(CocoaGL* )start:(void*) _renderer {
   return [CocoaGL start:_renderer 
     name:[[NSProcessInfo processInfo] processName]
-    width:500
-    height:500
-    xpos:50
-    ypos:40];
+    x:50
+    y:40
+    w:500
+    h:500];
 }
 
 +(CocoaGL* )start:(void*) _renderer 
   name:(NSString*)_name 
-  width:(int)_width
-  height:(int)_height
-  xpos:(int)_xpos
-  ypos:(int)_ypos {
+  x:(int)_xpos
+  y:(int)_ypos 
+  w:(int)_width
+  h:(int)_height
+{
 
 
   // Set up a minimal Cocoa window and set its content to be a OpenGL renderer
@@ -169,6 +170,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
   [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
   id appName = _name; 
 
+
   // Set up the OpenGL view with the appropriate attributes
 
   NSRect glRect = NSMakeRect(0, 0, _width, _height);
@@ -177,9 +179,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     NSOpenGLPFADoubleBuffer,
     NSOpenGLPFADepthSize, 32,
     NSOpenGLPFAOpenGLProfile,
-    NSOpenGLProfileVersion3_2Core,
-    //NSOpenGLProfileVersionLegacy,
-
+    NSOpenGLProfileVersion3_2Core, //NSOpenGLProfileVersionLegacy,
     //NSOpenGLPFAColorFloat,
     //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
     0
@@ -187,6 +187,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 
   NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
   CocoaGL* glView = [[CocoaGL alloc] initWithFrame:glRect pixelFormat:format renderer:_renderer];
+
 
   // Tell this view to be the delegate for Menu Items
 
@@ -315,6 +316,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
   char* verGLSL = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
   printf("GLSL version = %s\n", verGLSL);
 
+ 
 }
 
 - (void) reshape
@@ -331,11 +333,12 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 
   ((RendererOSX*)renderer)->width =  (int)rect.size.width ;
   ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
+  ((RendererOSX*)renderer)->onReshape();
 
   CGLUnlockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
 }
 
-int firstTime = 0;
+bool firstTime = true;
 - (void) drawView
 {	 
   [[self openGLContext] makeCurrentContext];
@@ -347,15 +350,21 @@ int firstTime = 0;
 
   NSRect rect = [self bounds];
 
-  if (firstTime == 0) {
+  if (firstTime) {
     printf("in drawView... bounds = %f,%f,%f,%f\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 
     ((RendererOSX*)renderer)->view = self ;
     ((RendererOSX*)renderer)->width =  (int)rect.size.width ;
     ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
+
+    //OSX seems to *require* a default VAO to do anything, even to load shaders... setting a default here (even though each mesh has its own)
+    GLuint _glVaoID;
+    glGenVertexArrays(1, &_glVaoID );	
+    glBindVertexArray( _glVaoID );
+
     ((RendererOSX*)renderer)->onCreate();
 
-    firstTime = 1;
+    firstTime = false;
   }
 
 
