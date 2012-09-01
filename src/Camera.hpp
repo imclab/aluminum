@@ -14,6 +14,10 @@ namespace al{
       Camera();
       Camera(float fovy, float aspect, float nearPlane, float farPlane); //perspective
       
+      void setUpStereo(float _convergence, float _eyeSep);
+      void setupStereoRight(Matrix4f& P, Matrix4f& V); 
+      void setupStereoLeft(Matrix4f& P, Matrix4f& V); 
+      
       Camera& perspective(float fovy, float aspect, float nearPlane, float farPlane); //perspective
       Camera& resetVectors();
       Camera& transform();
@@ -27,11 +31,14 @@ namespace al{
       Camera& rotateY(float angle);
       Camera& rotateZ(float angle);
 
-      float fovy, aspect, nearPlane, farPlane; 
+      float fovy, aspect, nearPlane, farPlane, convergence, eyeSep; 
       Matrix4f projection, view, backView;
+      Matrix4f rightProjection, leftProjection, rightView, leftView, rightBackView, leftBackView, rightTranslate, leftTranslate;
       Vec3f posVec, viewVec, rightVec, upVec;
 
       bool isTransformed;
+      bool isFrontBack;
+      bool isStereo;
 
       static void printMatrix(Matrix4f m);
     private:

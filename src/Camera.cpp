@@ -14,6 +14,7 @@ namespace al{
   Camera::Camera(float _fovy, float _aspect, float _nearPlane, float _farPlane) {
     resetVectors();
     perspective(_fovy, _aspect, _nearPlane, _farPlane);
+    setUpStereo(5.0, 1.0);
   }
 
   Camera& Camera::resetVectors() {
@@ -31,6 +32,11 @@ namespace al{
     farPlane = _farPlane;
     aspect = _aspect;
     projection = Matrix4f::perspective(fovy, aspect, nearPlane, farPlane);
+
+    isFrontBack = true;
+    isStereo = true;
+
+    setUpStereo(5.0, 1.0);
 
     isTransformed = true;
     return *this;
@@ -85,7 +91,6 @@ namespace al{
 	m[1], m[5], m[9], 0,
 	-m[2], -m[6], -m[10], 1,
         0,0,0,1	); 
-
   }
 
 
@@ -99,15 +104,56 @@ namespace al{
     Matrix4f tM = Matrix4f::translate( posVec.x, posVec.y, posVec.z ); 
 
     view = rM * tM;
-    backView = reverseRotationMatrix(rM) * tM;
     
-    //printMatrix(rM);
+    if (isFrontBack) {
+      backView = reverseRotationMatrix(rM) * tM;
+    }
+
+    if (isStereo) {
+      rightView = rightTranslate * view;
+      leftView = leftTranslate * view;
+       
+      if (isFrontBack) {
+	rightBackView = rightTranslate * backView;
+	leftBackView = leftTranslate * backView;
+      }
+    }
+
     //printMatrix(brM);
     //printf("\n");
     isTransformed = false;
 
     return *this;
   }
+
+  /* code adapted from http://quiescentspark.blogspot.com/2011/05/rendering-3d-anaglyph-in-opengl.html */
+  /* The practical value of convergence depth is chosen on the basis of the shot being prepared and the type of effect (out of the screen or inside screen) used. Eye separation is typically kept at 1/30th of the convergence distance and objects closer than half the convergence distance are avoided in the scene. */
+
+  void Camera::setUpStereo(float _convergence, float _eyeSep) {
+    convergence = _convergence;
+    eyeSep = _eyeSep;
+
+    float top, bottom, leftL, rightL, leftR, rightR;
+
+    top     = nearPlane * tan(radians(fovy)/2);
+    bottom  = -top;
+
+    float a = aspect * tan(radians(fovy)/2) * convergence;
+
+    float b = a - eyeSep/2;
+    float c = a + eyeSep/2;
+
+    leftR   =  -c * nearPlane/convergence;
+    rightR   =   b * nearPlane/convergence;
+
+    leftL   =  -b * nearPlane/convergence;
+    rightL   =   c * nearPlane/convergence;
+
+    rightProjection = Matrix4f::perspective(leftR, rightR, bottom, top, nearPlane, farPlane );
+    rightTranslate = Matrix4f::translate( -eyeSep/2, 0.0f, 0.0f );
+    leftProjection = Matrix4f::perspective(leftL, rightL, bottom, top, nearPlane, farPlane );
+    leftTranslate = Matrix4f::translate( eyeSep/2, 0.0f, 0.0f );
+  }    
 
   Camera& Camera::translate(Vec3f dists) {
     translateX(dists.x);
@@ -154,7 +200,7 @@ namespace al{
   Camera& Camera::rotateY (float angle) {
     viewVec = ArbitraryRotate(viewVec, angle, upVec);
     rightVec = cross(viewVec, upVec);
-  //  rightVec *= -1;
+    //  rightVec *= -1;
     isTransformed = true;
     return *this;
   }

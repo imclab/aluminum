@@ -8,7 +8,7 @@
 #include "allocore/math/al_Random.hpp"
 using namespace al;
 
-class FrontBack : public RendererOSX {
+class Anaglyph : public RendererOSX {
   public:
 
     Camera camera;
@@ -97,14 +97,14 @@ class FrontBack : public RendererOSX {
     }
 
     float pos = -0.0f;
-    void draw(Mat4f view) {
+    void draw(Mat4f proj, Mat4f view) {
 
       pos += 0.03f;
       if (pos > 10.0) { pos = -20.0f; }
 
       program.bind(); {
 	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, camera.projection.ptr());
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
 
 	glUniform3f(program.uniform("lightPosition"), pos, 0.0f, 0.0f);
 	glUniform3fv(program.uniform("ambient"), 1, ambient.ptr()); 
@@ -112,19 +112,19 @@ class FrontBack : public RendererOSX {
 	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model1.ptr());
-	mb1.draw();
+//	mb1.draw();
 
 	glUniform3f(program.uniform("diffuse"), 1.0,0.0,0.0); 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model2.ptr());
-	mb2.draw();
+//	mb2.draw();
 	
-	glUniform3f(program.uniform("diffuse"), 1.0,0.0,1.0); 
+	glUniform3f(program.uniform("diffuse"), 1.0,1.0,1.0); 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model3.ptr());
 	mb3.draw();
 	
 	glUniform3f(program.uniform("diffuse"), 0.0,0.0,1.0); 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model4.ptr());
-	mb4.draw();
+//	mb4.draw();
 
       } program.unbind();
 
@@ -156,6 +156,65 @@ class FrontBack : public RendererOSX {
 
 
 
+   // Matrix4f lProj, lView;
+   // ApplyLeftFrustum(lProj, lView);
+    glColorMask(true, false, false, true);
+
+      glViewport(0, 0, width, height/2); {
+	glScissor(0,0,width,height/2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//draw(lProj, camera.view * lView);
+	//draw(lProj, lView * camera.view);
+	draw(camera.leftProjection, camera.leftView);
+      }
+
+      glViewport(0, height/2, width, height/2); {
+	glScissor(0, height/2, width, height/2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//draw(lProj, camera.backView * lView);
+	//draw(lProj, lView * camera.backView);
+	draw(camera.leftProjection, camera.leftBackView);
+      }
+
+
+    glClear(GL_DEPTH_BUFFER_BIT) ;
+
+    //Matrix4f rProj, rView;
+    //ApplyRightFrustum(rProj, rView);
+    glColorMask(false, true, true, true);
+
+    glViewport(0, 0, width, height/2); {
+	glScissor(0,0,width,height/2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//draw(rProj, camera.view * rView);
+	//draw(rProj, rView * camera.view);
+	draw(camera.rightProjection, camera.rightView);
+      }
+
+      glViewport(0, height/2, width, height/2); {
+	glScissor(0, height/2, width, height/2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//draw(rProj, camera.backView * rView);
+	//draw(rProj, rView * camera.backView);
+	draw(camera.rightProjection, camera.rightBackView);
+
+      }
+
+
+
+
+    //back to normal
+    glColorMask(true, true, true, true);
+
+
+
+
+
+
+/*
+      glColorMask(GL_TRUE, GL_FALSE,GL_FALSE,GL_TRUE);
+
+
       glViewport(0, 0, width, height/2); {
 	glScissor(0,0,width,height/2);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -167,8 +226,9 @@ class FrontBack : public RendererOSX {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	draw(camera.backView);
       }
+*/
     }
-    
+
 
     virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
 
@@ -229,5 +289,5 @@ class FrontBack : public RendererOSX {
 };
 
 int main(){ 
-  return FrontBack().start(); 
+  return Anaglyph().start(); 
 }
