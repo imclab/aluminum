@@ -21,9 +21,7 @@ class Kaleidoscope : public RendererOSX {
 
     Program program;
     GLint posLoc=0;
-    //GLint texCoordLoc=1;
     Texture texture;
-
 
     MeshBuffer mb1;
 
@@ -32,24 +30,14 @@ class Kaleidoscope : public RendererOSX {
     } 
 
     void loadProgram(Program &p, const std::string& name) {
-
       p.create();
 
-      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
-      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
-
-      p.attach(sv);
-
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
-      //glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
 
-      p.attach(sf);
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
 
       p.link();
-
-      p.listParams();
-
-      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
     }
 
     void onCreate() {
@@ -84,7 +72,7 @@ class Kaleidoscope : public RendererOSX {
       glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      program.begin(); {
+      program.bind(); {
 	glUniform1i(program.uniform("which"), which);
 	glUniform1f(program.uniform("time"), time);
 	glUniform2f(program.uniform("resolution"), width, height);
@@ -96,7 +84,7 @@ class Kaleidoscope : public RendererOSX {
 	mb1.draw();	
 	texture.unbind(GL_TEXTURE0);
 
-      } program.end();
+      } program.unbind();
 
     }
 };

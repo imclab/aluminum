@@ -23,6 +23,7 @@ to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in a
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
 #include "Program.hpp"
+#include "Shapes.hpp"
 
 #include "Texture.hpp"
 #include <vector>
@@ -32,33 +33,17 @@ using namespace al;
 class TextureExample : public RendererOSX {
   public:
 
-    Vec3f diffuse = Vec3f(0.0,1.0,0.0);
-    Vec3f specular = Vec3f(1.0,1.0,1.0);
-    Vec3f ambient = Vec3f(0.0,0.0,0.3);
-    float lightPosX = -1.0f;
     Mat4f model, view, proj;
 
     Program program;
     
     GLint posLoc=0;
-    GLint normalLoc=1;
-    GLint texCoordLoc=2;
+    GLint texCoordLoc=1;
 
     Texture texture;
 
-    std::vector<MeshData> md;
-    std::vector<MeshBuffer> mb;
+    MeshBuffer mb1;
       
-
-    void loadMeshes(const std::string& name) {    
-      
-      MeshUtils::loadMeshes(md, name);
-
-      for (unsigned long i = 0; i < md.size(); i++) {
-	mb.push_back((MeshBuffer()).init(md[i], posLoc, normalLoc, texCoordLoc, -1));
-      }
-    }
-
     void loadTexture(Texture& t, const std::string& name) {
       t.loadTextureData2D(t, name).create2D();
     } 
@@ -68,36 +53,28 @@ class TextureExample : public RendererOSX {
 
       p.create();
 
-      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
-      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
-
-      p.attach(sv);
-
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
-      glBindAttribLocation(p.id(), normalLoc, "vertexNormal");
       glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
 
-      p.attach(sf);
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
 
       p.link();
-
-      p.listParams();
-
-      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
     }
 
     void onCreate() {
 
+      loadProgram(program, "resources/texture");
       loadTexture(texture, "resources/hubble.jpg");
 
-      loadProgram(program, "resources/texture");
+      MeshData mesh1;
+      addRectangle(mesh1);
+      mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
 
-      loadMeshes("resources/ducky.obj");
 
       proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
+      view = Matrix4f::lookAt(Vec3f(0.0,0.0,-3), Vec3f(0,0,0), Vec3f(0,1,0) );
       model = Matrix4f::identity();
-      model.rotate(M_PI/2, 0,2).rotate(45.0, 1,2).rotate(8.0, 0,1);
 
       glEnable(GL_DEPTH_TEST);
       glViewport(0, 0, width, height);
@@ -106,10 +83,7 @@ class TextureExample : public RendererOSX {
 
     void draw(Mat4f model) {
 
-      lightPosX += 0.02f;
-      if (lightPosX > 1.0) { lightPosX = -1.0f; }
-
-      program.begin(); {
+      program.bind(); {
 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
 	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
@@ -119,19 +93,16 @@ class TextureExample : public RendererOSX {
 
 	glUniform1i(program.uniform("tex0"), 0);
 
-	for (unsigned long i = 0; i < mb.size(); i++) {
-	  mb[i].draw();	
-	}
+	mb1.draw();	
 
 	texture.unbind(GL_TEXTURE0);
 
-      } program.end();
+      } program.unbind();
     }
 
     void onFrame(){
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      model.rotate(0.01, 0, 1);
       draw(model);
     }
 };

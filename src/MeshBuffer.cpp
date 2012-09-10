@@ -49,6 +49,8 @@ namespace al{
     useIndices = true;
   }
 
+
+
   MeshBuffer& MeshBuffer::update(MeshData _data, int p, int n, int tc, int c) {
     data = _data;
 

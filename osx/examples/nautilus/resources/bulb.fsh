@@ -7,11 +7,31 @@ out vec4 frag;
 
 //////////Clod
 
-float f(vec3 o)
-{
+float f(vec3 o) {
+
+//repeat
+vec3 dist = vec3(2.0); //dist between each repeated object
+vec3 pos = mod(o,dist)-0.5*dist; //repeated position 
+
+//sphere
+//float radius = 0.2;
+//return length(pos) - radius; 
+
+
+vec2 c = normalize(vec2(0.1, 0.05));
+float q = (length(pos.yz));
+return   dot(c,vec2(q, pos.x))  ;
+/*
+
+// return length(max(vec3(0.0, 0.0, 0.0), abs(mod(o, 1.0) - 0.5) - 0.15)) - 0.2;
+
+// return   float a=(sin(o.x) + cos(o.y));
+
+//orig
     float a=(sin(o.x)+o.y*.25)*.35;
     o=vec3(cos(a)*o.x-sin(a)*o.y,sin(a)*o.x+cos(a)*o.y,o.z);
     return dot(cos(o)*cos(o),vec3(1))-1.2;
+*/
 }
 
 #if 1
@@ -20,18 +40,22 @@ float f(vec3 o)
 //   removed the break inside the marching loop (GLSL compatibility)
 //   replaced 10 step binary search by a linear interpolation
 //
-vec3 s(vec3 o,vec3 d)
-{
+vec3 s(vec3 o,vec3 d) {
+
     float t=0.0;
     float dt = 0.2;
     float nh = 0.0;
     float lh = 0.0;
-    for(int i=0;i<50;i++)
+
+    for(int i=0;i<75;i++)
     {
         nh = f(o+d*t);
         if(nh>0.0) { lh=nh; t+=dt; }
     }
-
+    if (nh <= -0.0) {
+      return abs(vec3(0.0,nh,nh));
+    } else {return vec3(1.0,0.0,0.0);}
+    /*
     if( nh>0.0 ) return vec3(.93,.94,.85);
 
     t = t - dt*nh/(nh-lh);
@@ -40,10 +64,11 @@ vec3 s(vec3 o,vec3 d)
     vec3 p=o+d*t;
     vec3 n=-normalize(vec3(f(p+e),f(p+e.yxy),f(p+e.yyx))+vec3((sin(p*75.)))*.01);
 
-    return vec3( mix( ((max(-dot(n,vec3(.577)),0.) + 0.125*max(-dot(n,vec3(-.707,-.707,0)),0.)))*(mod
-
-(length(p.xy)*20.,2.)<1.0?vec3(.71,.85,.25):vec3(.79,.93,.4))
+    return vec3( 
+	mix( 
+	  ( (max(-dot(n,vec3(.577)),0.) + 0.125 * max(-dot(n,vec3(-.707,-.707,0)),0.) ) ) *(mod(length(p.xy)*20.,2.)<1.0?vec3(.71,.85,.25):vec3(.79,.93,.4))
                            ,vec3(.93,.94,.85), vec3(pow(t/9.,5.)) ) );
+    */
 }
 #else
 //
@@ -81,7 +106,9 @@ vec3 s(vec3 o,vec3 d)
 void main()
 {
     vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
-    frag=vec4(s(vec3(sin(time*1.5)*.5,cos(time)*.5,time), normalize(vec3(p.xy,1.0))),1.0);
+    float t = time;
+   // t = 0.0;
+    frag=vec4(s(vec3(sin(t*1.5)*.5,cos(t)*.5,t), normalize(vec3(p.xy,1.0))),1.0);
 }
 
 /*

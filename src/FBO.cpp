@@ -5,10 +5,8 @@
 
 namespace al{
 
-
-  
 ///////////////////////////////////////////////////////////////////////////////
-// convert OpenGL internal format enum to string
+// convert OpenGL 3.2 core profile's internal format enum to string
 ///////////////////////////////////////////////////////////////////////////////
 std::string convertInternalFormatToString(GLenum format)
 {
@@ -16,69 +14,107 @@ std::string convertInternalFormatToString(GLenum format)
 
     switch(format)
     {
-    case GL_STENCIL_INDEX:
-        formatName = "GL_STENCIL_INDEX";
-        break;
-    case GL_DEPTH_COMPONENT:
-        formatName = "GL_DEPTH_COMPONENT";
-        break;
-    case GL_DEPTH_STENCIL:
-        formatName = "GL_DEPTH_STENCIL";
-        break;
-    case GL_ALPHA:
-        formatName = "GL_ALPHA";
-        break;
-    case GL_RGB:
-        formatName = "GL_RGB";
-        break;
-    case GL_RGBA:
-        formatName = "GL_RGBA";
-        break;
-    case GL_R3_G3_B2:
-        formatName = "GL_R3_G3_B2";
-        break;
-    case GL_RGB4:
-        formatName = "GL_RGB4";
-        break;
-    case GL_RGB5:
-        formatName = "GL_RGB4";
-        break;
-    case GL_RGB8:
-        formatName = "GL_RGB8";
-        break;
-    case GL_RGB10:
-        formatName = "GL_RGB10";
-        break;
-    case GL_RGB12:
-        formatName = "GL_RGB12";
-        break;
-    case GL_RGB16:
-        formatName = "GL_RGB16";
-        break;
-    case GL_RGBA2:
-        formatName = "GL_RGBA2";
-        break;
-    case GL_RGBA4:
-        formatName = "GL_RGBA4";
-        break;
-    case GL_RGB5_A1:
-        formatName = "GL_RGB5_A1";
-        break;
-    case GL_RGBA8:
-        formatName = "GL_RGBA8";
-        break;
-    case GL_RGB10_A2:
-        formatName = "GL_RGB10_A2";
-        break;
-    case GL_RGBA12:
-        formatName = "GL_RGBA12";
-        break;
-    case GL_RGBA16:
-        formatName = "GL_RGBA16";
-        break;
-    default:
-        formatName = "Unknown Format";
+      //Table 3.12: sized internal color formats
+      case GL_R8: formatName = "GL_R8"; break;
+      case GL_R8_SNORM: formatName = "GL_R8_SNORM"; break;
+      case GL_R16: formatName = "GL_R16"; break;
+      case GL_R16_SNORM: formatName = "GL_R16_SNORM"; break;
+      case GL_RG8: formatName = "GL_RG8"; break;
+      case GL_RG8_SNORM: formatName = "GL_RG8_SNORM"; break;
+      case GL_RG16: formatName = "GL_RG16"; break;
+      case GL_RG16_SNORM: formatName = "GL_RG16_SNORM"; break;
+      case GL_R3_G3_B2: formatName = "GL_R2_G3_B2"; break;
+      case GL_RGB4: formatName = "GL_RGB4"; break;
+      case GL_RGB5: formatName = "GL_RGB5"; break;
+      case GL_RGB8: formatName = "GL_RGB8"; break;
+      case GL_RGB8_SNORM: formatName = "GL_RGB8_SNORM"; break;
+      case GL_RGB10: formatName = "GL_RGB10"; break;
+      case GL_RGB12: formatName = "GL_RGB12"; break;
+      case GL_RGB16: formatName = "GL_RGB16"; break;
+      case GL_RGB16_SNORM: formatName = "GL_RGB16_SNORM"; break;
+      case GL_RGBA2: formatName = "GL_RGBA2"; break;
+      case GL_RGBA4: formatName = "GL_RGBA4"; break;
+      case GL_RGB5_A1: formatName = "GL_RGB5_A1"; break;
+      case GL_RGBA8: formatName = "GL_RGBA8"; break;
+      case GL_RGBA8_SNORM: formatName = "GL_RGBA8_SNORM"; break;
+      case GL_RGB10_A2: formatName = "GL_RGB10_A2"; break;
+      case GL_RGBA12: formatName = "GL_RGBA12"; break;
+      case GL_RGBA16: formatName = "GL_RGBA16"; break;
+      case GL_RGBA16_SNORM: formatName = "GL_RGBA16_SNORM"; break;
+      case GL_SRGB8: formatName = "GL_SRGB8"; break;
+      case GL_SRGB8_ALPHA8: formatName = "GL_SRGB8_ALPHA8"; break;
+      case GL_R16F: formatName = "GL_R16F"; break;
+      case GL_RG16F: formatName = "GL_RG16F"; break;
+      case GL_RGB16F: formatName = "GL_RGB16F"; break;
+      case GL_RGBA16F: formatName = "GL_RGBA16F"; break;
+      case GL_R32F: formatName = "GL_R32F"; break;
+      case GL_RG32F: formatName = "GL_RG32F"; break;
+      case GL_RGB32F: formatName = "GL_RGB32F"; break;
+      case GL_RGBA32F: formatName = "GL_RGBA32F"; break;
+      case GL_R11F_G11F_B10F: formatName = "GL_R11F_G11F_B10F"; break;
+      case GL_RGB9_E5: formatName = "GL_RGB9_E5"; break;
+      case GL_R8I: formatName = "GL_R8I"; break;
+      case GL_R8UI: formatName = "GL_R8UI"; break;
+      case GL_R16I: formatName = "GL_R16I"; break;
+      case GL_R16UI: formatName = "GL_R16UI"; break;
+      case GL_R32I: formatName = "GL_R32I"; break;
+      case GL_R32UI: formatName = "GL_R32UI"; break;
+      case GL_RG8I: formatName = "GL_RG8I"; break;
+      case GL_RG8UI: formatName = "GL_RG8UI"; break;
+      case GL_RG16I: formatName = "GL_RG16I"; break;
+      case GL_RG32I: formatName = "GL_RG32I"; break;
+      case GL_RG32UI: formatName = "GL_RG32UI"; break;
+      case GL_RGB8I: formatName = "GL_RGB8I"; break;
+      case GL_RGB8UI: formatName = "GL_RGB8UI"; break;
+      case GL_RGB16I: formatName = "GL_RGB16I"; break;
+      case GL_RGB16UI: formatName = "GL_RGB16UI"; break;
+      case GL_RGB32I: formatName = "GL_RGB32I"; break;
+      case GL_RGB32UI: formatName = "GL_RGB32UI"; break;
+      case GL_RGBA8I: formatName = "GL_RGBA8I"; break;
+      case GL_RGBA8UI: formatName = "GL_RGBA8UI"; break;
+      case GL_RGBA16I: formatName = "GL_RGBA16I"; break;
+      case GL_RGBA16UI: formatName = "GL_RGBA16UI"; break;
+      case GL_RGBA32I: formatName = "GL_RGBA32I"; break;
+      case GL_RGBA32UI: formatName = "GL_RGBA32UI"; break;
+	
+      //Table 3.13: sized interal depth formats
+      case GL_DEPTH_COMPONENT16: formatName = "GL_DEPTH_COMPONENT16"; break;
+      case GL_DEPTH_COMPONENT24: formatName = "GL_DEPTH_COMPONENT24"; break;
+      case GL_DEPTH_COMPONENT32: formatName = "GL_DEPTH_COMPONENT32"; break;
+      case GL_DEPTH_COMPONENT32F: formatName = "GL_DEPTH_COMPONENT32F"; break;
+      case GL_DEPTH24_STENCIL8: formatName = "GL_DEPTH24_STENCIL8"; break;
+      case GL_DEPTH32F_STENCIL8: formatName = "GL_DEPTH32F_STENCIL8"; break;
+
+      //Table 4.10: sized internal formats for formats that can only be used with renderbuffers
+      case GL_STENCIL_INDEX1: formatName = "GL_STENCIL_INDEX1"; break;
+      case GL_STENCIL_INDEX4: formatName = "GL_STENCIL_INDEX4"; break;
+      case GL_STENCIL_INDEX8: formatName = "GL_STENCIL_INDEX8"; break;
+      case GL_STENCIL_INDEX16: formatName = "GL_STENCIL_INDEX16"; break;
+				
+      //Table 3.3: pixel data formats (these are not actually internal formats...)
+      case GL_STENCIL_INDEX: formatName = "GL_STENCIL_INDEX"; break;
+      case GL_DEPTH_COMPONENT: formatName = "GL_DEPTH_COMPONENT"; break;
+      case GL_DEPTH_STENCIL: formatName = "GL_DEPTH_STENCIL"; break;
+      case GL_RED: formatName = "GL_RED"; break;
+      case GL_GREEN: formatName = "GL_GREEN"; break;
+      case GL_BLUE: formatName = "GL_BLUE"; break;
+      case GL_RG: formatName = "GL_RG"; break;
+      case GL_RGB: formatName = "GL_RGB"; break;
+      case GL_RGBA: formatName = "GL_RGBA"; break;
+      case GL_BGR: formatName = "GL_BGR"; break;
+      case GL_BGRA: formatName = "GL_BGRA"; break;
+      case GL_RED_INTEGER: formatName = "GL_RED_INTEGER"; break;
+      case GL_GREEN_INTEGER: formatName = "GL_GREEN_INTEGER"; break;
+      case GL_BLUE_INTEGER: formatName = "GL_BLUE_INTEGER"; break;
+      case GL_RG_INTEGER: formatName = "GL_RG_INTEGER"; break;
+      case GL_RGB_INTEGER: formatName = "GL_RGB_INTEGER"; break;
+      case GL_RGBA_INTEGER: formatName = "GL_RGBA_INTEGER"; break;
+      case GL_BGR_INTEGER: formatName = "GL_BGR_INTEGER"; break;
+      case GL_BGRA_INTEGER: formatName = "GL_BGRA_INTEGER"; break;
+
+      default: formatName = "Unknown Format"; break;
     }
+
     return formatName;
 }
 
@@ -88,23 +124,23 @@ std::string convertInternalFormatToString(GLenum format)
 ///////////////////////////////////////////////////////////////////////////////
 std::string getTextureParameters(GLuint id)
 {
-    if(glIsTexture(id) == GL_FALSE)
-        return "Not texture object";
+  if(glIsTexture(id) == GL_FALSE)
+    return "Not texture object";
 
-    int width, height, format;
-    std::string formatName;
-    glBindTexture(GL_TEXTURE_2D, id);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);            // get texture width
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);          // get texture height
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format); // get texture internal format
-    glBindTexture(GL_TEXTURE_2D, 0);
+  int width, height, format;
+  std::string formatName;
+  glBindTexture(GL_TEXTURE_2D, id);
+  glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);            // get texture width
+  glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);          // get texture height
+  glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format); // get texture internal format
+  glBindTexture(GL_TEXTURE_2D, 0);
 
-    formatName = convertInternalFormatToString(format);
+  formatName = convertInternalFormatToString(format);
 
-    std::stringstream ss;
-    ss << width << "x" << height << ", " << formatName << "(" << format << ")";
+  std::stringstream ss;
+  ss << width << "x" << height << ", " << formatName << "(" << format << ")";
 
-    return ss.str();
+  return ss.str();
 }
 
 
@@ -114,7 +150,7 @@ std::string getTextureParameters(GLuint id)
 ///////////////////////////////////////////////////////////////////////////////
 std::string getRenderbufferParameters(GLuint id)
 {
-    if(glIsRenderbuffer(id) == GL_FALSE)
+  if(glIsRenderbuffer(id) == GL_FALSE)
         return "Not Renderbuffer object";
 
     int width, height, format;
@@ -228,78 +264,88 @@ void printFramebufferInfo()
 
 
 
-  FBO::FBO() {} 
-/*
-FBO::FBO(Texture& t) : texture(t) {
-  //texture = NULL;
-  //glGenFramebuffers(1, &fboID);
-}
-*/
+
+FBO::FBO() {} 
 
 FBO& FBO::create() {
-  
   glGenFramebuffers(1, &fboID);
-  //SetTargetTexture(t);
+  return *this;
+}
+
+FBO& FBO::create(int w, int h) {
+  glGenFramebuffers(1, &fboID);
+  return attach(Texture(w, h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), RBO(w, h, GL_DEPTH_COMPONENT24));
+}
+
+FBO& FBO::create(Texture t) {
+  glGenFramebuffers(1, &fboID);
+  return attach(t);
+}
+
+FBO& FBO::create(Texture t, RBO rb) {
+  glGenFramebuffers(1, &fboID);
+  return attach(t, rb);
+}
+
+FBO& FBO::attach(Texture t, RBO rb) {
+
+  texture = t;
+  rbo = rb;
+  width = texture.width;
+  height = texture.height;
+
+  //1. bind FBO
+  glBindFramebuffer(GL_FRAMEBUFFER, fboID); {
+
+    //2. attach texture (as color attachment) to fbo 
+    texture.bind(); {
+      glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
+    } texture.unbind();
+
+    //3. attach renderbuffer (as depth attachment) to fbo
+    rb.bind(); {
+      glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb.id());
+    } rb.unbind();
+
+    checkStatus();
+
+    //4. unbind FBO
+  } glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
   return *this;
 }
 
 FBO& FBO::attach(Texture t) {
 
-  width = t.width;
-  height = t.height;
-
   texture = t;
+  width = texture.width;
+  height = texture.height;
 
+  //1. bind FBO
+  glBindFramebuffer(GL_FRAMEBUFFER, fboID); {
 
-  glBindFramebuffer(GL_FRAMEBUFFER, fboID);
-  t.bind(); //is this necessary?
+    //2. attach texture (as color attachment) to fbo 
+    texture.bind(); {
+      glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
+    } texture.unbind();
 
+    checkStatus();
 
-  GLuint rboId;
-  glGenRenderbuffers(1, &rboId);
+    //3. unbind FBO
+  } glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+  return *this;
+}
 
-  //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, t.id(), 0);
-  glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, t.id(), 0);
-
-  glBindRenderbuffer(GL_RENDERBUFFER, rboId);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24,
-      width, height);
-
-  glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-      GL_RENDERBUFFER, rboId);
-
-  glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-
-
-
-  /*
-  // testing adding a depth buffer to the fbo
-  GLuint depthbuffer;
-  glGenRenderbuffers(1, &depthbuffer);
-  glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
-
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height); 
-  //this for depth test too  
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthbuffer);
-  glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-  //  //end testing adding depth buffer to fbo
-  */
+void FBO::checkStatus() {
+  /* assumes that the FBO is bound */  
 
   printFramebufferInfo();
 
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-    printf("in FBO : ERROR!!!!: Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-    exit(0);
-  }
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  // glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO); on IOS / EGL there is always a default framebuffer!
-  //  glBindFramebuffer(GL_FRAMEBUFFER, 1); //default
-  return *this;
+      printf("in FBO : ERROR!!!!: Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+      exit(0);
+    }
 }
 
 //use this one if you are changing the fbo texture..
@@ -309,13 +355,19 @@ FBO& FBO::bind(Texture t) {
   return *this;
 }
 
-//otherwise use the one that was already bound to this fbo...
+//use this one if you are changing the fbo texture or rbo..
+FBO& FBO::bind(Texture t, RBO rb) {
+  attach(t, rb);
+  glViewport(0,0, width, height); //w & h MUST match the texture size
+  return *this;
+}
+
 FBO& FBO::bind() {
   //printf("binding to fbo id = %d\n", fboID);
   // printf("fbo w/h = %d/%d\n", width, height);
   // printf("fbo texture w/h = %d/%d\n", texture.width, texture.height);
   glBindFramebuffer(GL_FRAMEBUFFER, fboID);
-  glViewport(0,0, width, height); //w & h MUST match the texture size
+  glViewport(0,0, width, height); //w & h SHOULD match the texture size
   return *this;
 }
 
@@ -323,6 +375,41 @@ FBO& FBO::unbind() {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   return *this;
 }
+
+
+
+RBO::RBO() {} 
+
+RBO::RBO(int _width, int _height, GLenum _format) {
+  width = _width;
+  height = _height;
+  internalformat = _format;
+  create();
+}
+
+RBO& RBO::create() {
+  glGenRenderbuffers(1, &rboID);
+  bind(); {
+    glRenderbufferStorage(GL_RENDERBUFFER, internalformat, width, height);
+  } unbind();
+
+  return *this;
+}
+
+GLint RBO::id() {
+  return rboID;
+}
+
+RBO& RBO::bind() {
+  glBindRenderbuffer(GL_RENDERBUFFER, rboID); 
+  return *this;
+}
+RBO& RBO::unbind() {
+  glBindRenderbuffer(GL_RENDERBUFFER, 0); 
+  return *this;
+}
+
+
 
 };
 

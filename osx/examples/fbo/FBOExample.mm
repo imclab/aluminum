@@ -42,27 +42,24 @@ class FBOExample : public RendererOSX {
     Program program;
     GLuint vao[1];
     GLint posLoc=0;
-    GLint normalLoc=1;
-    GLint texCoordLoc=2;
+    GLint texCoordLoc=1;
 
-    MeshUtils::Scene* scene;
-    MeshBuffer modelMeshBuffer[4];
     MeshBuffer cubeMeshBuffer;
+    std::vector<MeshBuffer> mb;
 
     Texture texture;
     FBO fbo;
 
-    MeshData loadModel(MeshUtils::Scene* s, int which) {
-      MeshData modelMesh;
-      scene->mesh(which, modelMesh);
-      return modelMesh.transform(Mat4f::identity().scale(scene->getScaleVal()));
-    }
 
-    void loadScene(MeshUtils::Scene *&s, const std::string& name) {    
-      s = MeshUtils::importScene(name);
 
-      for (unsigned i=0; i< s->meshes(); i++) {
-	modelMeshBuffer[i].init(loadModel(s, i), posLoc, -1, texCoordLoc, -1);
+
+    void loadMeshes(const std::string& name) {    
+
+      std::vector<MeshData> md;
+      MeshUtils::loadMeshes(md, name);
+
+      for (unsigned long i = 0; i < md.size(); i++) {
+	mb.push_back((MeshBuffer()).init(md[i], posLoc, -1, texCoordLoc, -1));
       }
     }
 
@@ -76,46 +73,36 @@ class FBOExample : public RendererOSX {
       t.loadTextureData2D(t, name).create2D();
     } 
 
+
     void loadProgram(Program &p, const std::string& name) {
 
       p.create();
 
-      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
-      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
-
-      p.attach(sv);
-
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
-      //glBindAttribLocation(p.id(), normalLoc, "vertexNormal");
       glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
 
-      p.attach(sf);
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
+      //glBindFragDataLocation(id(), 0, "frag"); //agf
 
       p.link();
-
-      p.listParams();
-
-      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
     }
 
     void setUpFBO(FBO &f) {
-      Texture emptyTexture = Texture(4096,4096,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE);
-      f.create().attach(emptyTexture);
+      //these two commands are equivalent, but usually i am using FBOs with one color attachement + default depth
+
+      //f.create().attach(Texture(256, 256, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), RBO(256, 256, GL_DEPTH_COMPONENT24));
+      f.create(256, 256); 
     }
 
     void onCreate() {
 
       loadTexture(texture, "resources/hubble.jpg");
-
       loadProgram(program, "resources/texture");
-
-      loadScene(scene, "resources/ducky.obj");
-      //loadScene(scene, "resources/bunny_small.obj");
-
+      loadMeshes("resources/ducky.obj");
       loadCube();
-
       setUpFBO(fbo);
-  
+
       proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
       view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
       model = Matrix4f::identity();
@@ -128,7 +115,7 @@ class FBOExample : public RendererOSX {
 
     void draw(Mat4f model, MeshBuffer& mb, Texture& t) {
 
-      program.begin(); {
+      program.bind(); {
 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
 	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
@@ -142,27 +129,30 @@ class FBOExample : public RendererOSX {
 
 	t.unbind(GL_TEXTURE0);
 
-      } program.end();
+      } program.unbind();
     }
 
     void onFrame(){
 
       model.rotate(0.01, 0, 1).rotate(0.025, 0, 2).rotate(0.015, 1, 2);
 
+      //draw the duck into an offscreen texture
       fbo.bind(); {
-	glClearColor(0.3,0.3,0.3,0);
+	glClearColor(0.5,0.2,0.2,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	for (unsigned i=0; i< scene->meshes(); i++) {
-	  draw(model, modelMeshBuffer[i], texture);
+	for (unsigned long i = 0; i < mb.size(); i++) {
+	  draw(model, mb[i], texture);
+	  mb[i].draw();	
 	}
 
       } fbo.unbind();
 
+      //draw the cube with the offscreen texture
       glViewport(0, 0, width, height);
       glClearColor(0.0,0.0,0.0,1.0);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
       draw(model, cubeMeshBuffer, fbo.texture);
 
     }

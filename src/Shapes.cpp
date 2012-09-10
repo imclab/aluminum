@@ -24,6 +24,71 @@ int addTetrahedron(MeshData& m){
 	return Nv;
 }
 
+
+
+  int addRectangle(MeshData& m, Vec2f vLL, Vec2f vUR, Vec2f tcLL, Vec2f tcUR) {
+
+    m.reset();
+
+    Vec3f v0 = Vec3f(vLL.x, vLL.y,0);
+    Vec3f v1 = Vec3f(vLL.x,vUR.y,0);
+    Vec3f v2 = Vec3f(vUR.x,vLL.y,0);
+    Vec3f v3 = Vec3f(vUR.x,vUR.y,0);
+
+    Vec3f t0 = Vec3f(tcLL.x,tcLL.y,0);
+    Vec3f t1 = Vec3f(tcLL.x,tcUR.y,0);
+    Vec3f t2 = Vec3f(tcUR.x,tcLL.y,0);
+    Vec3f t3 = Vec3f(tcUR.x,tcUR.y,0);
+
+    m.vertex(v0); m.texCoord(t0);
+    m.vertex(v1); m.texCoord(t1);
+    m.vertex(v2); m.texCoord(t2);
+    m.vertex(v3); m.texCoord(t3);
+
+    int Nv = 4;
+
+    static const int indices[] = {
+      0,1,2, 2,1,3	
+    };
+
+    m.index(indices, sizeof(indices)/sizeof(*indices), m.vertices().size()-Nv);
+
+    return Nv;
+  }
+
+
+int addRectangle(MeshData& m, float _w, float _h) {
+
+  float w = _w/2.0;
+  float h = _h/2.0;
+
+  Vec3f v0 = Vec3f(-w,-h,0);
+  Vec3f v1 = Vec3f(-w,h,0);
+  Vec3f v2 = Vec3f(w,-h,0);
+  Vec3f v3 = Vec3f(w,h,0);
+
+  Vec3f t0 = Vec3f(0,0,0);
+  Vec3f t1 = Vec3f(0,1,0);
+  Vec3f t2 = Vec3f(1,0,0);
+  Vec3f t3 = Vec3f(1,1,0);
+
+  m.vertex(v0); m.texCoord(t0);
+  m.vertex(v1); m.texCoord(t1);
+  m.vertex(v2); m.texCoord(t2);
+  m.vertex(v3); m.texCoord(t3);
+
+  int Nv = 4;
+   
+  static const int indices[] = {
+    0,1,2, 2,1,3	
+  };
+
+  m.index(indices, sizeof(indices)/sizeof(*indices), m.vertices().size()-Nv);
+
+  return Nv;
+}
+
+
 int addRectangle(MeshData& m) {
 
   Vec3f v0 = Vec3f(-1,-1,0);
@@ -73,9 +138,9 @@ int addCube(MeshData& m, bool withNormalsAndTexcoords, float s){
     Vec3f n5 = Vec3f(-s,0,0);
 
     Vec3f t0 = Vec3f(0,0,0);
-    Vec3f t1 = Vec3f(0,s,0);
-    Vec3f t2 = Vec3f(s,0,0);
-    Vec3f t3 = Vec3f(s,s,0);
+    Vec3f t1 = Vec3f(0,1,0);
+    Vec3f t2 = Vec3f(1,0,0);
+    Vec3f t3 = Vec3f(1,1,0);
 
     //right 
     m.vertex(v2); m.normal(n4); m.texCoord(t0);

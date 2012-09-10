@@ -39,21 +39,14 @@ class ModelExample : public RendererOSX {
 
       p.create();
 
-      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
-      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
-
-      p.attach(sv);
-
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
       glBindAttribLocation(p.id(), normalLoc, "vertexNormal");
 
-      p.attach(sf);
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
+      //glBindFragDataLocation(id(), 0, "frag"); //agf
 
       p.link();
-
-      p.listParams();
-
-      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
     }
 
     void onCreate() {
@@ -70,7 +63,7 @@ class ModelExample : public RendererOSX {
       model.rotate(M_PI/2, 0,2).rotate(45.0, 1,2).rotate(8.0, 0,1);
 
       glEnable(GL_DEPTH_TEST);
-     
+
     }
 
     void draw(Mat4f model) {
@@ -81,7 +74,7 @@ class ModelExample : public RendererOSX {
       lightPosX += 0.02f;
       if (lightPosX > 1.0) { lightPosX = -1.0f; }
 
-      program.begin(); {
+      program.bind(); {
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
 	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
 	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
@@ -99,7 +92,7 @@ class ModelExample : public RendererOSX {
 	/*  modelMeshBuffer[i].draw();*/
 	/*}*/
 
-      } program.end();
+      } program.unbind();
     }
 
     void onFrame(){

@@ -2,6 +2,8 @@
 #include "Includes.hpp"
 #include "RendererOSX.h"
 
+//allegedly... test this out...
+//you can change the OpenGL graphics context at any time using the setOpenGLContext: method.
 
 @interface CocoaGL (PrivateMethods)
   - (void) initGL;
@@ -181,7 +183,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     NSOpenGLPFAOpenGLProfile,
     NSOpenGLProfileVersion3_2Core, //NSOpenGLProfileVersionLegacy,
     //NSOpenGLPFAColorFloat,
-    //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
+   //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
     0
   };
 
@@ -345,7 +347,7 @@ bool firstTime = true;
 
   // We draw on a secondary thread through the display link
   // When resizing the view, -reshape is called automatically on the main thread
-  // Add a mutex around to avoid the threads accessing the context simultaneously	when resizing
+  // Add a mutex around to avoid the threads accessing the context simultaneously when resizing
   CGLLockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
 
   NSRect rect = [self bounds];

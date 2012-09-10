@@ -11,6 +11,9 @@ using namespace al;
 class Anaglyph : public RendererOSX {
   public:
 
+    bool drawAnaglyph = true;
+    bool drawActive = false; //requires NSOpenGLPFAStereo to be set (right now hardcoded in Cocoa.mm)
+
     Camera camera;
     Program program;
     GLint posLoc = 0, normalLoc = 1;
@@ -18,9 +21,9 @@ class Anaglyph : public RendererOSX {
     MeshData mesh1, mesh2, mesh3, mesh4;
     MeshBuffer mb1, mb2, mb3, mb4;
 
-    Vec3f diffuse = Vec3f(0.0,1.0,0.0);
+    Vec3f diffuse = Vec3f(1.0,1.0,1.0);
     Vec3f specular = Vec3f(1.0,1.0,1.0);
-    Vec3f ambient = Vec3f(0.0,0.0,0.3);
+    Vec3f ambient = Vec3f(0.4,0.4,0.4);
 
     void createMeshes() {
 
@@ -112,19 +115,19 @@ class Anaglyph : public RendererOSX {
 	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model1.ptr());
-//	mb1.draw();
+	mb1.draw();
 
-	glUniform3f(program.uniform("diffuse"), 1.0,0.0,0.0); 
+	glUniform3f(program.uniform("diffuse"), 1.0,1.0,1.0); 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model2.ptr());
-//	mb2.draw();
+	mb2.draw();
 	
 	glUniform3f(program.uniform("diffuse"), 1.0,1.0,1.0); 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model3.ptr());
 	mb3.draw();
 	
-	glUniform3f(program.uniform("diffuse"), 0.0,0.0,1.0); 
+	glUniform3f(program.uniform("diffuse"), 1.0,1.0,1.0); 
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, model4.ptr());
-//	mb4.draw();
+	mb4.draw();
 
       } program.unbind();
 
@@ -148,85 +151,120 @@ class Anaglyph : public RendererOSX {
       model2.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(0,0,+5));
       //model1.setIdentity().translate(Vec3f(0,0,-5));
       //model2.setIdentity().translate(Vec3f(0,0,+5));
-      
+
       //model3.setIdentity().translate(Vec3f(-5,0,0));
       //model4.setIdentity().translate(Vec3f(+5,0,0));
       model3.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(-5,0,0));
       model4.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(+5,0,0));
 
+      if (drawActive) {
+	glViewport(0,0,width, height);
+	glDrawBuffer(GL_BACK);                                   //draw into both back buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);      //clear color and depth buffers
+	glDrawBuffer(GL_BACK_LEFT);
+      }
+
+      if (drawAnaglyph) {
+	glColorMask(true, false, false, true);
+      }
 
 
-   // Matrix4f lProj, lView;
-   // ApplyLeftFrustum(lProj, lView);
-    glColorMask(true, false, false, true);
 
       glViewport(0, 0, width, height/2); {
 	glScissor(0,0,width,height/2);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//draw(lProj, camera.view * lView);
-	//draw(lProj, lView * camera.view);
 	draw(camera.leftProjection, camera.leftView);
       }
 
       glViewport(0, height/2, width, height/2); {
 	glScissor(0, height/2, width, height/2);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//draw(lProj, camera.backView * lView);
-	//draw(lProj, lView * camera.backView);
 	draw(camera.leftProjection, camera.leftBackView);
       }
 
+      if (drawAnaglyph) {
+	glClear(GL_DEPTH_BUFFER_BIT) ;
+	glColorMask(false, true, true, true);
+      } 
+	
+      if (drawActive) {
+	glDrawBuffer(GL_BACK_RIGHT);
+      }
 
-    glClear(GL_DEPTH_BUFFER_BIT) ;
-
-    //Matrix4f rProj, rView;
-    //ApplyRightFrustum(rProj, rView);
-    glColorMask(false, true, true, true);
-
-    glViewport(0, 0, width, height/2); {
+      glViewport(0, 0, width, height/2); {
 	glScissor(0,0,width,height/2);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//draw(rProj, camera.view * rView);
-	//draw(rProj, rView * camera.view);
 	draw(camera.rightProjection, camera.rightView);
       }
 
       glViewport(0, height/2, width, height/2); {
 	glScissor(0, height/2, width, height/2);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//draw(rProj, camera.backView * rView);
-	//draw(rProj, rView * camera.backView);
 	draw(camera.rightProjection, camera.rightBackView);
-
       }
 
+      //back to normal
+      glColorMask(true, true, true, true);
 
 
+      /*
+	 else if (drawActive) {
+	 glViewport(0,0,width, height);
 
-    //back to normal
-    glColorMask(true, true, true, true);
+	 glDrawBuffer(GL_BACK);                                   //draw into both back buffers
+	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);      //clear color and depth buffers
 
-
-
-
-
-
-/*
-      glColorMask(GL_TRUE, GL_FALSE,GL_FALSE,GL_TRUE);
-
-
+	 glDrawBuffer(GL_BACK_LEFT); { 
+      //top left
       glViewport(0, 0, width, height/2); {
-	glScissor(0,0,width,height/2);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	draw(camera.view);
+      glScissor(0,0,width,height/2);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      draw(camera.leftProjection, camera.leftView);
+      }
+      //right left
+      glViewport(0, height/2, width, height/2); {
+      glScissor(0, height/2, width, height/2);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      draw(camera.leftProjection, camera.leftBackView);
+      }
+      }
+
+      glDrawBuffer(GL_BACK_RIGHT); { 
+      glViewport(0, 0, width, height/2); {
+      glScissor(0,0,width,height/2);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      draw(camera.rightProjection, camera.rightView);
       }
 
       glViewport(0, height/2, width, height/2); {
-	glScissor(0, height/2, width, height/2);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	draw(camera.backView);
+      glScissor(0, height/2, width, height/2);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      draw(camera.rightProjection, camera.rightBackView);
       }
-*/
+      }
+
+      }
+       */
+
+
+
+
+      /*
+	 glColorMask(GL_TRUE, GL_FALSE,GL_FALSE,GL_TRUE);
+
+
+	 glViewport(0, 0, width, height/2); {
+	 glScissor(0,0,width,height/2);
+	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	 draw(camera.view);
+	 }
+
+	 glViewport(0, height/2, width, height/2); {
+	 glScissor(0, height/2, width, height/2);
+	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	 draw(camera.backView);
+	 }
+       */
     }
 
 

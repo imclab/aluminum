@@ -14,35 +14,29 @@ class Basic : public RendererOSX {
     GLuint ibo;
     GLuint indices[3] = {0,1,2};
 
-    GLint posLoc = 0;
-    GLint colLoc = 1;
-    Mat4f proj;
-    Mat4f mv;
-
     Vec3f vertices[6] = {
       Vec3f( -1.0, -1.0, 0.0 ), Vec3f( 0.0, 1.0, 0.0  ), Vec3f( 1.0, -1.0, 0.0  ), //vertex
       Vec3f( 1.0,0.0,0.0), Vec3f(0.0,1.0,0.0), Vec3f(0.0,0.0,1.0), //color
     };
 
-    void loadProgram(Program &p, const std::string& name) {
+   GLint posLoc = 0;
+    GLint colLoc = 1;
+    Mat4f proj;
+    Mat4f mv;
+
+
+ void loadProgram(Program &p, const std::string& name) {
 
       p.create();
 
-      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
-      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
-
-      p.attach(sv);
-
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
       glBindAttribLocation(p.id(), colLoc, "vertexColor");
 
-      p.attach(sf);
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
+      //glBindFragDataLocation(id(), 0, "frag"); //agf
 
       p.link();
-
-      p.listParams();
-
-      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
     }
 
     virtual void onCreate() {
@@ -81,14 +75,16 @@ class Basic : public RendererOSX {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       // Draw our vbos to the screen
-      program.begin(); {
-	program.uniformMatrix4("proj", &proj[0], false);
-	program.uniformMatrix4("mv", &mv[0], false);
+      program.bind(); {
+
+	glUniformMatrix4fv(program.uniform("mv"), 1, 0, mv.ptr());
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
+
 
 	glBindVertexArray( vao ); 
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray( 0 ); 
-      } program.end();
+      } program.unbind();
 
     }
 
@@ -126,7 +122,5 @@ class Basic : public RendererOSX {
 };
 
 int main(){ 
-  //return Basic().start(); 
-
   return Basic().start("Allomin::Basic", 100, 5, 400, 300); 
 }

@@ -18,10 +18,10 @@ namespace al{
       void create2D();
       Texture& update() ;
 
-Texture& bind (GLenum textureUnit);
-Texture& unbind (GLenum textureUnit);
-Texture& bind ();
-Texture& unbind ();
+      Texture& bind (GLenum textureUnit);
+      Texture& unbind (GLenum textureUnit);
+      Texture& bind ();
+      Texture& unbind ();
 
       GLuint id();
 
@@ -36,7 +36,7 @@ Texture& unbind ();
 
       void dump();
 
-       int width;
+      int width;
       int height;
       int depth; //only for GL_TEXTURE_3D
 
@@ -49,7 +49,7 @@ Texture& unbind ();
       GLint internalFormat; //GL_RGBA, GL_R3_G3_B2, etc
       GLenum pixelFormat; //e.g. GL_RGBA, GL_BGRA
       GLenum type; //e.g. GL_UNSIGNED_BYTE, GL_FLOAT
-     
+
       GLint mWrapMode;
       GLint mMinFilter;
       GLint mMaxFilter;
