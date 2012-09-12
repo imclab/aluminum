@@ -38,7 +38,7 @@ class TextExample : public RendererOSX {
 
     Mat4f model, view, proj;
 
-    Program program, passthrough;
+    Program program, passthrough, backgroundProgram;
     
     GLint posLoc=0;
     GLint texCoordLoc=1;
@@ -67,6 +67,20 @@ class TextExample : public RendererOSX {
       p.link();
     }
 
+ void loadBackgroundProgram(Program &p, const std::string& name) {
+
+      p.create();
+
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
+      glBindAttribLocation(p.id(), posLoc, "vertexPosition");
+
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
+
+      p.link();
+    }
+
+
+
     void loadFont(Font &fa, const std::string& name) {
       //fa = Font(name);
     Texture fontTex;
@@ -83,13 +97,21 @@ std::cout << "texture name ... " << name << "\n";
 
     void onCreate() {
 
-      loadProgram(program, "resources/font");
+    
+      loadBackgroundProgram(backgroundProgram, "resources/background");
+            
       loadProgram(passthrough, "resources/texture");
-      loadFont(font, "resources/test5");
+
+      //normal font atlas
+      loadProgram(program, "resources/textureFont");
+      loadFont(font, "resources/ooo");
+      
+      //signed distance font atals
+     // loadProgram(program, "resources/signedDistanceFont");
+     // loadFont(font, "resources/checkSD");
     
       text = Text(program, font, "{[;!@}]|0");
-      text2 = Text(program, font, "a");
-
+      text2 = Text(program, font, "ajkjf38&^Q");
 
       //text = Text(program, font, "ajaja12kkj");
 
@@ -103,18 +125,15 @@ std::cout << "texture name ... " << name << "\n";
 
 
 
-     proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      view = Matrix4f::lookAt(Vec3f(0.0,0.0,3), Vec3f(0,0,0), Vec3f(0,1,0) );
-      //proj = Matrix4f::identity();
-      //view = Matrix4f::identity();
+    // proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
+    //  view = Matrix4f::lookAt(Vec3f(0.0,0.0,3), Vec3f(0,0,0), Vec3f(0,1,0) );
+      proj = Matrix4f::identity();
+      view = Matrix4f::identity();
       model = Matrix4f::identity();
-
-        
     }
 
     void drawText(Text t, MeshBuffer mb) {
       passthrough.bind(); {
-
 	glUniformMatrix4fv(passthrough.uniform("model"), 1, 0, model.ptr());
 	glUniformMatrix4fv(passthrough.uniform("view"), 1, 0, view.ptr());
 	glUniformMatrix4fv(passthrough.uniform("proj"), 1, 0, proj.ptr());
@@ -128,6 +147,7 @@ std::cout << "texture name ... " << name << "\n";
       } passthrough.unbind();
     }
 
+float scaleFont = 2.0;
 
     void onFrame(){
 
@@ -135,10 +155,16 @@ std::cout << "texture name ... " << name << "\n";
       glEnable( GL_BLEND );
       glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
      
-      glClearColor(0.5,0.0,0.0,1); //background color.
+      glClearColor(0.0,0.0,0.0,1); //background color.
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      drawText(text, mb1);
+      text2.drawText(backgroundProgram, 0.0, -1.0, width, height, scaleFont);
+
+//scaleFont += 0.004;
+
+      if (scaleFont > 5.0) {scaleFont = 0.2;}
+      
+//drawText(text, mb1);
       drawText(text2, mb2);
     }
 };

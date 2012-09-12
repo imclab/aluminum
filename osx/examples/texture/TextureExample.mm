@@ -1,21 +1,24 @@
+// Loads in a texture using libfreeimage and applies a bloom filter to it. 
+// Moving the mouse along the x-axis changes the amount of glow.
+
 
 
 /* HACK ALERT - I got the following error:
 
-/usr/include/objc/objc.h:44:22: error: typedef redefinition with different types ('signed char' vs 'int32_t' (aka 'int'))
-typedef signed char             BOOL; 
-                                ^
-/opt/local/include/FreeImage.h:139:17: note: previous definition is here
-typedef int32_t BOOL;
+   /usr/include/objc/objc.h:44:22: error: typedef redefinition with different types ('signed char' vs 'int32_t' (aka 'int'))
+   typedef signed char             BOOL; 
+   ^
+   /opt/local/include/FreeImage.h:139:17: note: previous definition is here
+   typedef int32_t BOOL;
 
 
-pointing to a conflict between objc and freeimage lib. 
+   pointing to a conflict between objc and freeimage lib. 
 
-to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in all casses
+   to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in all casses
 
-(in /opt/local/include/FreeImage.h)
+   (in /opt/local/include/FreeImage.h)
 
-*/
+ */
 
 
 #include "RendererOSX.h"
@@ -31,23 +34,24 @@ to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in a
 using namespace al;
 
 class TextureExample : public RendererOSX {
+  
   public:
 
     Mat4f model, view, proj;
 
     Program program;
-    
+
     GLint posLoc=0;
     GLint texCoordLoc=1;
 
     Texture texture;
-
     MeshBuffer mb1;
-      
+
+    float bloomAmt = 0.0;
+
     void loadTexture(Texture& t, const std::string& name) {
       t.loadTextureData2D(t, name).create2D();
     } 
-
 
     void loadProgram(Program &p, const std::string& name) {
 
@@ -71,7 +75,6 @@ class TextureExample : public RendererOSX {
       addRectangle(mesh1);
       mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
 
-
       proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
       view = Matrix4f::lookAt(Vec3f(0.0,0.0,-3), Vec3f(0,0,0), Vec3f(0,1,0) );
       model = Matrix4f::identity();
@@ -81,7 +84,9 @@ class TextureExample : public RendererOSX {
       glClearColor(0.3,0.3,0.3,1.0);
     }
 
-    void draw(Mat4f model) {
+    void onFrame(){
+
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       program.bind(); {
 
@@ -89,25 +94,27 @@ class TextureExample : public RendererOSX {
 	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
 	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
 
-	texture.bind(GL_TEXTURE0);
-
+	glUniform1f(program.uniform("bloom"), bloomAmt);
 	glUniform1i(program.uniform("tex0"), 0);
 
-	mb1.draw();	
-
-	texture.unbind(GL_TEXTURE0);
+	texture.bind(GL_TEXTURE0); {
+	  mb1.draw();	
+	} texture.unbind(GL_TEXTURE0);
 
       } program.unbind();
     }
 
-    void onFrame(){
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-      draw(model);
+    void onReshape() {
+      glViewport(0, 0, width, height);
     }
+
+    void mouseMoved(int px, int py) {
+      bloomAmt = ((float)px/(float)width) * 0.02; //bloom between 0.00 -> 0.02
+    }
+
 };
 
+
 int main() {
-  TextureExample().start(); 
-  return 0;
+  return TextureExample().start(); 
 }

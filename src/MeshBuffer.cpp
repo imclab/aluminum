@@ -73,7 +73,7 @@ namespace al{
       }
 
       if (data.indices().size() > 0) {
-	printf("initting ibo\n");
+	//printf("initting ibo\n");
 	initIBO();
       }
 
