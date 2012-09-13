@@ -9,23 +9,20 @@ class Basic : public RendererOSX {
   public:
 
     Program program;
-    GLuint vao;
-    GLuint vbo;
-    GLuint ibo;
-    GLuint indices[3] = {0,1,2};
+    GLuint vao, vbo, ibo, indices[3] = {0,1,2};
 
     Vec3f vertices[6] = {
       Vec3f( -1.0, -1.0, 0.0 ), Vec3f( 0.0, 1.0, 0.0  ), Vec3f( 1.0, -1.0, 0.0  ), //vertex
       Vec3f( 1.0,0.0,0.0), Vec3f(0.0,1.0,0.0), Vec3f(0.0,0.0,1.0), //color
     };
 
-   GLint posLoc = 0;
+    GLint posLoc = 0;
     GLint colLoc = 1;
     Mat4f proj;
     Mat4f mv;
 
 
- void loadProgram(Program &p, const std::string& name) {
+    void loadProgram(Program &p, const std::string& name) {
 
       p.create();
 
@@ -34,7 +31,6 @@ class Basic : public RendererOSX {
       glBindAttribLocation(p.id(), colLoc, "vertexColor");
 
       p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
-      //glBindFragDataLocation(id(), 0, "frag"); //agf
 
       p.link();
     }
@@ -69,7 +65,7 @@ class Basic : public RendererOSX {
     }
 
     virtual void onFrame(){
-      
+
       // Clear viewport
       glViewport(0,0,width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -80,7 +76,6 @@ class Basic : public RendererOSX {
 	glUniformMatrix4fv(program.uniform("mv"), 1, 0, mv.ptr());
 	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
 
-
 	glBindVertexArray( vao ); 
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray( 0 ); 
@@ -88,33 +83,27 @@ class Basic : public RendererOSX {
 
     }
 
-    virtual void mouseDragged(int px, int py) {
+    void mouseDragged(int px, int py) {
       printf("in Basic: mouseDragged %d/%d\n", px, py);
     }
 
-    virtual void mouseMoved(int px, int py) {
+    void mouseMoved(int px, int py) {
       printf("in Basic: mouseMoved %d/%d\n", px, py);
     }
 
-    virtual void mouseDown(int px, int py) {
+    void mouseDown(int px, int py) {
       printf("in Basic: mouseDown %d/%d\n", px, py);
     }
 
-    virtual void mouseUp(int px, int py) {
+    void mouseUp(int px, int py) {
       printf("in Basic: mouseUp %d/%d\n", px, py);
     }
    
-    virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
-
+    void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
       printf("in Basic: key = %c, shift=%d, control=%d, command=%d, option=%d, function=%d\n", key, shift, control, command, option, function);
       switch(key) {
 	case kVK_ANSI_A : 
-	printf("you pressed an 'A' \n");
-	toggleFullScreen();
-	break;
-      
-	case kVK_ANSI_X : 
-	printf("you pressed an 'X' \n");
+	printf("you pressed an 'A'! \n");
 	break;
       }
     }
@@ -122,5 +111,5 @@ class Basic : public RendererOSX {
 };
 
 int main(){ 
-  return Basic().start("Allomin::Basic", 100, 5, 400, 300); 
+  return Basic().start("Allomin::Basic", 100, 100, 400, 300); 
 }

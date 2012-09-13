@@ -81,21 +81,38 @@ namespace al{
       GLint posLoc;
       GLint texCoordLoc;
 
-      int glyphMesh(MeshData& m, float v_x0, float v_x1, float v_y0, float v_y1, float t_x0, float t_x1, float t_y0, float t_y1);
-
-     void loadProgram(Program &p, const std::string& name);
+      Text& justify(float _jx, float _jy);
+      Text& color(Vec4f _txtColor);
+      Text& background(Vec4f _bgColor);
+   
+      float justifyX;
+      float justifyY;
+     
+      void loadProgram(Program &p, const std::string& name);
 
       void drawText(Program &bp, float px, float py, float sw, float sh, float scaleFont);
 
     private:
-       int getTextPixelWidth();
-       void drawGlyph(MeshBuffer& mb);
-       Texture makeTexture();
-       int defaultAdvance = 20;
+      int getTextPixelWidth();
+      void justifyText(const float pen_x, const float pen_y, const float bw, const float bh, float &bx0, float &bx1, float &by0, float &by1); 
 
-        void drawBackground(Program& p, MeshBuffer& mb);
+      void drawGlyph(MeshBuffer& mb);
+      Texture makeTexture();
+      int defaultAdvance = 20;
 
-      
+      bool getGlyphLocationInFontAtlas(const char c, Glyph* &glyph, const float pen_x, const float pen_y, const float scaleW, const float scaleH, float& x, float& y, float& w, float& h, float& s0, float& s1, float& t0,float& t1);
+
+
+      void drawBackground(float bx0, float bx1, float by0, float by1, Program& p);
+      void drawGlyph(Vec2f vLL, Vec2f vUR, Vec2f tLL, Vec2f tUR);
+
+ 
+      //void drawBackground(Program& p, MeshBuffer& mb);
+
+      MeshData mesh1;
+      MeshBuffer mb1;
+
+
   };
 
 

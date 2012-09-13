@@ -58,6 +58,7 @@ namespace al{
 
       checkAttributes(p, n, tc, c);
 
+      //printf("vbo[0] = %d\n", vbo[0]);
       initVBO(vbo[0], p, 3, data.vertices());
 
       if (useNormals) {

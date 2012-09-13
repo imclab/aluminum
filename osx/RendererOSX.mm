@@ -7,19 +7,20 @@ RendererOSX::RendererOSX() {
 }
 
 int RendererOSX::start() {
-  [CocoaGL start:this];
-  return 0;
+  return RendererOSX::start([[[NSProcessInfo processInfo] processName] UTF8String], 50, 40, 500, 500);
 }
 
 int RendererOSX::start(std::string _name, int x, int y, int w, int h) {
 
+  [NSAutoreleasePool new];
+ 
   [CocoaGL start:this 
     name: [NSString stringWithUTF8String:_name.c_str()]
     x: x
     y: y
     w: w
     h: h
-];
+    ];
 
   return 0;
 }

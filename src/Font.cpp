@@ -29,8 +29,31 @@ namespace al{
     texCoordLoc=1;
     loadProgram(p, "resources/font");
 
+    justifyX=-1;
+    justifyY=-1;
+
+    mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
+
     texture = makeTexture();
   }
+
+  Text& Text::justify(float _jx, float _jy) {
+    justifyX = _jx;
+    justifyY = _jy;
+    return *this;
+  }
+
+  Text& Text::color(Vec4f _txtColor) {
+    txtColor = _txtColor;
+    return *this;
+  }
+
+  Text& Text::background(Vec4f _backgroundColor) {
+    bgColor = _backgroundColor;
+    return *this;
+  }
+
+
 
   Text::Text(Program& _p, Font& _f, const string& _text) {
 
@@ -43,6 +66,11 @@ namespace al{
     text = _text;
     posLoc=0;
     texCoordLoc=1;
+
+    justifyX=-1;
+    justifyY=-1;
+
+    mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
 
     texture = makeTexture(); //real, for FBO version
   }
@@ -57,8 +85,7 @@ namespace al{
   }
 
   int Text::getTextPixelWidth() {
-    //loop through each char to get pixel width of fbo's texture
-
+    //loop through each char to get pixel width
     int tw = 0;
     Glyph* glyph;
     
@@ -67,14 +94,28 @@ namespace al{
 	tw += defaultAdvance; 
 	continue;
       }
-     
       glyph = font.getGlyphs()[text[i]];
-     
-      //Glyph::dump(glyph);
       tw += glyph->xadvance;
     }
 
     return tw;
+  }
+
+  void Text::drawGlyph(Vec2f vLL, Vec2f vUR, Vec2f tLL, Vec2f tUR) {
+
+    addRectangle(mesh1, vLL, vUR, tLL, tUR);
+    mb1.update(mesh1, posLoc, -1, texCoordLoc, -1); 
+
+    p.bind(); {
+
+      glUniform1i(p.uniform("tex0"), 0);
+      glUniform4fv(p.uniform("textColor"), 1, txtColor.ptr());
+      font.texture.bind(GL_TEXTURE0); {
+	mb1.draw();	
+      } font.texture.unbind(GL_TEXTURE0);
+
+    } p.unbind();
+
   }
 
   void Text::drawGlyph(MeshBuffer& mb) {
@@ -89,19 +130,58 @@ namespace al{
     } p.unbind();
   }
 
-  void Text::drawBackground(Program& p, MeshBuffer& mb) {
+  void Text::drawBackground(float bx0, float bx1, float by0, float by1, Program& p) {
+
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_TEXTURE_2D );
+
+    addRectangle(mesh1, Vec2f(bx0,by0), Vec2f(bx1,by1), Vec2f(0,0), Vec2f(1,1));
+    mb1.update(mesh1, posLoc, -1, texCoordLoc, -1); 
+
     p.bind(); {
-	glUniform4fv(p.uniform("bgColor"), 1, bgColor.ptr());
-	mb.draw();	
+      glUniform4fv(p.uniform("bgColor"), 1, bgColor.ptr());
+      mb1.draw();	
     } p.unbind();
+  }
+
+  bool Text::getGlyphLocationInFontAtlas(const char c, Glyph* &glyph, const float pen_x, const float pen_y, const float scaleW, const float scaleH, float& x, float& y, float& w, float& h, float& s0, float& s1, float& t0,float& t1) {
+
+    if (font.getGlyphs().find(c) == font.getGlyphs().end()) {
+      return false;
+    }
+
+    glyph = font.getGlyphs()[c];
+
+    x = pen_x + ((glyph->xoff - font.padding/2) * scaleW);
+    y = pen_y + ( (-font.base + glyph->yoff-glyph->h - font.padding/2) * scaleH); 
+    w = ((glyph->w + font.padding) * (scaleW)); 
+    h = ((glyph->h + font.padding) * (scaleH));
+
+    s0 = glyph->s0;
+    s1 = glyph->s1;
+    t0 = (1.0 - glyph->t1);
+    t1 = (1.0 - glyph->t0);
+
+    return true; 
+  }
+
+  void Text::justifyText(const float pen_x, const float pen_y, const float bw, const float bh, float &bx0, float &bx1, float &by0, float &by1) {
+
+    //justify x
+    float jx = (-bw/2) -justifyX * 0.5 * bw;
+    bx0 = pen_x + jx;
+    bx1 = bx0 + bw;
+
+    //justify y
+    float jy = (-bh/2) -justifyY * 0.5 * bh;
+    by0 = pen_y + jy;
+    by1 = by0 + bh;
   }
 
 
   //draws text to screen, every frame
   void Text::drawText(Program& backgroundProgram, float pen_x, float pen_y, float sw, float sh, float scaleFont) {
-      
-    MeshData mesh1;
-    MeshBuffer mb1;
 
     int th = font.lineHeight; 
     float scaleW = ( ((float)th/(float)sw) / (float)(th) ) * scaleFont;
@@ -109,84 +189,37 @@ namespace al{
 
     //TranslateYOffset = -(fontHeight - font.base) * (yScale*0.5);
 
+
+    //calculate background extent
+    float bw = (getTextPixelWidth() + font.padding) * scaleW;
+    float bh = font.lineHeight * scaleH; //use font.highestChar for a tighter fit
+    float bx0, bx1, by0, by1; 
+
+    //justify 
+    justifyText(pen_x, pen_y, bw, bh, bx0, bx1, by0, by1);
+
+    //draw background...
+    drawBackground(bx0, bx1, by0, by1, backgroundProgram);
+
+
+    //draw glyphs...
+    pen_x = bx0 + ((font.padding/2) * scaleW);
+    pen_y = by0;
+
     float x, y, w, h, s0, s1, t0, t1;
     Glyph* glyph;
 
-    //calculate background extent
-    float bx0; 
-    float bx1 = 0.0; //pen_x;
-    float by0 = pen_y;
-    float by1 = pen_y + (font.lineHeight * scaleH); //use font.highestChar for a tighter fit
-
-    for( size_t i=0; i < text.length(); ++i) {
-      glyph = font.getGlyphs()[text[i]];
-      if (font.getGlyphs().find(text[i]) == font.getGlyphs().end()) {
-	bx1 += defaultAdvance; 
-	continue;
-      }
-      bx1 += (glyph->xadvance * scaleW); 
-    }
-
-    bx1 += ((font.padding) * scaleW);
-
-    //left justify
-    bx0 = pen_x;
-    bx1 += pen_x;
-
-    //testing right justify...
-    //bx0 = pen_x-bx1;
-    //bx1 = pen_x;
-    
-    //testing right justify...
-    //bx0 = pen_x- (bx1/2);
-    //bx1 = pen_x+ (bx1/2);
-
-    //draw background...
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable( GL_TEXTURE_2D );
-
-    addRectangle(mesh1, Vec2f(bx0,by0), Vec2f(bx1,by1), Vec2f(0,0), Vec2f(1,1));
-    mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); //probably don't want to re-init this every frame, put in constructor? 
-
-    drawBackground(backgroundProgram, mb1);
-
-
-    //draw glyphs over background...
-    pen_x = bx0 + ((font.padding/2) * scaleW);
-
     for( size_t i=0; i < text.length(); ++i) {
 
-      if (font.getGlyphs().find(text[i]) == font.getGlyphs().end()) {
-	pen_x += defaultAdvance; 
-	continue;
+      if (getGlyphLocationInFontAtlas(text[i], glyph, pen_x, pen_y, scaleW, scaleH, x,y,w,h,s0,s1,t0,t1)) {
+
+	drawGlyph( Vec2f(x,y), Vec2f(x+w, y+h), Vec2f(s0,t0), Vec2f(s1,t1) );
+	pen_x += (glyph->xadvance * scaleW); 
+
+      } else {
+	pen_x += defaultAdvance;       
       }
 
-      glyph = font.getGlyphs()[text[i]];
-
-      x = pen_x + ((glyph->xoff - font.padding/2) * scaleW);
-      y = pen_y + ( (-font.base + glyph->yoff-glyph->h - font.padding/2) * scaleH); 
-      w = ((glyph->w + font.padding) * (scaleW)); 
-      h = ((glyph->h + font.padding) * (scaleH));
-
-      s0 = glyph->s0;
-      s1 = glyph->s1;
-      t0 = (1.0 - glyph->t1);
-      t1 = (1.0 - glyph->t0);
-
-      /*
-	 printf("scaleW/scaleH = %f %f\n", scaleW, scaleH);
-	 printf("penx peny = %f %f\n", pen_x, pen_y);
-	 printf("x/y/w/h = %f %f %f %f\n", x,y,w,h);
-	 printf("s0/s1/t0/t1 = %f %f %f %f\n", s0, s1, t0, t1);
-	 */
-
-      addRectangle(mesh1, Vec2f(x,y), Vec2f(x+w, y+h), Vec2f(s0,t0), Vec2f(s1,t1));
-      mb1.update(mesh1, posLoc, -1, texCoordLoc, -1); 
-
-      drawGlyph(mb1);
-
-      pen_x += (glyph->xadvance * scaleW); 
     }
   }
 
@@ -198,10 +231,6 @@ namespace al{
 
     FBO fbo;
     fbo.create(tw, th);
-
-
-    MeshData mesh1;
-    MeshBuffer mb1;
 
     //cout << "text rect: " << text << " has pixel dimensions of " << tw << "/" << th << "\n";
 
@@ -242,11 +271,7 @@ namespace al{
 
 	addRectangle(mesh1, Vec2f(x,y), Vec2f(x+w, y+h), Vec2f(s0,t0), Vec2f(s1,t1));
 
-	if (i == 0) {
-	  mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
-	} else {
-	  mb1.update(mesh1, posLoc, -1, texCoordLoc, -1); 
-	}
+	mb1.update(mesh1, posLoc, -1, texCoordLoc, -1); 
 
 	drawGlyph(mb1);
 

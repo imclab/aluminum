@@ -103,15 +103,15 @@ std::cout << "texture name ... " << name << "\n";
       loadProgram(passthrough, "resources/texture");
 
       //normal font atlas
-      loadProgram(program, "resources/textureFont");
-      loadFont(font, "resources/ooo");
+     // loadProgram(program, "resources/textureFont");
+     // loadFont(font, "resources/ooo");
       
       //signed distance font atals
-     // loadProgram(program, "resources/signedDistanceFont");
-     // loadFont(font, "resources/checkSD");
+      loadProgram(program, "resources/signedDistanceFont");
+      loadFont(font, "resources/checkSD");
     
       text = Text(program, font, "{[;!@}]|0");
-      text2 = Text(program, font, "ajkjf38&^Q");
+      text2 = Text(program, font, "ajkjf38&^Q").justify(0,0).background(Vec4f(0,1,0,1)).color(Vec4f(0,0,1,0.5));
 
       //text = Text(program, font, "ajaja12kkj");
 
@@ -158,9 +158,9 @@ float scaleFont = 2.0;
       glClearColor(0.0,0.0,0.0,1); //background color.
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      text2.drawText(backgroundProgram, 0.0, -1.0, width, height, scaleFont);
+      text2.drawText(backgroundProgram, 0, -0.5, width, height, scaleFont);
 
-//scaleFont += 0.004;
+scaleFont += 0.004;
 
       if (scaleFont > 5.0) {scaleFont = 0.2;}
       

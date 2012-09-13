@@ -147,27 +147,16 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
   }
 }
 
-+(CocoaGL* )start:(void*) _renderer {
-  return [CocoaGL start:_renderer 
-    name:[[NSProcessInfo processInfo] processName]
-    x:50
-    y:40
-    w:500
-    h:500];
-}
-
 +(CocoaGL* )start:(void*) _renderer 
-  name:(NSString*)_name 
-  x:(int)_xpos
-  y:(int)_ypos 
-  w:(int)_width
-  h:(int)_height
+	     name:(NSString*)_name 
+	     x:(int)_xpos
+	     y:(int)_ypos 
+	     w:(int)_width
+	     h:(int)_height
 {
-
 
   // Set up a minimal Cocoa window and set its content to be a OpenGL renderer
 
-  [NSAutoreleasePool new];
   [NSApplication sharedApplication];
   [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
   id appName = _name; 
@@ -183,7 +172,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     NSOpenGLPFAOpenGLProfile,
     NSOpenGLProfileVersion3_2Core, //NSOpenGLProfileVersionLegacy,
     //NSOpenGLPFAColorFloat,
-   //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
+    //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
     0
   };
 
