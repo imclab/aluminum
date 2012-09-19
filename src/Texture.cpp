@@ -149,6 +149,11 @@ namespace al{
     printf("\twidth/height = %d/%d\n", width, height);
   }
 
+  void Texture::destroy() {
+   glDeleteTextures(1, &texID);
+   //need to destroy entire object, local memory cache as well, call destructor
+  }
+
   void Texture::create2D() {
     glEnable(kind());
     glGenTextures(1, &texID);

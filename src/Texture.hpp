@@ -34,6 +34,8 @@ namespace al{
       Texture& minFilter(GLint _minFilter);
       Texture& maxFilter(GLint _maxFilter);
 
+      void destroy();
+
       void dump();
 
       int width;

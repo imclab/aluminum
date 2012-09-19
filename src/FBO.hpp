@@ -20,6 +20,8 @@ class RBO {
     RBO& bind();
     RBO& unbind();
     GLint id();
+    
+    void destroy();
 
     GLuint rboID;
     GLenum internalformat;
@@ -45,6 +47,8 @@ GLuint height;
  FBO& create(const Texture t, const RBO rb);
  FBO& attach(const Texture t);
  FBO& attach(const Texture t, const RBO rb);
+ FBO& replace(const Texture t); //delete old, and attach new
+ FBO& replace(const Texture t, const RBO rb); //delete old, and attach new
  
  FBO& bind(Texture t, RBO rbo);
  FBO& bind(Texture t);

@@ -287,6 +287,14 @@ FBO& FBO::create(Texture t, RBO rb) {
   return attach(t, rb);
 }
 
+
+FBO& FBO::replace(Texture t, RBO rb) {
+  //delete old, and attach new
+  texture.destroy();
+  rbo.destroy();
+  return attach(t,rb);
+}
+
 FBO& FBO::attach(Texture t, RBO rb) {
 
   texture = t;
@@ -313,6 +321,12 @@ FBO& FBO::attach(Texture t, RBO rb) {
   } glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   return *this;
+}
+
+
+FBO& FBO::replace(Texture t) {
+  texture.destroy();
+  return attach(t);
 }
 
 FBO& FBO::attach(Texture t) {
@@ -395,6 +409,12 @@ RBO& RBO::create() {
 
   return *this;
 }
+
+void RBO::destroy() {
+  glDeleteRenderbuffers(1, &rboID);
+}
+
+
 
 GLint RBO::id() {
   return rboID;

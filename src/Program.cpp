@@ -148,7 +148,7 @@ namespace al{
 
     if (log() != NULL) {
       printf("program %d errors %s\n", id(), log());
-      exit(0);
+      //exit(0);
     }
 
     //  printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
