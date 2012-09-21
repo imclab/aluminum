@@ -7,7 +7,7 @@ EXAMPLE_DIR="$( cd "$( dirname "$0" )" && pwd )"
 BASE_DIR="$EXAMPLE_DIR/../../.."
 SRC_DIR="$BASE_DIR/src"
 OSX_DIR="$BASE_DIR/osx"
-LIB_DIR="$OSX_DIR/lib"
+LIB_DIR="$OSX_DIR/lib"	
 INCLUDE_DIR="$OSX_DIR/include"
 
 ASSIMP="$LIB_DIR/libassimp.dylib"

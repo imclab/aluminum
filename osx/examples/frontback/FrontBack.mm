@@ -5,16 +5,13 @@
 #include "MeshData.hpp"
 #include "Shapes.hpp"
 #include "Camera.hpp"
-//#include "allocore/math/al_Random.hpp"
-
+#include "Utils.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-
 
 using namespace al;
 
@@ -35,51 +32,46 @@ class FrontBack : public RendererOSX {
 
     void createMeshes() {
 
-      for(int j=0; j<1 /*50*/; ++j){
+      Utils::randomSeed();
+
+      for(int j=0; j<50; ++j){
 	int Nv = addCube(mesh1, true, 0.5);
 	//Mat4f xfm;
 	//xfm.setIdentity();
 	mat4 xfm = mat4();
 	//xfm.scale(rnd::uniform(1.,0.2));
-	xfm = glm::scale(xfm, vec3(3.0) );
+	xfm = glm::scale(xfm, vec3(0.2) );
 	//Vec3f p;
 	//rnd::ball<3>(p.elems());
-	vec3 p = vec3(0.2);
-	glm::normalize(p);
+	vec3 p = Utils::randomVec3(-1,1) * 4.0f;
 	//p *= 2.0; //.scale(2.0);
 	xfm = glm::translate(xfm, p); //Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
 	mesh1.transform(xfm, mesh1.vertices().size()-Nv);
       }
 
-      for(int j=0; j<1 /*100*/ ; ++j){
+      for(int j=0; j<100 ; ++j){
 	int Nv = addSphere(mesh2, 0.5, 30, 30);
 	
 	mat4 xfm = mat4();
 //	xfm.scale(rnd::uniform(0.5,0.1));
-	vec3 p;
+	xfm = glm::scale(xfm, vec3(0.5) );
+
+	//vec3 p = glm::normalize(glm::vecRand3(-1.0f, 1.0f)) * 4.0f;
+	
+	vec3 p = glm::normalize(Utils::randomVec3(-1,1)) * (Utils::randomFloat(5.0,5.0));
 	//rnd::ball<3>(p.elems());
 	//p.normalize();
-	//xfm.translate(p);
-//rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
-	////mesh2.transform(xfm, mesh2.vertices().size()-Nv);
-
-	/*
-	Mat4f xfm;
-	xfm.setIdentity();
-	xfm.scale(rnd::uniform(0.5,0.1));
-	//xfm.translate(Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
-	Vec3f p;
-	rnd::ball<3>(p.elems());
-	p.normalize();
-	xfm.translate(p);
+	xfm = glm::translate(xfm, p); //Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
 //rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
 	mesh2.transform(xfm, mesh2.vertices().size()-Nv);
-	*/
+	//addCube(mesh2, true, 0.5);
+	
       }
 
 
-      addCube(mesh3, true, 0.5);
-      //addSphere(mesh1, 0.5, 160, 160);
+     addSphere(mesh3, 0.5, 160, 160);
+   //  addCube(mesh3, true, 1.5);
+     //addOctahedron(mesh3);
 
       //addCube(mesh2, true, 0.5);
       addSphere(mesh4, 0.5, 100, 100);

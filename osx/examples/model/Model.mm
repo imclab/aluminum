@@ -4,7 +4,14 @@
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
 #include "Program.hpp"
+#include "Includes.hpp"
 #include <vector>
+
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace al;
 
@@ -12,11 +19,11 @@ class ModelExample : public RendererOSX {
 
   public:
 
-    Vec3f diffuse = Vec3f(0.0,1.0,0.0);
-    Vec3f specular = Vec3f(1.0,1.0,1.0);
-    Vec3f ambient = Vec3f(0.0,0.0,0.3);
+    vec3 diffuse = vec3(0.0,1.0,0.0);
+    vec3 specular = vec3(1.0,1.0,1.0);
+    vec3 ambient = vec3(0.0,0.0,0.3);
     float lightPosX = -1.0f;
-    Mat4f model, view, proj;
+    mat4 model, view, proj;
 
     Program program;
     GLint posLoc=0;
@@ -24,10 +31,9 @@ class ModelExample : public RendererOSX {
 
     std::vector<MeshData> md;
     std::vector<MeshBuffer> mb;
-      
 
     void loadMeshes(const std::string& name) {    
-      
+
       MeshUtils::loadMeshes(md, name);
 
       for (unsigned long i = 0; i < md.size(); i++) {
@@ -57,52 +63,52 @@ class ModelExample : public RendererOSX {
       //loadScene(scene, "resources/test3.obj");
       //loadScene(scene, "resources/toyplane.obj");
 
-      proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
-      model = Matrix4f::identity();
-      model.rotate(M_PI/2, 0,2).rotate(45.0, 1,2).rotate(8.0, 0,1);
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      view = glm::lookAt(vec3(0.0,0.0,-5), vec3(0,0,0), vec3(0,1,0) );
+      model = glm::rotate(glm::mat4(), 180.0f, vec3(0.0,1.0,0.0));
 
       glEnable(GL_DEPTH_TEST);
 
     }
 
-    void draw(Mat4f model) {
+    void updateModel() {
+      model = glm::rotate(model, 0.7f, vec3(0.0f,1.0f,0.0f));
+      model = glm::rotate(model, 1.1f, vec3(1.0f,0.0f,0.0f));
+      model = glm::rotate(model, 2.3f, vec3(0.0f,0.0f,1.0f));
+    
+      lightPosX += 0.02f;
+
+      if (lightPosX > 1.0) { 
+	lightPosX = -1.0f; 
+      }
+
+    }
+
+    void onFrame() {
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+      updateModel();
+
       glViewport(0, 0, width, height);
       glClearColor(0.3,0.3,0.3,1.0);
 
-
-      lightPosX += 0.02f;
-      if (lightPosX > 1.0) { lightPosX = -1.0f; }
-
       program.bind(); {
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
-	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
+	//glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
+	glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
 
 	glUniform3f(program.uniform("lightPos"), lightPosX, 0.0f, 0.0f);
-	glUniform3fv(program.uniform("ambient"), 1, ambient.ptr()); 
-	glUniform3fv(program.uniform("diffuse"), 1, diffuse.ptr()); 
-	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
+	glUniform3fv(program.uniform("ambient"), 1, ptr(ambient)); 
+	glUniform3fv(program.uniform("diffuse"), 1, ptr(diffuse)); 
+	glUniform3fv(program.uniform("specular"), 1, ptr(specular)); 
 
 	for (unsigned long i = 0; i < mb.size(); i++) {
 	  mb[i].draw();	
 	}
 
-	/*for (unsigned i=0; i< scene->meshes(); i++) {*/
-	/*  modelMeshBuffer[i].draw();*/
-	/*}*/
-
       } program.unbind();
-    }
 
-    void onFrame(){
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-      model.rotate(0.01, 0, 1);
-
-      model.rotate(0.02, 0, 2);
-      model.rotate(0.015, 1, 2);
-      draw(model);
     }
 };
 

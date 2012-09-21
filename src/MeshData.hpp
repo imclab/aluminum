@@ -186,11 +186,7 @@ public:
 
 
 	int primitive() const { return mPrimitive; }
-	// const Buffer<Vertex>& vertices() const { return mVertices; }
-	// const Buffer<Normal>& normals() const { return mNormals; }
-	// const Buffer<Color>& colors() const { return mColors; }
-	// const Buffer<TexCoord>& texCoords() const { return mTexCoords; }
-	// const Buffer<Index>& indices() const { return mIndices; }
+	
 	const vector<Vertex>& vertices() const { return mVertices; }
 	const vector<Normal>& normals() const { return mNormals; }
 	const vector<Color>& colors() const { return mColors; }
@@ -205,7 +201,6 @@ public:
 	MeshData& repeatLast();
 
 	/// Append index to index buffer
-	//void index(unsigned int i){ indices().append(i); }
 	void index(unsigned int i){ indices().push_back(i); }
 
 	/// Append indices to index buffer	

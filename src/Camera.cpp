@@ -46,7 +46,6 @@ namespace al{
     aspect = _aspect;
 
     projection = glm::perspective(fovy, aspect, nearPlane, farPlane);
-    //projection = Matrix4f::perspective(fovy, aspect, nearPlane, farPlane);
 
     isFrontBack = true;
     isStereo = true;

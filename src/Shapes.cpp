@@ -37,7 +37,7 @@ int addTetrahedron(MeshData& m){
   //int addRectangle(MeshData& m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR) {
   int addRectangle(MeshData& m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR) {
 
-    m.reset();
+    m.reset(); //??
 
     vec3 v0 = vec3(vLL.x, vLL.y,0);
     vec3 v1 = vec3(vLL.x,vUR.y,0);
@@ -132,6 +132,7 @@ int addRectangle(MeshData& m) {
 int addCube(MeshData& m, bool withNormalsAndTexcoords, float s) {
   if (withNormalsAndTexcoords) {
 
+    //8 vertices
     vec3 v0 = vec3(-s,-s,s);
     vec3 v1 = vec3(-s,s,s);
     vec3 v2 = vec3(s,-s,s);
@@ -141,6 +142,7 @@ int addCube(MeshData& m, bool withNormalsAndTexcoords, float s) {
     vec3 v6 = vec3(s,-s,-s);
     vec3 v7 = vec3(s,s,-s);
 
+    //6 sides
     vec3 n0 = vec3(0,0,s);
     vec3 n1 = vec3(0,0,-s);
     vec3 n2 = vec3(0,s,0);
@@ -148,6 +150,7 @@ int addCube(MeshData& m, bool withNormalsAndTexcoords, float s) {
     vec3 n4 = vec3(s,0,0);
     vec3 n5 = vec3(-s,0,0);
 
+    //4 texcoords
     vec3 t0 = vec3(0,0,0);
     vec3 t1 = vec3(0,1,0);
     vec3 t2 = vec3(1,0,0);
@@ -204,31 +207,12 @@ int addCube(MeshData& m, bool withNormalsAndTexcoords, float s) {
     return 6*6;
 
   } else {
-
-
-    /*
-       0	1
-
-       2	3
-       4	5
-
-       6	7
-
-       t	b
-       | /
-       l --+--	r
-       /	|
-       f	b
-
-*/
-
     int Nv = 8;
     m.vertex(-s, s,-s);	m.vertex( s, s,-s);
     m.vertex(-s,-s,-s);	m.vertex( s,-s,-s);
     m.vertex(-s, s, s);	m.vertex( s, s, s);
     m.vertex(-s,-s, s);	m.vertex( s,-s, s);
 
-    //static const int indices[] = {
     static const unsigned long indices[] = {
       6,5,4, 6,7,5, 7,1,5, 7,3,1, 
       3,0,1, 3,2,0, 2,4,0, 2,6,4,

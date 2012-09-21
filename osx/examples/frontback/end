@@ -1,73 +1,0 @@
-Script started on Thu Sep 20 15:18:08 2012
-[?1034h
-(501) ~/Dropbox/XCodeProjects/allomin/osx/examples/frontback # man script
-[?1049h[?1h=
-SCRIPT(1)                 BSD General Commands Manual                SCRIPT(1)
-
-[1mNAME[0m
-     [1mscript[0m -- make typescript of terminal session
-
-[1mSYNOPSIS[0m
-     [1mscript[0m [[1m-akq[0m] [[1m-t[0m [4mtime[24m] [[4mfile[24m [[4mcommand[24m [4m...[24m]]
-
-[1mDESCRIPTION[0m
-     The [1mscript[0m utility makes a typescript of everything printed on your terminal.  It is useful for
-     students who need a hardcopy record of an interactive session as proof of an assignment, as the
-     typescript file can be printed out later with lpr(1).
-
-     If the argument [4mfile[24m is given, [1mscript[0m saves all dialogue in [4mfile[24m.  If no file name is given, the
-     typescript is saved in the file [4mtypescript[24m.
-
-     If the argument [4mcommand[24m is given, [1mscript[0m will run the specified command with an optional argument
-     vector instead of an interactive shell.
-
-     The following options are available:
-
-     [1m-a[0m      Append the output to [4mfile[24m or [4mtypescript[24m, retaining the prior contents.
-
-     [1m-k[0m      Log keys sent to program as well as output.
-
-     [1m-q[0m      Run in quiet mode, omit the start and stop status messages.
-
-     [1m-t[0m [4mtime[24m
-             Specify time interval between flushing script output file.  A value of 0 causes [1mscript[0m to
-             flush for every character I/O event.  The default interval is 30 seconds.
-
-     The script ends when the forked shell (or command) exits (a [4mcontrol-D[24m to exit the Bourne shell
-     (sh(1)), and [4mexit[24m, [4mlogout[24m or [4mcontrol-D[24m (if [4mignoreeof[24m is not set) for the C-shell, csh(1)).
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K     Certain interactive commands, such as vi(1), create garbage in the typescript file.  The [1mscript[0m
-:[K[K [KESCESC[KOO[KBB[K     utility works best with commands that do not manipulate the screen.  The results are meant to emu-
-:[K[K [KESCESC[KOO[KBB[K     late a hardcopy terminal, not an addressable one.
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K[1mENVIRONMENT[0m
-:[K[K [KESCESC[KOO[KBB[K     The following environment variable is utilized by [1mscript[0m:
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K     SHELL  If the variable SHELL exists, the shell forked by [1mscript[0m will be that shell.  If SHELL is
-:[K[K [KESCESC[KOO[KBB[K            not set, the Bourne shell is assumed.  (Most shells set this variable automatically).
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K[1mSEE[0m [1mALSO[0m
-:[K[K [KESCESC[KOO[KBB[K     csh(1) (for the [4mhistory[24m mechanism).
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K[1mHISTORY[0m
-:[K[K [KESCESC[KOO[KBB[K     The [1mscript[0m command appeared in 3.0BSD.
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K[1mBUGS[0m
-:[K[K [KESCESC[KOO[KBB[K     The [1mscript[0m utility places [1meverything[0m in the log file, including linefeeds and backspaces.  This is
-:[K[K [KESCESC[KOO[KBB[K     not what the naive user expects.
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K     It is not possible to specify a command without also naming the script file because of argument
-:[K[K [KESCESC[KOO[KBB[K     parsing compatibility issues.
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[K     When running in [1m-k[0m mode, echo cancelling is far from ideal.  The slave terminal mode is checked
-:[K[K [KESCESC[KOO[KBB[K     for ECHO mode to check when to avoid manual echo logging.  This does not work when in a raw mode
-:[K[K [KESCESC[KOO[KBB[K     where the program being run is doing manual echo.
-:[K[K [KESCESC[KOO[KBB[K
-:[K[K [KESCESC[KOO[KBB[KBSD                            January 22, 2004                            BSD
-:[K[K [KESCESC[KOO[KBB[K[K[7m(END) [27m[K[K [KESCESC[K::[K[7m(END) [27m[K[K[?1l>[?1049l
-(502) ~/Dropbox/XCodeProjects/allomin/osx/examples/frontback # 
-
-(502) ~/Dropbox/XCodeProjects/allomin/osx/examples/frontback # exit
-exit
-
-Script done on Thu Sep 20 15:18:33 2012

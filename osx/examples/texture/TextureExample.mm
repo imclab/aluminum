@@ -27,6 +27,7 @@
 #include "MeshUtils.hpp"
 #include "Program.hpp"
 #include "Shapes.hpp"
+#include "Includes.hpp"
 
 #include "Texture.hpp"
 #include <vector>
@@ -37,7 +38,7 @@ class TextureExample : public RendererOSX {
   
   public:
 
-    Mat4f model, view, proj;
+    mat4 model, view, proj;
 
     Program program;
 
@@ -75,9 +76,9 @@ class TextureExample : public RendererOSX {
       addRectangle(mesh1);
       mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
 
-      proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      view = Matrix4f::lookAt(Vec3f(0.0,0.0,-3), Vec3f(0,0,0), Vec3f(0,1,0) );
-      model = Matrix4f::identity();
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      view = glm::lookAt(vec3(0.0,0.0,-3), vec3(0,0,0), vec3(0,1,0) );
+      model = glm::mat4();
 
       glEnable(GL_DEPTH_TEST);
       glViewport(0, 0, width, height);
@@ -90,9 +91,9 @@ class TextureExample : public RendererOSX {
 
       program.bind(); {
 
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
-	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
+	glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
 
 	glUniform1f(program.uniform("bloom"), bloomAmt);
 	glUniform1i(program.uniform("tex0"), 0);

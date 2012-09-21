@@ -1,18 +1,29 @@
 #!/bin/bash
 
+APP="Model"
+
 EXAMPLE_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-BASE_DIR="$EXAMPLE_DIR/../../../"
-SRC_DIR="$BASE_DIR/src/"
-OSX_DIR="$BASE_DIR/osx/"
+BASE_DIR="$EXAMPLE_DIR/../../.."
+SRC_DIR="$BASE_DIR/src"
+OSX_DIR="$BASE_DIR/osx"
+LIB_DIR="$OSX_DIR/lib"
+INCLUDE_DIR="$OSX_DIR/include"
 
-cd $BASE_DIR
+ASSIMP="$LIB_DIR/libassimp.dylib"
+FREEIMAGE="$LIB_DIR/libfreeimage.dylib" 
+COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.7 -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation"
+OPTIONS="-O3 -Wreturn-type -Wformat -Wmissing-braces -Wparentheses -Wswitch -Wunused-variable -Wsign-compare -Wno-unknown-pragmas  -Woverloaded-virtual"
 
-pwd
+INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR"
+LIBS="$ASSIMP $FREEIMAGE"
+SRC="-x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $EXAMPLE_DIR/*.mm"
 
-#testing moving libs to local folders (instead of /opt/local...) . Will have to move the headers to a local spot as well if I want to go this route.
-#prob won't need sysroot option if we do that (?)
-c++ -I/opt/local/include/  -I./ -isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.7 -O3  -Wreturn-type -Wformat -Wmissing-braces -Wparentheses -Wswitch -Wunused-variable -Wsign-compare -Wno-unknown-pragmas  -Woverloaded-virtual  -std=c++11  $EXAMPLE_DIR/libassimp.dylib  $EXAMPLE_DIR/libfreeimage.dylib  -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation -I./ -I$OSX_DIR -I$SRC_DIR -x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $EXAMPLE_DIR/*.mm -o $EXAMPLE_DIR/Model
+cd $BASE_DIR; pwd
 
-#cd $EXAMPLE_DIR && ./Model && rm ./Model
-cd $EXAMPLE_DIR && ./Model
+#COMPILE
+echo -e "\nbuilding... \n\nc++ $COCOA $OPTIONS -std=c++11 $LIBS $INCLUDE $SRC -o $EXAMPLE_DIR/$APP \n\n"
+c++ $COCOA $OPTIONS -std=c++11 $LIBS $INCLUDE $SRC -o $EXAMPLE_DIR/$APP
+
+#RUN
+cd $EXAMPLE_DIR && ./$APP && rm ./$APP
