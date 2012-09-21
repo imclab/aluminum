@@ -2,10 +2,18 @@
 #define INCLUDE_AL_GRAPHICS_SHAPES2_HPP
 
 #include "MeshData.hpp"
+#include <glm/glm.hpp>
 
 namespace al{
 
-  int addRectangle(MeshData& m, Vec2f vLL, Vec2f vUR, Vec2f tcLL, Vec2f tcUR);
+using glm::to_string;
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
+
+  //int addRectangle(MeshData& m, Vec2f vLL, Vec2f vUR, Vec2f tcLL, Vec2f tcUR);
+  int addRectangle(MeshData& m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR);
   int addRectangle(MeshData& m, float _w, float _h);
   int addRectangle(MeshData& m);
 
@@ -15,7 +23,7 @@ namespace al{
 int addTetrahedron(MeshData& m);
 
 /// Add cube as triangle vertices and indices
-int addCube(MeshData& m, bool withNormalsAndTexcoords = false, float radius=M_SQRT_1_3);
+int addCube(MeshData& m, bool withNormalsAndTexcoords = false, float radius=1.414);
 
 /// Add octahedron as triangle vertices and indices
 int addOctahedron(MeshData& m);

@@ -6,6 +6,13 @@
 using namespace al;
 
 
+using glm::to_string;
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
+
+
 
 
 void MeshUtils :: loadMeshes(std::vector<MeshData>& md, const std::string& path, ImportPreset preset) {
@@ -16,7 +23,14 @@ void MeshUtils :: loadMeshes(std::vector<MeshData>& md, const std::string& path,
 
     MeshData modelMesh;
     s->meshAlt(i, modelMesh);
-    modelMesh.transform(Mat4f::identity().scale(s->getScaleVal()));
+    
+    //modelMesh.transform(Mat4f::identity().scale(s->getScaleVal()));
+    
+    mat4 sm = mat4(1.0); //identity
+    //sm = glm::scale(sm, s->getScaleVal());
+    sm = glm::scale(sm, vec3(s->getScaleVal()));
+    modelMesh.transform(sm);
+
     md.push_back(modelMesh);
   }
 
@@ -65,7 +79,23 @@ MeshUtils::Scene* MeshUtils :: importScene(const std::string& path, ImportPreset
 }
 
 
+vec4 vec4FromAIColor4D(aiColor4D& v) {
+  return vec4(v.r, v.g, v.b, v.a);
+}
 
+vec3 vec3FromAIVector3D(aiVector3D& v) {
+  return vec3(v.x, v.y, v.z);
+}
+
+vec2 vec2FromAIVector3D(aiVector3D& v) {
+  return vec2(v.x, v.y);
+}
+
+vec3 vec3FromAIVector2D(aiVector2D& v) {
+  return vec3(v.x, v.y, 0.0);
+}
+
+/*
 Vec4f vec4FromAIColor4D(aiColor4D& v) {
   return Vec4f(v.r, v.g, v.b, v.a);
 }
@@ -81,7 +111,7 @@ Vec2f vec2FromAIVector3D(aiVector3D& v) {
 Vec3f vec3FromAIVector2D(aiVector2D& v) {
   return Vec3f(v.x, v.y, 0.0);
 }
-
+*/
 
 MeshUtils::Scene :: Scene(const aiScene * _scene) {
   scene = _scene;
@@ -195,6 +225,7 @@ std::string MeshUtils::Scene :: meshName(unsigned int i) const {
   return 0;
 }
 
+/*
 void get_bounding_box_for_node(const aiScene * scene, const struct aiNode* nd, Vec3f& min, Vec3f& max, aiMatrix4x4* trafo) {	
   aiMatrix4x4 prev;
   unsigned int n = 0, t;
@@ -218,27 +249,58 @@ void get_bounding_box_for_node(const aiScene * scene, const struct aiNode* nd, V
   }
   *trafo = prev;
 }
+*/
+
+void get_bounding_box_for_node(const aiScene * scene, const struct aiNode* nd, vec3& min, vec3& max, aiMatrix4x4* trafo) {	
+  aiMatrix4x4 prev;
+  unsigned int n = 0, t;
+  prev = *trafo;
+  aiMultiplyMatrix4(trafo,&nd->mTransformation);
+  for (; n < nd->mNumMeshes; ++n) {
+    const struct aiMesh * mesh = scene->mMeshes[nd->mMeshes[n]];
+    for (t = 0; t < mesh->mNumVertices; ++t) {
+      aiVector3D tmp = mesh->mVertices[t];
+      aiTransformVecByMatrix4(&tmp,trafo);
+      min[0] = std::min(min[0],tmp.x);
+      min[1] = std::min(min[1],tmp.y);
+      min[2] = std::min(min[2],tmp.z);
+      max[0] = std::max(max[0],tmp.x);
+      max[1] = std::max(max[1],tmp.y);
+      max[2] = std::max(max[2],tmp.z);
+    }
+  }
+  for (n = 0; n < nd->mNumChildren; ++n) {
+    get_bounding_box_for_node(scene, nd->mChildren[n],min,max,trafo);
+  }
+  *trafo = prev;
+}
 
 
 
 float MeshUtils::Scene :: getScaleVal() const {
-  Vec3f min, max;
+  //Vec3f min, max;
+  vec3 min, max;
   getBounds(min,max);
-  Vec3f scene_center = (min + max) / 2.f;
+  //Vec3f scene_center = (min + max) / 2.f;
+  vec3 scene_center = (min + max) * vec3(0.5,0.5,0.5);
 
   float scaleVal = max[0] - min[0];
-  scaleVal = al::max(max[1] - min[1], scaleVal);
-  scaleVal = al::max(max[2] - min[2], scaleVal);
+  //scaleVal = al::max(max[1] - min[1], scaleVal);
+  //scaleVal = al::max(max[2] - min[2], scaleVal);
+  scaleVal = std::max(max[1] - min[1], scaleVal);
+  scaleVal = std::max(max[2] - min[2], scaleVal);
   scaleVal = 2.f / scaleVal;
 
   return scaleVal;
 }
 
-void MeshUtils::Scene :: getBounds(Vec3f& min, Vec3f& max) const {
+void MeshUtils::Scene :: getBounds(vec3& min, vec3& max) const {
   aiMatrix4x4 trafo;
   aiIdentityMatrix4(&trafo);
-  min.set(1e10f, 1e10f, 1e10f);
-  max.set(-1e10f, -1e10f, -1e10f);
+  //min.set(1e10f, 1e10f, 1e10f);
+  //max.set(-1e10f, -1e10f, -1e10f);
+  min = vec3(1e10f, 1e10f, 1e10f);
+  max = vec3(-1e10f, -1e10f, -1e10f);
   get_bounding_box_for_node(scene, scene->mRootNode,min,max,&trafo);
 }
 

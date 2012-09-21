@@ -1,12 +1,30 @@
 #ifndef INCLUDE_AL_GRAPHICS_MESHDATA_HPP
 #define INCLUDE_AL_GRAPHICS_MESHDATA_HPP
+#include <algorithm>
+#include <map>
+#include <string>
+#include <vector>
 
-#include "allocore/math/al_Vec.hpp"
-#include "allocore/math/al_Matrix4.hpp"
-#include "allocore/types/al_Buffer.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
+//#include "allocore/math/al_Vec.hpp"
+//#include "allocore/math/al_Matrix4.hpp"
+//#include "allocore/types/al_Buffer.hpp"
 
 namespace al{
 
+using glm::to_string;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
+
+  using std::vector;
 /// Stores buffers related to rendering graphical objects
 
 /// A mesh is a collection of buffers storing vertices, colors, indices, etc.
@@ -14,19 +32,33 @@ namespace al{
 class MeshData {
 public:
 
-	typedef Vec3f			Vertex;
-	typedef Vec3f			Normal;
-	typedef Vec4f			Color;
-	typedef Vec3f			TexCoord;
-	typedef unsigned int	        Index;
-	typedef Vec3i			TriFace;
-	typedef Vec4i			QuadFace;
+	// typedef Vec3f			Vertex;
+	// typedef Vec3f			Normal;
+	// typedef Vec4f			Color;
+	// typedef Vec3f			TexCoord;
+	// typedef unsigned int	        Index;
+	// typedef Vec3i			TriFace;
+	// typedef Vec4i			QuadFace;
 
-	typedef Buffer<Vertex>		Vertices;
-	typedef Buffer<Normal>		Normals;
-	typedef Buffer<Color>		Colors;
-	typedef Buffer<TexCoord>	TexCoords;
-	typedef Buffer<Index>		Indices;
+
+	typedef vec3			Vertex;
+	typedef vec3			Normal;
+	typedef vec4			Color;
+	typedef vec3			TexCoord;
+	typedef unsigned int	        Index;
+	//typedef vec4i			TriFace;
+	//typedef vec4i			QuadFace;
+
+	// typedef Buffer<Vertex>		Vertices;
+	// typedef Buffer<Normal>		Normals;
+	// typedef Buffer<Color>		Colors;
+	// typedef Buffer<TexCoord>	TexCoords;
+	// typedef Buffer<Index>		Indices;
+	typedef vector<Vertex>		Vertices;
+	typedef vector<Normal>		Normals;
+	typedef vector<Color>		Colors;
+	typedef vector<TexCoord>	TexCoords;
+	typedef vector<Index>		Indices;
 	
 
 	/// @param[in] primitive	renderer-dependent primitive number
@@ -47,7 +79,8 @@ public:
 	
 	/// @param[out] min		minimum corner of bounding box
 	/// @param[out] max		maximum corner of bounding box
-	void getBounds(Vec3f& min, Vec3f& max) const;
+	//void getBounds(Vec3f& min, Vec3f& max) const;
+	void getBounds(vec3& min, vec3& max) const;
 
 	/// Get center of vertices
 	Vertex getCenter() const;
@@ -77,22 +110,34 @@ public:
 	MeshData& scale(float x, float y, float z);
 	MeshData& scale(float s){ return scale(s,s,s); }
 
-	template <class T>
-	MeshData& scale(const Vec<3,T>& v){ return scale(v[0],v[1],v[2]); }
+	//template <class T>
+	//MeshData& scale(const Vec<3,T>& v){ return scale(v[0],v[1],v[2]); }
+	//template <class T>
+	MeshData& scale(const vec3& v){ return scale(v[0],v[1],v[2]); }
 
 	/// Translate all vertices
 	MeshData& translate(float x, float y, float z);
 	
-	template <class T>
-	MeshData& translate(const Vec<3,T>& v){ return translate(v[0],v[1],v[2]); }
+	//template <class T>
+	//MeshData& translate(const Vec<3,T>& v){ return translate(v[0],v[1],v[2]); }
+	//template <class T>
+	MeshData& translate(const vec3& v){ return translate(v[0],v[1],v[2]); }
 	
 	/// Transform vertices by projective transform matrix
 	
 	/// @param[in] m		projective transform matrix
 	/// @param[in] begin	beginning index of vertices
 	/// @param[in] end		ending index of vertices, negative amount specify distance from one past last element
-	template <class T>
-	MeshData& transform(const Mat<4,T>& m, int begin=0, int end=-1);
+	//template <class T>
+	//MeshData& transform(const Mat<4,T>& m, int begin=0, int end=-1);
+	
+	//MeshData& transform(const mat4& m, int begin=0, int end=-1);
+
+      MeshData& transform(const mat4& m, int begin, int end);
+      MeshData& transform(const mat4& m, int begin);
+      MeshData& transform(const mat4& m);
+	
+
 
 	/// Generates indices for a set of vertices
 	void compress();
@@ -141,11 +186,16 @@ public:
 
 
 	int primitive() const { return mPrimitive; }
-	const Buffer<Vertex>& vertices() const { return mVertices; }
-	const Buffer<Normal>& normals() const { return mNormals; }
-	const Buffer<Color>& colors() const { return mColors; }
-	const Buffer<TexCoord>& texCoords() const { return mTexCoords; }
-	const Buffer<Index>& indices() const { return mIndices; }
+	// const Buffer<Vertex>& vertices() const { return mVertices; }
+	// const Buffer<Normal>& normals() const { return mNormals; }
+	// const Buffer<Color>& colors() const { return mColors; }
+	// const Buffer<TexCoord>& texCoords() const { return mTexCoords; }
+	// const Buffer<Index>& indices() const { return mIndices; }
+	const vector<Vertex>& vertices() const { return mVertices; }
+	const vector<Normal>& normals() const { return mNormals; }
+	const vector<Color>& colors() const { return mColors; }
+	const vector<TexCoord>& texCoords() const { return mTexCoords; }
+	const vector<Index>& indices() const { return mIndices; }
 
 
 	/// Set geometric primitive
@@ -155,7 +205,8 @@ public:
 	MeshData& repeatLast();
 
 	/// Append index to index buffer
-	void index(unsigned int i){ indices().append(i); }
+	//void index(unsigned int i){ indices().append(i); }
+	void index(unsigned int i){ indices().push_back(i); }
 
 	/// Append indices to index buffer	
 	template <class Tindex>
@@ -164,20 +215,24 @@ public:
 
 
 	/// Append color to color buffer
-	void color(const Color& v) { colors().append(v); }
+	//void color(const Color& v) { colors().append(v); }
+	//void color(const Color& v) { colors().push_back(v); }
 
 	/// Append color to color buffer
 	void color(float r, float g, float b, float a=1){ color(Color(r,g,b,a)); }
 	
 	/// Append color to color buffer
-	template <class T>
-	void color(const Vec<4,T>& v) { color(v[0], v[1], v[2], v[3]); }
+	//template <class T>
+	//void color(const Vec<4,T>& v) { color(v[0], v[1], v[2], v[3]); }
+	//template <class T>
+	void color(const vec4& v) { color(v[0], v[1], v[2], v[3]); }
 
 	/// Append normal to normal buffer
 	void normal(float x, float y, float z=0){ normal(Normal(x,y,z)); }
 	
 	/// Append normal to normal buffer
-	void normal(const Normal& v) { normals().append(v); }
+	//void normal(const Normal& v) { normals().append(v); }
+	void normal(const Normal& v) { normals().push_back(v); }
 
 
 	/// Append texture coordinate to 3D texture coordinate buffer
@@ -187,14 +242,16 @@ public:
 	void texCoord(float u, float v){ texCoord(TexCoord(u,v,0.0)); }
 	
 	/// Append texture coordinate to 3D texture coordinate buffer
-	void texCoord(const TexCoord& v){ texCoords().append(v); }
+	//void texCoord(const TexCoord& v){ texCoords().append(v); }
+	void texCoord(const TexCoord& v){ texCoords().push_back(v); }
 
 
 	/// Append vertex to vertex buffer
 	void vertex(float x, float y, float z=0){ vertex(Vertex(x,y,z)); }
 	
 	/// Append vertex to vertex buffer
-	void vertex(const Vertex& v){ vertices().append(v); }
+	//void vertex(const Vertex& v){ vertices().append(v); }
+	void vertex(const Vertex& v){ vertices().push_back(v); }
 
 	/// Append vertices to vertex buffer
 	template <class T>
@@ -203,8 +260,9 @@ public:
 	}
 
 	/// Append vertices to vertex buffer
-	template <class T>
-	void vertex(const Vec<3,T> * buf, int size){
+	//template <class T>
+	//void vertex(const Vec<3,T> * buf, int size){
+	void vertex(const vec3 *buf, int size){
 		for(int i=0; i<size; ++i) vertex(buf[i][0], buf[i][1], buf[i][2]);
 	}
 
@@ -239,16 +297,6 @@ protected:
 
 
 
-
-template <class T>
-MeshData& MeshData::transform(const Mat<4,T>& m, int begin, int end){
-	if(end<0) end += vertices().size()+1; // negative index wraps to end of array
-	for(int i=begin; i<end; ++i){
-		Vertex& v = vertices()[i];
-		v.set(m * Vec<4,T>(v, 1));
-	}
-	return *this;
-}
 
 } // al::
 

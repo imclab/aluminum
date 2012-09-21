@@ -6,6 +6,16 @@
 #include "Shapes.hpp"
 #include "Camera.hpp"
 #include "allocore/math/al_Random.hpp"
+
+
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
+
 using namespace al;
 
 class FrontBack : public RendererOSX {
@@ -14,32 +24,46 @@ class FrontBack : public RendererOSX {
     Camera camera;
     Program program;
     GLint posLoc = 0, normalLoc = 1;
-    Mat4f model1, model2, model3, model4, view1, view2;
+    //Mat4f model1, model2, model3, model4, view1, view2;
+    mat4 model1, model2, model3, model4, view1, view2;
     MeshData mesh1, mesh2, mesh3, mesh4;
     MeshBuffer mb1, mb2, mb3, mb4;
 
-    Vec3f diffuse = Vec3f(0.0,1.0,0.0);
-    Vec3f specular = Vec3f(1.0,1.0,1.0);
-    Vec3f ambient = Vec3f(0.0,0.0,0.3);
+    vec3 diffuse = vec3(0.0,1.0,0.0);
+    vec3 specular = vec3(1.0,1.0,1.0);
+    vec3 ambient = vec3(0.0,0.0,0.3);
 
     void createMeshes() {
 
-      for(int j=0; j<50; ++j){
+      for(int j=0; j<1 /*50*/; ++j){
 	int Nv = addCube(mesh1, true, 0.5);
-	Mat4f xfm;
-	xfm.setIdentity();
-	xfm.scale(rnd::uniform(1.,0.2));
-	Vec3f p;
-	rnd::ball<3>(p.elems());
-	
-	p.normalize();
-	p *= 2.0; //.scale(2.0);
-	xfm.translate(p); //Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
+	//Mat4f xfm;
+	//xfm.setIdentity();
+	mat4 xfm = mat4();
+	//xfm.scale(rnd::uniform(1.,0.2));
+	xfm = glm::scale(xfm, vec3(3.0) );
+	//Vec3f p;
+	//rnd::ball<3>(p.elems());
+	vec3 p = vec3(0.2);
+	glm::normalize(p);
+	//p *= 2.0; //.scale(2.0);
+	xfm = glm::translate(xfm, p); //Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
 	mesh1.transform(xfm, mesh1.vertices().size()-Nv);
       }
 
-      for(int j=0; j<100; ++j){
+      for(int j=0; j<1 /*100*/ ; ++j){
 	int Nv = addSphere(mesh2, 0.5, 30, 30);
+	
+	mat4 xfm = mat4();
+//	xfm.scale(rnd::uniform(0.5,0.1));
+	vec3 p;
+	//rnd::ball<3>(p.elems());
+	//p.normalize();
+	//xfm.translate(p);
+//rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
+	////mesh2.transform(xfm, mesh2.vertices().size()-Nv);
+
+	/*
 	Mat4f xfm;
 	xfm.setIdentity();
 	xfm.scale(rnd::uniform(0.5,0.1));
@@ -50,6 +74,7 @@ class FrontBack : public RendererOSX {
 	xfm.translate(p);
 //rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
 	mesh2.transform(xfm, mesh2.vertices().size()-Nv);
+	*/
       }
 
 
@@ -97,33 +122,37 @@ class FrontBack : public RendererOSX {
     }
 
     float pos = -0.0f;
-    void draw(Mat4f view) {
+    void draw(mat4 view) {
 
       pos += 0.03f;
       if (pos > 10.0) { pos = -20.0f; }
 
       program.bind(); {
-	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, camera.projection.ptr());
+	//glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
+	glUniformMatrix4fv(program.uniform("view"), 1, 0, glm::value_ptr(view));
+	//glUniformMatrix4fv(program.uniform("proj"), 1, 0, camera.projection.ptr());
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, glm::value_ptr(camera.projection));
+
+//	cout << " mat projection : " << glm::to_string(camera.projection) << "\n";
 
 	glUniform3f(program.uniform("lightPosition"), pos, 0.0f, 0.0f);
-	glUniform3fv(program.uniform("ambient"), 1, ambient.ptr()); 
-	glUniform3fv(program.uniform("diffuse"), 1, diffuse.ptr()); 
-	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
+	glUniform3fv(program.uniform("ambient"), 1, glm::value_ptr(ambient)); 
+	glUniform3fv(program.uniform("diffuse"), 1, glm::value_ptr(diffuse)); 
+	glUniform3fv(program.uniform("specular"), 1, glm::value_ptr(specular)); 
 
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model1.ptr());
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, glm::value_ptr(model1));
 	mb1.draw();
 
 	glUniform3f(program.uniform("diffuse"), 1.0,0.0,0.0); 
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model2.ptr());
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, glm::value_ptr(model2));
 	mb2.draw();
 	
 	glUniform3f(program.uniform("diffuse"), 1.0,0.0,1.0); 
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model3.ptr());
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, glm::value_ptr(model3));
 	mb3.draw();
 	
 	glUniform3f(program.uniform("diffuse"), 0.0,0.0,1.0); 
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model4.ptr());
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, glm::value_ptr(model4));
 	mb4.draw();
 
       } program.unbind();
@@ -144,21 +173,31 @@ class FrontBack : public RendererOSX {
       angY += 0.007;
       angZ += 0.003;
 
-      model1.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(0,0,-5));
-      model2.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(0,0,+5));
+      model1 = mat4();
+      model1 = glm::translate(model1, vec3(0,0,-5));
+      model2 = mat4();
+      model2 = glm::translate(model2, vec3(0,0,+5));
+      model3 = mat4();
+      model3 = glm::translate(model3, vec3(-5,0,0));
+      model4 = mat4();
+      model4 = glm::translate(model4, vec3(+5,0,0));
+
+//      model1.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(0,0,-5));
+ //     model2.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(0,0,+5));
       //model1.setIdentity().translate(Vec3f(0,0,-5));
       //model2.setIdentity().translate(Vec3f(0,0,+5));
       
       //model3.setIdentity().translate(Vec3f(-5,0,0));
       //model4.setIdentity().translate(Vec3f(+5,0,0));
-      model3.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(-5,0,0));
-      model4.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(+5,0,0));
+   //   model3.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(-5,0,0));
+     // model4.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(Vec3f(+5,0,0));
 
 
 
       glViewport(0, 0, width, height/2); {
 	glScissor(0,0,width,height/2);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//draw(camera.backView);
 	draw(camera.view);
       }
 
@@ -166,6 +205,7 @@ class FrontBack : public RendererOSX {
 	glScissor(0, height/2, width, height/2);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	draw(camera.backView);
+	//draw(camera.view);
       }
     }
     

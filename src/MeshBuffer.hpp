@@ -2,9 +2,9 @@
 #define INCLUDE_AL_MESHBUFFER_HPP
 
 
-#include "allocore/math/al_Vec.hpp"
-#include "allocore/math/al_Matrix4.hpp"
-#include "allocore/types/al_Buffer.hpp"
+//#include "allocore/math/al_Vec.hpp"
+//#include "allocore/math/al_Matrix4.hpp"
+//#include "allocore/types/al_Buffer.hpp"
 #include "MeshData.hpp"
 
 #include "Includes.hpp"

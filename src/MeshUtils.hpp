@@ -37,6 +37,14 @@
 #include "MeshData.hpp" 
 #include <vector>
 
+
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+      
 namespace al{
 
 
@@ -71,7 +79,8 @@ class MeshUtils {
 	    std::string meshName(unsigned int i) const;
 
 	    /// get scene extents
-	    void getBounds(Vec3f& min, Vec3f& max) const;
+	    //void getBounds(Vec3f& min, Vec3f& max) const;
+	    void getBounds(vec3& min, vec3& max) const;
 	    float getScaleVal() const;
 
 	    /// print out information about the Scene

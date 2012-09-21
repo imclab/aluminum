@@ -27,8 +27,8 @@ namespace al{
     GLint lsize; get(GL_INFO_LOG_LENGTH, &lsize);
     if(0==lsize) return NULL;
 
-    static char buf[AL_SHADER_MAX_LOG_SIZE];
-    glGetShaderInfoLog(id(), AL_SHADER_MAX_LOG_SIZE, NULL, buf);
+    static char buf[4096];
+    glGetShaderInfoLog(id(), 4096, NULL, buf);
     return buf;
   }
 
@@ -171,8 +171,8 @@ namespace al{
     GLint lsize; get(GL_INFO_LOG_LENGTH, &lsize);
     if(0==lsize) return NULL;
 
-    static char buf[AL_SHADER_MAX_LOG_SIZE];
-    glGetProgramInfoLog(id(), AL_SHADER_MAX_LOG_SIZE, NULL, buf);
+    static char buf[4096];
+    glGetProgramInfoLog(id(), 4096, NULL, buf);
     return buf;
   }
 

@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <stdio.h>
 #include <string.h>
-#include <FreeImage.h>
+#include "freeimage/FreeImage.h"
 #include "Texture.hpp"
 
 

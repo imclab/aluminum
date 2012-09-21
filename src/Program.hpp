@@ -6,11 +6,6 @@
 
 #include "Includes.hpp"
 
-#include "allocore/math/al_Vec.hpp"
-#include "allocore/math/al_Matrix4.hpp"
-
-#define AL_SHADER_MAX_LOG_SIZE	4096
-
 using namespace std;
 
 namespace al{

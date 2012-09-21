@@ -14,6 +14,12 @@
 using std::map;
 using std::string;
 
+using glm::to_string;
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
+
 namespace al{
 
   Text Font::signedDistanceText(const string& _text) {
@@ -123,9 +129,9 @@ namespace al{
   }
   */
 
-  Text& Text::mesh(Vec2f LL, Vec2f UR) {
+  Text& Text::mesh(vec2 LL, vec2 UR) {
     MeshData md;
-    addRectangle(md, LL, UR, Vec2f(0,0), Vec2f(1,1));
+    addRectangle(md, LL, UR, vec2(0,0), vec2(1,1));
     meshBuffer.init(md, posLoc, -1, texCoordLoc, -1); 
     return *this;
   }
@@ -147,7 +153,7 @@ namespace al{
     
     //float bx0, bx1, by0, by1; 
     //justifyText(penX, penY, meshW, meshH, bx0, bx1, by0, by1);
-    //mesh(Vec2f(bx0,by0), Vec2f(bx1,by1));
+    //mesh(vec2(bx0,by0), vec2(bx1,by1));
     //return *this;
   }
 
@@ -183,7 +189,7 @@ namespace al{
     return updateMesh();
     //float bx0, bx1, by0, by1; 
     //justifyText(penX, penY, meshW, meshH, bx0, bx1, by0, by1);
-    //mesh(Vec2f(bx0,by0), Vec2f(bx1,by1));
+    //mesh(vec2(bx0,by0), vec2(bx1,by1));
     //return *this;
   }
 
@@ -193,7 +199,7 @@ namespace al{
     return updateMesh();
     //float bx0, bx1, by0, by1; 
     //justifyText(penX, penY, meshW, meshH, bx0, bx1, by0, by1);
-    //mesh(Vec2f(bx0,by0), Vec2f(bx1,by1));
+    //mesh(vec2(bx0,by0), vec2(bx1,by1));
     //return *this;
   }
   */
@@ -203,15 +209,15 @@ namespace al{
     float bx0, bx1, by0, by1; 
     justifyText(penX, penY, justifyX, justifyY, meshW, meshH, bx0, bx1, by0, by1);
     printf( "bx0/by0, bx1/by1 = %f/%f, %f,%f \n", bx0, by1, bx1, by1);
-    mesh(Vec2f(bx0,by0), Vec2f(bx1,by1));
+    mesh(vec2(bx0,by0), vec2(bx1,by1));
     updateTexture();
     return *this;
   }
 
   void Text::initDefaultVals() {
 
-    txtColor = Vec4f(1.0,0.0,0.0,1.0);
-    bgColor = Vec4f(1.0,1.0,1.0,1.0);
+    txtColor = vec4(1.0,0.0,0.0,1.0);
+    bgColor = vec4(1.0,1.0,1.0,1.0);
 
     posLoc=0;
     texCoordLoc=1;
@@ -248,12 +254,12 @@ namespace al{
     return *this;
   }
 
-  Text& Text::color(Vec4f _txtColor) {
+  Text& Text::color(vec4 _txtColor) {
     txtColor = _txtColor;
     return updateTexture();
   }
 
-  Text& Text::background(Vec4f _backgroundColor) {
+  Text& Text::background(vec4 _backgroundColor) {
     bgColor = _backgroundColor;
     return updateTexture();
   }
@@ -275,7 +281,7 @@ namespace al{
     return tw;
   }
 
-  void Text::drawGlyph(Vec2f vLL, Vec2f vUR, Vec2f tLL, Vec2f tUR) {
+  void Text::drawGlyph(vec2 vLL, vec2 vUR, vec2 tLL, vec2 tUR) {
 
     MeshData md;
     addRectangle(md, vLL, vUR, tLL, tUR);
@@ -284,7 +290,7 @@ namespace al{
     p.bind(); {
 
       glUniform1i(p.uniform("tex0"), 0);
-      glUniform4fv(p.uniform("textColor"), 1, txtColor.ptr());
+      glUniform4fv(p.uniform("textColor"), 1, glm::value_ptr(txtColor));
       font.texture.bind(GL_TEXTURE0); {
 	mb1.draw();	
       } font.texture.unbind(GL_TEXTURE0);
@@ -313,11 +319,11 @@ namespace al{
     glEnable( GL_TEXTURE_2D );
   
     MeshData md;
-    addRectangle(md, Vec2f(bx0,by0), Vec2f(bx1,by1), Vec2f(0,0), Vec2f(1,1));
+    addRectangle(md, vec2(bx0,by0), vec2(bx1,by1), vec2(0,0), vec2(1,1));
     mb1.update(md, posLoc, -1, texCoordLoc, -1); 
 
     bp.bind(); {
-      glUniform4fv(bp.uniform("bgColor"), 1, bgColor.ptr());
+      glUniform4fv(bp.uniform("bgColor"), 1, glm::value_ptr(bgColor));
       mb1.draw();	
     } bp.unbind();
   }
@@ -382,8 +388,8 @@ namespace al{
     //TranslateYOffset = -(fontHeight - font.base) * (yScale*0.5);
 
     //calculate background extent
-    float bw = (getTextPixelWidth() + font.padding) * scaleW;
-    float bh = font.lineHeight * scaleH; //use font.highestChar for a tighter fit
+  //  float bw = (getTextPixelWidth() + font.padding) * scaleW;
+  //  float bh = font.lineHeight * scaleH; //use font.highestChar for a tighter fit
     float bx0, bx1, by0, by1; 
 
     //justify 
@@ -412,7 +418,7 @@ namespace al{
 
       if (getGlyphLocationInFontAtlas(text[i], glyph, pen_x, pen_y, scaleW, scaleH, x,y,w,h,s0,s1,t0,t1)) {
 
-	drawGlyph( Vec2f(x,y), Vec2f(x+w, y+h), Vec2f(s0,t0), Vec2f(s1,t1) );
+	drawGlyph( vec2(x,y), vec2(x+w, y+h), vec2(s0,t0), vec2(s1,t1) );
 	pen_x += glyph->xadvance * scaleW; 
 
       } else {
@@ -463,7 +469,7 @@ namespace al{
 
       if (getGlyphLocationInFontAtlas(text[i], glyph, pen_x, pen_y, scaleW, scaleH, x,y,w,h,s0,s1,t0,t1)) {
 
-	drawGlyph( Vec2f(x,y), Vec2f(x+w, y+h), Vec2f(s0,t0), Vec2f(s1,t1) );
+	drawGlyph( vec2(x,y), vec2(x+w, y+h), vec2(s0,t0), vec2(s1,t1) );
 	pen_x += glyph->xadvance * scaleW; 
 
       } else {
@@ -522,7 +528,7 @@ namespace al{
 //	printf("2 x/y x+w/y+h = %f/%f/%f/%f\n", x, y, x+w, y+h);
 //	printf("s0/t0 s1/t1 = %f/%f/%f/%f\n", s0, t0, s1, t1);
 
-	addRectangle(mesh1, Vec2f(x,y), Vec2f(x+w, y+h), Vec2f(s0,t0), Vec2f(s1,t1));
+	addRectangle(mesh1, vec2(x,y), vec2(x+w, y+h), vec2(s0,t0), vec2(s1,t1));
 
 	mb1.update(mesh1, posLoc, -1, texCoordLoc, -1); 
 

@@ -28,10 +28,19 @@
 #include "FBO.hpp"
 #include "Font.hpp"
 
+#define GLM_SWIZZLE
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+
 #include <iostream>
 
 
 using namespace al;
+
+using glm::to_string;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
 
 class TextExample : public RendererOSX {
   public:
@@ -133,6 +142,23 @@ class TextExample : public RendererOSX {
       proj = Matrix4f::identity();
       view = Matrix4f::identity();
       model = Matrix4f::identity();
+
+Vec4f a = Vec4f(5,6,7,8);
+vec4 blah = vec4(a.x, a.y, a.z, a.w);
+
+ vec4 Position = vec4(glm::vec3(0.0), 1.0);
+   mat4 Model = mat4(1.0);
+   Model[3] = vec4(1.0, 1.0, 0.0, 1.0);
+   vec4 Transformed = Model * Position;
+   
+  vec3 Hey = Transformed.xyz();
+  
+  std::cout << to_string(Hey) << "\n";
+  
+  std::cout << Transformed[0];
+  std::cout << "bye...\n";
+
+exit(0);
     }
 
 

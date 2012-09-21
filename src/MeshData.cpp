@@ -1,23 +1,28 @@
-#include <algorithm>
-#include <map>
-#include <string>
-#include <vector>
 
 #include "Includes.hpp"
 #include "MeshData.hpp"
+#include <algorithm>
 
 namespace al{
 
+//using std;
+
 MeshData& MeshData::reset() {
-	vertices().reset();
-	normals().reset();
-	colors().reset();
-	texCoords().reset();
-	indices().reset();
+	// vertices().reset();
+	// normals().reset();
+	// colors().reset();
+	// texCoords().reset();
+	// indices().reset();
+	vertices().clear();
+	normals().clear();
+	colors().clear();
+	texCoords().clear();
+	indices().clear();
 	return *this;
 }
 
 void MeshData::decompress(){
+  /*
 	int Ni = indices().size();
 	if(Ni){
 		#define DECOMPRESS(buf, Type)\
@@ -36,8 +41,10 @@ void MeshData::decompress(){
 		DECOMPRESS(texCoords(), TexCoord)
 		#undef DECOMPRESS
 		
-		indices().reset();
+		//indices().reset();
+		indices().clear();
 	}
+    */
 }
 
 void MeshData::equalizeBuffers() {
@@ -48,21 +55,25 @@ void MeshData::equalizeBuffers() {
 
 	if(Nn){
 		for(int i=Nn; i<Nv; ++i){
-			normals().append(normals()[Nn-1]);
+			//normals().append(normals()[Nn-1]);
+			normals().push_back(normals()[Nn-1]);
 		}
 	}
 	if(Nc){
 		for(int i=Nc; i<Nv; ++i){
-			colors().append(colors()[Nc-1]);
+			//colors().append(colors()[Nc-1]);
+			colors().push_back(colors()[Nc-1]);
 		}
 	}
 	if(Nt){
 		for(int i=Nt; i<Nv; ++i){
-			texCoords().append(texCoords()[Nt-1]);
+			//texCoords().append(texCoords()[Nt-1]);
+			texCoords().push_back(texCoords()[Nt-1]);
 		}
 	}
 }
 
+/*
 class TriFace {
 public:
 	MeshData::Vertex vertices[3];
@@ -83,11 +94,14 @@ public:
 		normal<float>(norm, p0, p1, p2);
 	}
 };
+*/
+
 void MeshData::createNormalsMesh(MeshData& mesh, float length, bool perFace){
 
 	struct F{
 		static void initMeshData(MeshData& m, int n){
-			m.vertices().size(n*2);
+			//m.vertices().size(n*2);
+			m.vertices().resize(n*2);
 			m.reset();
 			m.primitive(GL_LINES);		
 		}
@@ -113,8 +127,10 @@ void MeshData::createNormalsMesh(MeshData& mesh, float length, bool perFace){
 				const Vertex mean = (v1 + v2 + v3)/3.f;
 				
 				// get face normal:
-				Vertex facenormal = cross(v2-v1, v3-v1);
-				facenormal.normalize();
+				//Vertex facenormal = cross(v2-v1, v3-v1);
+				Vertex facenormal = glm::cross(v2-v1, v3-v1);
+				//facenormal.normalize();
+				glm::normalize(facenormal);
 				
 				mesh.vertex(mean);
 				mesh.vertex(mean + (facenormal*length));
@@ -123,7 +139,7 @@ void MeshData::createNormalsMesh(MeshData& mesh, float length, bool perFace){
 			printf("createNormalsMeshData only valid for indexed meshes\n");
 		} 
 	} else {
-		int Ni = al::min(vertices().size(), normals().size());
+		int Ni = std::min(vertices().size(), normals().size());
 		F::initMeshData(mesh, Ni*2);
 		
 		for(int i=0; i<Ni; ++i){
@@ -140,7 +156,7 @@ void MeshData::invertNormals() {
 }
 
 void MeshData::compress() {
-
+  /*
 	int Ni = indices().size();
 	int Nv = vertices().size();
 	if (Ni) {
@@ -201,6 +217,7 @@ void MeshData::compress() {
 			index(newidx);
 		}
 	}
+      */
 }
 
 void MeshData::generateNormals(bool normalize, bool equalWeightPerFace) {
@@ -246,13 +263,17 @@ void MeshData::generateNormals(bool normalize, bool equalWeightPerFace) {
 	int Nv = vertices().size();
 
 	// same number of normals as vertices
-	normals().size(Nv);
+	//normals().size(Nv);
+	normals().resize(Nv);
 
 
 	// compute vertex based normals
 	if(indices().size()){
 
-		for(int i=0; i<Nv; ++i) normals()[i].set(0,0,0);
+		for(int i=0; i<Nv; ++i) {
+		  //normals()[i].set(0,0,0);
+		  normals()[i] = vec3(0,0,0);
+		}
 
 		int Ni = indices().size();
 
@@ -268,11 +289,14 @@ void MeshData::generateNormals(bool normalize, bool equalWeightPerFace) {
 				const Vertex& v3 = vertices()[i3];
 				
 				// MWAAT (mean weighted by areas of adjacent triangles)
-				Vertex vn = cross(v2-v1, v3-v1);
+				//Vertex vn = cross(v2-v1, v3-v1);
+				Vertex vn = glm::cross(v2-v1, v3-v1);
 
 				// MWE (mean weighted equally)
-				if (equalWeightPerFace) vn.normalize();
-
+				//if (equalWeightPerFace) vn.normalize();
+				if (equalWeightPerFace) {
+				  vn = glm::normalize(vn);
+				}
 				// MWA (mean weighted by angle)
 				// This doesn't work well with dynamic marching cubes- normals
 				// pop in and out for small triangles.
@@ -304,7 +328,11 @@ void MeshData::generateNormals(bool normalize, bool equalWeightPerFace) {
 //		}
 
 		// normalize the normals
-		if(normalize) for(int i=0; i<Nv; ++i) normals()[i].normalize();
+		//if(normalize) for(int i=0; i<Nv; ++i) normals()[i].normalize();
+		if(normalize) for(int i=0; i<Nv; ++i) {
+		  //normals()[i].normalize();
+		  normals()[i] = glm::normalize(normals()[i]);
+		}
 	}
 	
 	// compute face based normals
@@ -320,9 +348,12 @@ void MeshData::generateNormals(bool normalize, bool equalWeightPerFace) {
 				const Vertex& v2 = vertices()[i2];
 				const Vertex& v3 = vertices()[i3];
 				
-				Vertex vn = cross(v2-v1, v3-v1);
-				if(normalize) vn.normalize();
-				
+				//Vertex vn = cross(v2-v1, v3-v1);
+				Vertex vn = glm::cross(v2-v1, v3-v1);
+				//if(normalize) vn.normalize();
+				if(normalize) {
+				  vn = glm::normalize(vn);
+				}
 				normals()[i1] = vn;
 				normals()[i2] = vn;
 				normals()[i3] = vn;
@@ -335,6 +366,7 @@ void MeshData::generateNormals(bool normalize, bool equalWeightPerFace) {
 
 
 MeshData& MeshData::repeatLast(){
+  /*
 	if(indices().size()){
 		index(indices().last());
 	}
@@ -344,18 +376,22 @@ MeshData& MeshData::repeatLast(){
 		if(normals().size()) normals().repeatLast();
 		if(texCoords().size()) texCoords().repeatLast();
 	}
+    */
 	return *this;
 }
 
 
 void MeshData::ribbonize(float * widths, int widthsStride, bool faceBinormal){
 
+  /*
 	const int N = mVertices.size();
 
 	if(0 == N) return;
 
-	mVertices.size(N*2);
-	mNormals.size(N*2);
+	//mVertices.size(N*2);
+	//mNormals.size(N*2);
+	mVertices.resize(N*2);
+	mNormals.resize(N*2);
 
 	// Store last vertex since it will be overwritten eventually
 	const Vertex last = mVertices[N-1]; 
@@ -398,11 +434,13 @@ void MeshData::ribbonize(float * widths, int widthsStride, bool faceBinormal){
 	}
 	
 	if(mColors.size()) mColors.expand<2,true>();
+      */
 }
 
 
 
 void MeshData::merge(const MeshData& src){
+  /*
 //	if (indices().size() || src.indices().size()) {
 //		printf("error: MeshData merging with indexed meshes not yet supported\n");
 //		return;
@@ -439,22 +477,32 @@ void MeshData::merge(const MeshData& src){
 	// From here, the game is indice invariant
 
 	//equalizeBuffers(); << TODO: must do this if we are using indices.
-	vertices().append(src.vertices());
-	normals().append(src.normals());
-	colors().append(src.colors());
-	texCoords().append(src.texCoords());
+	
+	// vertices().append(src.vertices());
+	// normals().append(src.normals());
+	// colors().append(src.colors());
+	// texCoords().append(src.texCoords());
+	vertices().push_back(src.vertices());
+	normals().push_back(src.normals());
+	colors().push_back(src.colors());
+	texCoords().push_back(src.texCoords());
+      */
 }
 
 
 void MeshData::getBounds(Vertex& min, Vertex& max) const {
 	if(vertices().size()){
-		min.set(vertices()[0]);
-		max.set(min);
-		for(int v=1; v<vertices().size(); ++v){
+		//min.set(vertices()[0]);
+		//max.set(min);
+		min = (vertices()[0]);
+		max = (min);
+		for(size_t v=1; v<vertices().size(); ++v){
 			const Vertex& vt = vertices()[v];
 			for(int i=0; i<3; ++i){
-				min[i] = AL_MIN(min[i], vt[i]);
-				max[i] = AL_MAX(max[i], vt[i]);
+				//min[i] = AL_MIN(min[i], vt[i]);
+				//max[i] = AL_MAX(max[i], vt[i]);
+				min[i] = std::min(min[i], vt[i]);
+				max[i] = std::max(max[i], vt[i]);
 			}
 		}
 	}
@@ -463,42 +511,70 @@ void MeshData::getBounds(Vertex& min, Vertex& max) const {
 MeshData::Vertex MeshData::getCenter() const {
 	Vertex min(0), max(0);
 	getBounds(min, max);
-	return min+(max-min)*0.5;
+	//return min+(max-min)*0.5;
+	return min+(max-min)*vec3(0.5,0.5,0.5);
 }
 
 void MeshData::unitize(bool proportional) {
-	Vertex min(0), max(0);
-	getBounds(min, max);
+	Vertex minv(0), maxv(0);
+	getBounds(minv, maxv);
 	// span of each axis:
-	Vertex span = max-min;	// positive only
+	Vertex span = maxv-minv;	// positive only
 	// center of each axis:	
-	Vertex mid = min + (span * 0.5);
+	Vertex midv = minv + (span * vec3(0.5,0.5,0.5));
 	// axis scalar:
 	Vertex scale(2./span.x, 2./span.y, 2./span.z);	// positive only
 	
 	// adjust to use scale of largest axis:
 	if (proportional) {
-		float s = al::min(scale.x, al::min(scale.y, scale.z));
+		//float s = al::min(scale.x, al::min(scale.y, scale.z));
+		//float s0 = min(scale.y, scale.z);
+		float s = std::min(scale.x, std::min(scale.y, scale.z));
 		scale.x = scale.y = scale.z = s;
 	}
 	
-	for (int v=0; v<mVertices.size(); v++) {
+	for (size_t v=0; v<mVertices.size(); v++) {
 		Vertex& vt = mVertices[v];
-		vt = (vt-mid)*scale;
+		vt = (vt-midv)*scale;
 	}
 }
 
 MeshData& MeshData::translate(float x, float y, float z){
 	const Vertex xfm(x,y,z);
-	for(int i=0; i<vertices().size(); ++i)
+	for(size_t i=0; i<vertices().size(); ++i)
 		mVertices[i] += xfm;
 	return *this;
 }
 
 MeshData& MeshData::scale(float x, float y, float z){
 	const Vertex xfm(x,y,z);
-	for(int i=0; i<vertices().size(); ++i)
+	for(size_t i=0; i<vertices().size(); ++i)
 		mVertices[i] *= xfm;
+	return *this;
+}
+
+
+MeshData& MeshData::transform(const mat4& m) {
+  return transform(m, 0, -1);
+}
+
+
+MeshData& MeshData::transform(const mat4& m, int begin) {
+  return transform(m, begin, -1);
+}
+
+
+//template <class T>
+//MeshData& MeshData::transform(const Mat<4,T>& m, int begin, int end){
+MeshData& MeshData::transform(const mat4& m, int begin, int end){
+	if(end<0) end += vertices().size()+1; // negative index wraps to end of array
+	for(int i=begin; i<end; ++i){
+		Vertex& v = vertices()[i];
+		//v.set(m * Vec<4,T>(v, 1));
+		vec4 tmp = m * vec4(v.x, v.y, v.z, 1.0);
+		//v = (m * v);
+		v = vec3(tmp.x, tmp.y, tmp.z);
+	}
 	return *this;
 }
 

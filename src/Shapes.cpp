@@ -1,7 +1,14 @@
 #include <math.h>
 #include "Shapes.hpp"
+#include <glm/glm.hpp>
 
 namespace al{
+
+using glm::to_string;
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
 
 const double phi = (1 + sqrt(5))/2; // the golden ratio
 
@@ -14,7 +21,8 @@ int addTetrahedron(MeshData& m){
 		-l,-l, l
 	};
 
-	static const int indices[] = {0,2,1, 0,1,3, 1,2,3, 2,0,3};
+	//static const int indices[] = {0,2,1, 0,1,3, 1,2,3, 2,0,3};
+	static const unsigned long indices[] = {0,2,1, 0,1,3, 1,2,3, 2,0,3};
 
 	int Nv = sizeof(vertices)/sizeof(*vertices)/3;
 
@@ -26,19 +34,20 @@ int addTetrahedron(MeshData& m){
 
 
 
-  int addRectangle(MeshData& m, Vec2f vLL, Vec2f vUR, Vec2f tcLL, Vec2f tcUR) {
+  //int addRectangle(MeshData& m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR) {
+  int addRectangle(MeshData& m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR) {
 
     m.reset();
 
-    Vec3f v0 = Vec3f(vLL.x, vLL.y,0);
-    Vec3f v1 = Vec3f(vLL.x,vUR.y,0);
-    Vec3f v2 = Vec3f(vUR.x,vLL.y,0);
-    Vec3f v3 = Vec3f(vUR.x,vUR.y,0);
+    vec3 v0 = vec3(vLL.x, vLL.y,0);
+    vec3 v1 = vec3(vLL.x,vUR.y,0);
+    vec3 v2 = vec3(vUR.x,vLL.y,0);
+    vec3 v3 = vec3(vUR.x,vUR.y,0);
 
-    Vec3f t0 = Vec3f(tcLL.x,tcLL.y,0);
-    Vec3f t1 = Vec3f(tcLL.x,tcUR.y,0);
-    Vec3f t2 = Vec3f(tcUR.x,tcLL.y,0);
-    Vec3f t3 = Vec3f(tcUR.x,tcUR.y,0);
+    vec3 t0 = vec3(tcLL.x,tcLL.y,0);
+    vec3 t1 = vec3(tcLL.x,tcUR.y,0);
+    vec3 t2 = vec3(tcUR.x,tcLL.y,0);
+    vec3 t3 = vec3(tcUR.x,tcUR.y,0);
 
     m.vertex(v0); m.texCoord(t0);
     m.vertex(v1); m.texCoord(t1);
@@ -47,7 +56,7 @@ int addTetrahedron(MeshData& m){
 
     int Nv = 4;
 
-    static const int indices[] = {
+    static const unsigned long indices[] = {
       0,1,2, 2,1,3	
     };
 
@@ -62,15 +71,15 @@ int addRectangle(MeshData& m, float _w, float _h) {
   float w = _w/2.0;
   float h = _h/2.0;
 
-  Vec3f v0 = Vec3f(-w,-h,0);
-  Vec3f v1 = Vec3f(-w,h,0);
-  Vec3f v2 = Vec3f(w,-h,0);
-  Vec3f v3 = Vec3f(w,h,0);
+  vec3 v0 = vec3(-w,-h,0);
+  vec3 v1 = vec3(-w,h,0);
+  vec3 v2 = vec3(w,-h,0);
+  vec3 v3 = vec3(w,h,0);
 
-  Vec3f t0 = Vec3f(0,0,0);
-  Vec3f t1 = Vec3f(0,1,0);
-  Vec3f t2 = Vec3f(1,0,0);
-  Vec3f t3 = Vec3f(1,1,0);
+  vec3 t0 = vec3(0,0,0);
+  vec3 t1 = vec3(0,1,0);
+  vec3 t2 = vec3(1,0,0);
+  vec3 t3 = vec3(1,1,0);
 
   m.vertex(v0); m.texCoord(t0);
   m.vertex(v1); m.texCoord(t1);
@@ -79,7 +88,8 @@ int addRectangle(MeshData& m, float _w, float _h) {
 
   int Nv = 4;
    
-  static const int indices[] = {
+  //static const int indices[] = {
+  static const unsigned long indices[] = {
     0,1,2, 2,1,3	
   };
 
@@ -91,15 +101,15 @@ int addRectangle(MeshData& m, float _w, float _h) {
 
 int addRectangle(MeshData& m) {
 
-  Vec3f v0 = Vec3f(-1,-1,0);
-  Vec3f v1 = Vec3f(-1,1,0);
-  Vec3f v2 = Vec3f(1,-1,0);
-  Vec3f v3 = Vec3f(1,1,0);
+  vec3 v0 = vec3(-1,-1,0);
+  vec3 v1 = vec3(-1,1,0);
+  vec3 v2 = vec3(1,-1,0);
+  vec3 v3 = vec3(1,1,0);
 
-  Vec3f t0 = Vec3f(0,0,0);
-  Vec3f t1 = Vec3f(0,1,0);
-  Vec3f t2 = Vec3f(1,0,0);
-  Vec3f t3 = Vec3f(1,1,0);
+  vec3 t0 = vec3(0,0,0);
+  vec3 t1 = vec3(0,1,0);
+  vec3 t2 = vec3(1,0,0);
+  vec3 t3 = vec3(1,1,0);
 
   m.vertex(v0); m.texCoord(t0);
   m.vertex(v1); m.texCoord(t1);
@@ -108,7 +118,8 @@ int addRectangle(MeshData& m) {
 
   int Nv = 4;
    
-  static const int indices[] = {
+  //static const int indices[] = {
+  static const unsigned long indices[] = {
     0,1,2, 2,1,3	
   };
 
@@ -118,29 +129,29 @@ int addRectangle(MeshData& m) {
 }
 
 
-int addCube(MeshData& m, bool withNormalsAndTexcoords, float s){
+int addCube(MeshData& m, bool withNormalsAndTexcoords, float s) {
   if (withNormalsAndTexcoords) {
 
-    Vec3f v0 = Vec3f(-s,-s,s);
-    Vec3f v1 = Vec3f(-s,s,s);
-    Vec3f v2 = Vec3f(s,-s,s);
-    Vec3f v3 = Vec3f(s,s,s);
-    Vec3f v4 = Vec3f(-s,-s,-s);
-    Vec3f v5 = Vec3f(-s,s,-s);
-    Vec3f v6 = Vec3f(s,-s,-s);
-    Vec3f v7 = Vec3f(s,s,-s);
+    vec3 v0 = vec3(-s,-s,s);
+    vec3 v1 = vec3(-s,s,s);
+    vec3 v2 = vec3(s,-s,s);
+    vec3 v3 = vec3(s,s,s);
+    vec3 v4 = vec3(-s,-s,-s);
+    vec3 v5 = vec3(-s,s,-s);
+    vec3 v6 = vec3(s,-s,-s);
+    vec3 v7 = vec3(s,s,-s);
 
-    Vec3f n0 = Vec3f(0,0,s);
-    Vec3f n1 = Vec3f(0,0,-s);
-    Vec3f n2 = Vec3f(0,s,0);
-    Vec3f n3 = Vec3f(0,-s,0);
-    Vec3f n4 = Vec3f(s,0,0);
-    Vec3f n5 = Vec3f(-s,0,0);
+    vec3 n0 = vec3(0,0,s);
+    vec3 n1 = vec3(0,0,-s);
+    vec3 n2 = vec3(0,s,0);
+    vec3 n3 = vec3(0,-s,0);
+    vec3 n4 = vec3(s,0,0);
+    vec3 n5 = vec3(-s,0,0);
 
-    Vec3f t0 = Vec3f(0,0,0);
-    Vec3f t1 = Vec3f(0,1,0);
-    Vec3f t2 = Vec3f(1,0,0);
-    Vec3f t3 = Vec3f(1,1,0);
+    vec3 t0 = vec3(0,0,0);
+    vec3 t1 = vec3(0,1,0);
+    vec3 t2 = vec3(1,0,0);
+    vec3 t3 = vec3(1,1,0);
 
     //right 
     m.vertex(v2); m.normal(n4); m.texCoord(t0);
@@ -217,7 +228,8 @@ int addCube(MeshData& m, bool withNormalsAndTexcoords, float s){
     m.vertex(-s, s, s);	m.vertex( s, s, s);
     m.vertex(-s,-s, s);	m.vertex( s,-s, s);
 
-    static const int indices[] = {
+    //static const int indices[] = {
+    static const unsigned long indices[] = {
       6,5,4, 6,7,5, 7,1,5, 7,3,1, 
       3,0,1, 3,2,0, 2,4,0, 2,6,4,
       4,1,0, 4,5,1, 2,3,6, 3,7,6
@@ -235,7 +247,8 @@ int addOctahedron(MeshData& m){
     -1,0,0, 0,-1,0, 0,0,-1	// 3 4 5
   };
 
-  static const int indices[] = {
+  //static const int indices[] = {
+  static const unsigned long indices[] = {
     0,1,2, 1,3,2, 3,4,2, 4,0,2,
     1,0,5, 3,1,5, 4,3,5, 0,4,5
   };
@@ -260,7 +273,8 @@ int addDodecahedron(MeshData& m){
     -a, 0,-b,	 b,-a, 0,	-b,-a, 0	//  9 10 11
   };
 
-  static const int indices[] = {
+  //static const int indices[] = {
+  static const unsigned long indices[] = {
     1, 0, 2,	 2, 3, 1,	 4, 3, 5,	 6, 3, 4,
     7, 0, 8,	 9, 0, 7,	10, 4,11,	11, 7,10,
     5, 2, 9,	 9,11, 5,	 8, 1, 6,	 6,10, 8,
@@ -295,13 +309,13 @@ int addIcosahedron(MeshData& m){
   //	};
   //
   //	for(int i=0; i<Nv; i+=5){
-  //		Vec3f v1(vertices[3*i+ 0], vertices[3*i+ 1], vertices[3*i+ 2]);
-  //		Vec3f v2(vertices[3*i+ 3], vertices[3*i+ 4], vertices[3*i+ 5]);
-  //		Vec3f v3(vertices[3*i+ 6], vertices[3*i+ 7], vertices[3*i+ 8]);
-  //		Vec3f v4(vertices[3*i+ 9], vertices[3*i+10], vertices[3*i+11]);
-  //		Vec3f v5(vertices[3*i+12], vertices[3*i+13], vertices[3*i+14]);
+  //		vec3 v1(vertices[3*i+ 0], vertices[3*i+ 1], vertices[3*i+ 2]);
+  //		vec3 v2(vertices[3*i+ 3], vertices[3*i+ 4], vertices[3*i+ 5]);
+  //		vec3 v3(vertices[3*i+ 6], vertices[3*i+ 7], vertices[3*i+ 8]);
+  //		vec3 v4(vertices[3*i+ 9], vertices[3*i+10], vertices[3*i+11]);
+  //		vec3 v5(vertices[3*i+12], vertices[3*i+13], vertices[3*i+14]);
   //		
-  //		Vec3f vc = (v1+v2+v3+v4+v5)/5;
+  //		vec3 vc = (v1+v2+v3+v4+v5)/5;
   //		
   //		plato5.vertex(v1);
   //	}
@@ -329,7 +343,8 @@ int addIcosahedron(MeshData& m){
     -0.57735,  -0.57735,  -0.57735
   };
 
-  static const int indices[] = {
+  //static const int indices[] = {
+  static const unsigned long indices[] = {
     18, 2, 1,	11,18, 1,	14,11, 1,	 7,13, 1,	17, 7, 1,
     2,17, 1,	19, 4, 3,	 8,19, 3,	15, 8, 3,	12,16, 3,
     0,12, 3,	 4, 0, 3,	 6,15, 3,	 5, 6, 3,	16, 5, 3,
@@ -355,7 +370,7 @@ int addIcosahedron(MeshData& m){
 
 int addSphere(MeshData& m, double radius, int slices, int stacks){
 
-  Vec3f N, V;
+  vec3 N, V;
 
   struct CSin{
     CSin(double frq, double radius=1.)
@@ -371,13 +386,14 @@ int addSphere(MeshData& m, double radius, int slices, int stacks){
   int Nv = m.vertices().size();
 
   CSin P( M_PI/stacks); P.r = P.dr*radius; P.i = P.di*radius;
-  CSin T(M_2PI/slices);
+  CSin T((M_PI*2.0)/slices);
 
   // Add top cap
   // Triangles have one vertex at the north pole and the others on the first
   // ring down.
-  V = Vec3f(0,0,radius);
-  N = Vec3f(0,0,radius).normalize();
+  V = vec3(0,0,radius);
+  //N = vec3(0,0,radius).normalize();
+  N = glm::normalize(vec3(0,0,radius));
   m.vertex(V);
   m.normal(N);
   for(int i=0; i<slices; ++i){
@@ -397,8 +413,9 @@ int addSphere(MeshData& m, double radius, int slices, int stacks){
       int i10 = Nv+1 + j  *slices + ip1;
       int i01 = Nv+1 + jp1*slices + i;
       int i11 = Nv+1 + jp1*slices + ip1;
-  V = Vec3f(T.r*P.i, T.i*P.i, P.r);
-  N = Vec3f(T.r*P.i, T.i*P.i, P.r).normalize();
+  V = vec3(T.r*P.i, T.i*P.i, P.r);
+  //N = vec3(T.r*P.i, T.i*P.i, P.r).normalize();
+  N = glm::normalize(vec3(T.r*P.i, T.i*P.i, P.r));
 
       //m.vertex(T.r*P.i, T.i*P.i, P.r);
       m.vertex(V);
@@ -417,8 +434,9 @@ int addSphere(MeshData& m, double radius, int slices, int stacks){
   // Add bottom ring and cap
   int icap = m.vertices().size() + slices;
   for(int i=0; i<slices; ++i){
-  V = Vec3f(T.r*P.i, T.i*P.i, P.r);
-  N = Vec3f(T.r*P.i, T.i*P.i, P.r).normalize();
+  V = vec3(T.r*P.i, T.i*P.i, P.r);
+  //N = vec3(T.r*P.i, T.i*P.i, P.r).normalize();
+  N = glm::normalize(vec3(T.r*P.i, T.i*P.i, P.r));
       m.vertex(V);
       m.normal(N);
   //  m.vertex(T.r*P.i, T.i*P.i, P.r);
@@ -428,8 +446,9 @@ int addSphere(MeshData& m, double radius, int slices, int stacks){
     T();
   }
   //m.vertex(0,0,-radius);
-  V = Vec3f(0,0,-radius);
-  N = Vec3f(0,0,-radius).normalize();
+  V = vec3(0,0,-radius);
+  //N = vec3(0,0,-radius).normalize();
+  N = glm::normalize(vec3(0,0,-radius));
   m.vertex(V);
   m.normal(N);
 
@@ -480,7 +499,8 @@ int addSurface(MeshData& m, int Nx, int Ny, float width, float height){
 	m.index(idx);
 	m.index(idx+Nx);
       }
-      int idx = m.indices().last();
+      //int idx = m.indices().last();
+      int idx = m.indices().back();
       m.index(idx);
     }
     return Nx*Ny;

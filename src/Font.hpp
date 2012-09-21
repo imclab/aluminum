@@ -11,11 +11,17 @@
 #include "MeshBuffer.hpp"
 #include "FBO.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-#include "allocore/math/al_Vec.hpp"
-#include "allocore/math/al_Matrix4.hpp"
+//#include "allocore/math/al_Vec.hpp"
+//#include "allocore/math/al_Matrix4.hpp"
 
 using namespace std;
+using glm::vec2;
 
 
 namespace al{
@@ -92,16 +98,16 @@ namespace al{
       Program p;
       Program bp;
 
-      Vec4f txtColor; 
-      Vec4f bgColor; 
+      vec4 txtColor; 
+      vec4 bgColor; 
 
       Text& program(Program& _p); //update texture
       Text& programs(Program& _p, Program& _bp); //update texture
 
       Text& justify(float _jx, float _jy); //update mesh
       Text& pen(float _px, float _py); //update mesh
-      Text& color(Vec4f _txtColor); //update texture
-      Text& background(Vec4f _bgColor); //update texture
+      Text& color(vec4 _txtColor); //update texture
+      Text& background(vec4 _bgColor); //update texture
 
       void drawText2(float px, float py, float sw, float sh, float scaleFont);
       void drawText(float px, float py, float sw, float sh, float scaleFont);
@@ -118,11 +124,11 @@ namespace al{
       FBO fbo;
       Text& updateMesh();
       Text& updateTexture(); 
-      Text& mesh(Vec2f LL, Vec2f UR); //update mesh
+      Text& mesh(vec2 LL, vec2 UR); //update mesh
      
 
       float meshW, meshH; //the w+h of the mesh buffer holding the text, in world coords (clip coords for now) 
-      int textureW, textureH; //the w+h of the texture used (for signed dist text, can be some scalar of pixelW/H
+      GLuint textureW, textureH; //the w+h of the texture used (for signed dist text, can be some scalar of pixelW/H
       int pixelW, pixelH; //the w+h of text taken from the font atlas
       void initDefaultVals();
       void initDefaultShaders(bool _useSD);
@@ -146,7 +152,7 @@ namespace al{
 
 
       void drawBackground(float bx0, float bx1, float by0, float by1);
-      void drawGlyph(Vec2f vLL, Vec2f vUR, Vec2f tLL, Vec2f tUR);
+      void drawGlyph(vec2 vLL, vec2 vUR, vec2 tLL, vec2 tUR);
 
 
       //void drawBackground(Program& p, MeshBuffer& mb);
