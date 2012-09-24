@@ -9,12 +9,10 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 using glm::to_string;
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
-
 
 namespace al{
 

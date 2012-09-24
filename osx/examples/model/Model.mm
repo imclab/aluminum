@@ -36,6 +36,9 @@ class ModelExample : public RendererOSX {
 
       MeshUtils::loadMeshes(md, name);
 
+
+printf("num meshes = %lu\n", md.size());
+
       for (unsigned long i = 0; i < md.size(); i++) {
 	mb.push_back((MeshBuffer()).init(md[i], posLoc, normalLoc, -1, -1));
       }
@@ -60,12 +63,15 @@ class ModelExample : public RendererOSX {
       loadProgram(program, "resources/phong");
 
       loadMeshes("resources/ducky.obj");
+      //loadMeshes("resources/angel.obj");
+      //loadMeshes("resources/test.nff");
       //loadScene(scene, "resources/test3.obj");
       //loadScene(scene, "resources/toyplane.obj");
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
       view = glm::lookAt(vec3(0.0,0.0,-5), vec3(0,0,0), vec3(0,1,0) );
       model = glm::rotate(glm::mat4(), 180.0f, vec3(0.0,1.0,0.0));
+      model = glm::translate(model, vec3(0.0f,-0.0f,0.0f));
 
       glEnable(GL_DEPTH_TEST);
 
@@ -93,7 +99,6 @@ class ModelExample : public RendererOSX {
       glClearColor(0.3,0.3,0.3,1.0);
 
       program.bind(); {
-	//glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
 	glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
 	glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));

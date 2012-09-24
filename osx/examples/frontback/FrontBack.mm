@@ -3,6 +3,7 @@
 #include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
+#include "MeshUtils.hpp"
 #include "Shapes.hpp"
 #include "Camera.hpp"
 #include "Utils.hpp"
@@ -21,7 +22,6 @@ class FrontBack : public RendererOSX {
     Camera camera;
     Program program;
     GLint posLoc = 0, normalLoc = 1;
-    //Mat4f model1, model2, model3, model4, view1, view2;
     mat4 model1, model2, model3, model4, view1, view2;
     MeshData mesh1, mesh2, mesh3, mesh4;
     MeshBuffer mb1, mb2, mb3, mb4;
@@ -33,20 +33,24 @@ class FrontBack : public RendererOSX {
     void createMeshes() {
 
       Utils::randomSeed();
-
-      for(int j=0; j<50; ++j){
-	int Nv = addCube(mesh1, true, 0.5);
+      MeshData tempMesh;
+      for(int j=0; j<20; ++j){
+	//int Nv = addCube(mesh1, true, 0.5);
+	tempMesh = MeshUtils::makeCube(0.5);
 	//Mat4f xfm;
 	//xfm.setIdentity();
 	mat4 xfm = mat4();
 	//xfm.scale(rnd::uniform(1.,0.2));
-	xfm = glm::scale(xfm, vec3(0.2) );
+	xfm = glm::scale(xfm, vec3(1.1) );
 	//Vec3f p;
 	//rnd::ball<3>(p.elems());
 	vec3 p = Utils::randomVec3(-1,1) * 4.0f;
 	//p *= 2.0; //.scale(2.0);
 	xfm = glm::translate(xfm, p); //Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
-	mesh1.transform(xfm, mesh1.vertices().size()-Nv);
+	//mesh1.transform(xfm, mesh1.vertices().size()-Nv);
+	tempMesh.transform(xfm, tempMesh.vertices().size()-24);
+
+	mesh1.addMesh(tempMesh);
       }
 
       for(int j=0; j<100 ; ++j){

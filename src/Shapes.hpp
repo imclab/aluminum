@@ -19,21 +19,8 @@ using glm::mat4;
 
 // Platonic solids
 
-/// Add tetrahedron as triangle vertices and indices
-int addTetrahedron(MeshData& m);
-
 /// Add cube as triangle vertices and indices
 int addCube(MeshData& m, bool withNormalsAndTexcoords = false, float radius=1.414);
-
-/// Add octahedron as triangle vertices and indices
-int addOctahedron(MeshData& m);
-
-/// Add dodecahedron as triangle vertices and indices
-int addDodecahedron(MeshData& m);
-
-/// Add icosahedron as triangle vertices and indices
-int addIcosahedron(MeshData& m);
-
 
 /// Add sphere as triangle vertices and indices
 

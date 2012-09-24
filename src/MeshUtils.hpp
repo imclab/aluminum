@@ -44,59 +44,61 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-      
+
 namespace al{
 
+  using glm::to_string;
+  using glm::vec2;
+  using glm::vec3;
+  using glm::vec4;
+  using glm::mat4;
 
-class MeshUtils {
+  class MeshUtils {
 
-  public:
-    	enum ImportPreset {
-		FAST,
-		QUALITY,
-		MAX_QUALITY
-	};
+    public:
 
-	class Scene {
-	  public:
+      static MeshData makeCube(float s);
 
-	    Scene(const aiScene * scene);
-	    ~Scene();
+      static MeshData makeRectangle(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
 
-	    const aiScene * scene;
-
-	    /// return number of meshes in scene
-	    unsigned int meshes() const;
-	    /// read a mesh from the Scene:
-	    void mesh(unsigned int i, MeshData& mesh) const;
-	    /// alternative read a mesh from the Scene: (creates indices)
-	    void meshAlt(unsigned int i, MeshData& mesh) const;	
-	    // read all meshes:
-	    //void meshAll(MeshData& dst) const { for (unsigned i=0; i<meshes(); i++) mesh(i, dst); }
-	    /// get the material index for a given mesh:
-	    unsigned int meshMaterial(unsigned int i) const;
-	    /// get the name of a given mesh
-	    std::string meshName(unsigned int i) const;
-
-	    /// get scene extents
-	    //void getBounds(Vec3f& min, Vec3f& max) const;
-	    void getBounds(vec3& min, vec3& max) const;
-	    float getScaleVal() const;
-
-	    /// print out information about the Scene
-	    void dump() const;
+      static MeshData makeRectangle(vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR);
+      static MeshData makeRectangle(float _w, float _h);
+      static MeshData makeClipRectangle();
+      static MeshData makeRectangle();
 
 
-	};
+      class Scene {
+	public:
 
-      	
-	static Scene* importScene(const std::string& path, ImportPreset preset = MAX_QUALITY);
-	static void loadMeshes(std::vector<MeshData>& md, const std::string& path, ImportPreset preset = MAX_QUALITY);
+	  Scene(const aiScene * scene);
+	  ~Scene();
+
+	  const aiScene * scene;
+
+	  /// return number of meshes in scene
+	  unsigned int meshes() const;
+	  
+	  /// read a mesh from the Scene:
+	  void mesh(unsigned int i, MeshData& mesh) const;
+	  
+	  /// alternative read a mesh from the Scene: (creates indices)
+	  void meshWithIndices(unsigned int i, MeshData& mesh) const;	
+	  
+	  /// get scene extents
+	  void getBounds(vec3& min, vec3& max) const;
+	  float getScaleVal() const;
+
+	  /// print out information about the Scene
+	  void dump() const;
+
+      };
 
 
+      static Scene* importScene(const std::string& path);
+      static void loadMeshes(std::vector<MeshData>& md, const std::string& path);
 
-};
+  };
 
-} // al::
+}
 
-#endif /* include guard */
+#endif

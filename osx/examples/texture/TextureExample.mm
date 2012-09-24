@@ -72,9 +72,7 @@ class TextureExample : public RendererOSX {
       loadProgram(program, "resources/texture");
       loadTexture(texture, "resources/hubble.jpg");
 
-      MeshData mesh1;
-      addRectangle(mesh1);
-      mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
+      mb1.init(MeshUtils::makeRectangle(), posLoc, -1, texCoordLoc, -1); 
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
       view = glm::lookAt(vec3(0.0,0.0,-3), vec3(0,0,0), vec3(0,1,0) );
