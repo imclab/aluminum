@@ -20,7 +20,7 @@ using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 
-namespace al{
+namespace aluminum {
 
   Text Font::signedDistanceText(const string& _text) {
     return Text::Text(*this, _text, true);

@@ -5,7 +5,7 @@
 #include "Includes.hpp"
 #include "Texture.hpp"
 
-namespace al{
+namespace aluminum {
 
 //@class Texture;
 

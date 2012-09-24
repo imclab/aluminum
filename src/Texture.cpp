@@ -5,7 +5,7 @@
 #include "Texture.hpp"
 
 
-namespace al{
+namespace aluminum {
 
   Texture& Texture::loadTextureData2D(Texture& texture, std::string file) {
     const char *filename = file.c_str();

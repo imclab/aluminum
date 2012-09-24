@@ -1,5 +1,5 @@
-#ifndef INCLUDE_AL_GRAPHICS_SHADER2_HPP
-#define INCLUDE_AL_GRAPHICS_SHADER2_HPP
+#ifndef INCLUDE_ALU_PROGRAM_HPP
+#define INCLUDE_ALU_PROGRAM_HPP
 
 #include <string>
 #include <map>
@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace al{
+namespace aluminum {
 
   class Shader {
     public:

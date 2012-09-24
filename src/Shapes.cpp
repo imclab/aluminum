@@ -2,7 +2,7 @@
 #include "Shapes.hpp"
 #include <glm/glm.hpp>
 
-namespace al{
+namespace aluminum {
 
   using glm::to_string;
   using glm::vec2;

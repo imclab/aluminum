@@ -1,12 +1,8 @@
-// #include <algorithm>
-// #include <map>
-// #include <string>
-// #include <vector>
 
 #include "MeshBuffer.hpp"
 
 
-namespace al{
+namespace aluminum {
 
   void MeshBuffer::draw() {
 

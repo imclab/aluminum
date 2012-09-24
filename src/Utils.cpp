@@ -14,9 +14,7 @@
 #include <glm/gtx/random.hpp>
 
 
-//glm probably has a random func... check
-
-namespace al{
+namespace aluminum {
   using std::vector;
   using glm::vec3;
 
@@ -26,7 +24,6 @@ namespace al{
 
   float Utils::random() {
     return glm::compRand1(0,1);
-    //return rand()/(RAND_MAX + 1.0);
   }
 
   int Utils::randomInt(int min, int max) {
@@ -55,8 +52,6 @@ namespace al{
 
   float Utils::randomFloat(float min, float max) {
     return (float) glm::compRand1(min, max);
-  
-    //return min + float( ((max-min)) * random() ); 
   }
 
   vector<float> Utils::randomFloats(int howMany, float min, float max) {
@@ -64,7 +59,6 @@ namespace al{
 
     for(int index = 0; index < howMany; index++){ 
       floats.push_back(randomFloat(min, max));
-      //floats.push_back(min + float( ((max-min)) * random()));
     } 
 
     return floats;
@@ -72,9 +66,6 @@ namespace al{
 
   vec3 Utils::randomVec3(float min, float max) {
     return glm::compRand3(min, max);
-    //vector<float> floats = randomFloats(3,min,max);
-    //printf("%f %f %f\n", floats[0], floats[1], floats[2]);
-    //return vec3(floats[0], floats[1], floats[2]); 
   }
 
 

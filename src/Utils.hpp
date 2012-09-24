@@ -1,5 +1,5 @@
-#ifndef INCLUDE_AL_FBO2_HPP
-#define INCLUDE_AL_FBO2_HPP
+#ifndef INCLUDE_ALU_UTILS_HPP
+#define INCLUDE_ALU_UTILS_HPP
 
 #include <string>
 #include <vector>
@@ -8,7 +8,7 @@
 
 #include <glm/glm.hpp>
 
-namespace al{
+namespace aluminum {
 
   using std::vector;
   using glm::vec3;

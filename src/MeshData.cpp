@@ -3,7 +3,7 @@
 #include "MeshData.hpp"
 #include <algorithm>
 
-namespace al{
+namespace aluminum {
 
   /*
 MeshData& MeshData::reset() {

@@ -1,10 +1,10 @@
-#ifndef INCLUDE_AL_TEXTURE2_HPP
-#define INCLUDE_AL_TEXTURE2_HPP
+#ifndef INCLUDE_ALU_TEXTURE_HPP
+#define INCLUDE_ALU_TEXTURE_HPP
 
 #include <string>
 #include "Includes.hpp"
 
-namespace al{
+namespace aluminum {
 
   class Texture {
 

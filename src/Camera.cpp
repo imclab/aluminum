@@ -14,7 +14,7 @@ using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 
-namespace al{
+namespace aluminum {
 
 #define radians(x) (x * M_PI / 180.0f)
 #define degrees(x) (180.0 * x / M_PI)

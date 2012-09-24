@@ -11,7 +11,7 @@
 using std::map;
 using std::string;
 
-namespace al{
+namespace aluminum {
 
   Shader::Shader(const std::string& source, GLenum type) {
     mID = glCreateShader(type);

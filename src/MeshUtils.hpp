@@ -1,5 +1,5 @@
-#ifndef INCLUDE_AL_GRAPHICS_ASSET2_HPP
-#define INCLUDE_AL_GRAPHICS_ASSET2_HPP
+#ifndef INCLUDE_ALU_MESHUTILS_HPP
+#define INCLUDE_ALU_MESHUTILS_HPP
 
 /*!
 	Asset manages the loading and parsing of 3D asset files
@@ -35,6 +35,7 @@
 #include "assimp/matrix4x4.h"
 
 #include "MeshData.hpp" 
+#include "MeshBuffer.hpp" 
 #include <vector>
 
 
@@ -44,14 +45,14 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+using glm::to_string;
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
 
-namespace al{
 
-  using glm::to_string;
-  using glm::vec2;
-  using glm::vec3;
-  using glm::vec4;
-  using glm::mat4;
+namespace aluminum {
 
   class MeshUtils {
 
@@ -77,13 +78,13 @@ namespace al{
 
 	  /// return number of meshes in scene
 	  unsigned int meshes() const;
-	  
+
 	  /// read a mesh from the Scene:
 	  void mesh(unsigned int i, MeshData& mesh) const;
-	  
+
 	  /// alternative read a mesh from the Scene: (creates indices)
 	  void meshWithIndices(unsigned int i, MeshData& mesh) const;	
-	  
+
 	  /// get scene extents
 	  void getBounds(vec3& min, vec3& max) const;
 	  float getScaleVal() const;
@@ -95,7 +96,11 @@ namespace al{
 
 
       static Scene* importScene(const std::string& path);
-      static void loadMeshes(std::vector<MeshData>& md, const std::string& path);
+
+      static std::vector<MeshData> loadMeshDatas(const std::string& path);
+      static MeshData loadMeshData(const std::string& path);
+
+      static MeshBuffer loadMesh(const std::string& path, int pL, int nL, int tL, int cL);
 
   };
 

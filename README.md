@@ -1,7 +1,7 @@
 aluminum
 ========
 
-Lightweight, minimal OpenGL framwork. Supports openGL 3.2 on osx/cocoa and linux/freeglut; plan to support openGL ES 2.0 on ios and the raspberry pi as well.
+Lightweight, minimal OpenGL framework. Supports openGL 3.2 on osx/cocoa and linux/freeglut; plan to support openGL ES 2.0 on ios and the raspberry pi as well.
 
 Included required libraries: freeimage, assimp, glm.
 

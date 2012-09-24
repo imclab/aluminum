@@ -7,13 +7,13 @@
 #include "Includes.hpp"
 #include <vector>
 
-#include <glm/glm.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/matrix_access.hpp>
-#include <glm/gtc/type_ptr.hpp>
+//#include <glm/glm.hpp>
+//#include <glm/gtx/string_cast.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtc/matrix_access.hpp>
+//#include <glm/gtc/type_ptr.hpp>
 
-using namespace al;
+using namespace aluminum;
 
 class ModelExample : public RendererOSX {
 
@@ -29,19 +29,10 @@ class ModelExample : public RendererOSX {
     GLint posLoc=0;
     GLint normalLoc=1;
 
-    std::vector<MeshData> md;
-    std::vector<MeshBuffer> mb;
+    MeshBuffer mb;
 
-    void loadMeshes(const std::string& name) {    
-
-      MeshUtils::loadMeshes(md, name);
-
-
-printf("num meshes = %lu\n", md.size());
-
-      for (unsigned long i = 0; i < md.size(); i++) {
-	mb.push_back((MeshBuffer()).init(md[i], posLoc, normalLoc, -1, -1));
-      }
+    void loadMeshes(const std::string& name) {
+      mb = MeshUtils::loadMesh(name, posLoc, normalLoc, -1, -1);
     }
 
     void loadProgram(Program &p, const std::string& name) {
@@ -74,14 +65,14 @@ printf("num meshes = %lu\n", md.size());
       model = glm::translate(model, vec3(0.0f,-0.0f,0.0f));
 
       glEnable(GL_DEPTH_TEST);
-
+      glClearColor(0.3,0.3,0.3,1.0);
     }
 
     void updateModel() {
       model = glm::rotate(model, 0.7f, vec3(0.0f,1.0f,0.0f));
       model = glm::rotate(model, 1.1f, vec3(1.0f,0.0f,0.0f));
       model = glm::rotate(model, 2.3f, vec3(0.0f,0.0f,1.0f));
-    
+
       lightPosX += 0.02f;
 
       if (lightPosX > 1.0) { 
@@ -91,12 +82,10 @@ printf("num meshes = %lu\n", md.size());
     }
 
     void onFrame() {
+      glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       updateModel();
-
-      glViewport(0, 0, width, height);
-      glClearColor(0.3,0.3,0.3,1.0);
 
       program.bind(); {
 	glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
@@ -108,9 +97,7 @@ printf("num meshes = %lu\n", md.size());
 	glUniform3fv(program.uniform("diffuse"), 1, ptr(diffuse)); 
 	glUniform3fv(program.uniform("specular"), 1, ptr(specular)); 
 
-	for (unsigned long i = 0; i < mb.size(); i++) {
-	  mb[i].draw();	
-	}
+	mb.draw();
 
       } program.unbind();
 

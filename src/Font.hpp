@@ -1,10 +1,9 @@
-#ifndef INCLUDE_AL_FONT_AGF_HPP
-#define INCLUDE_AL_FONT_AGF_HPP
+#ifndef INCLUDE_ALU_FONT_HPP
+#define INCLUDE_ALU_FONT_HPP
 
 #include <string>
 #include <map>
 
-//#include "Includes.hpp"
 #include "Texture.hpp"
 #include "Program.hpp"
 #include "MeshData.hpp"
@@ -17,14 +16,11 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-//#include "allocore/math/al_Vec.hpp"
-//#include "allocore/math/al_Matrix4.hpp"
 
 using namespace std;
 using glm::vec2;
 
-
-namespace al{
+namespace aluminum {
 
   
  class Text; //need this forward reference so that Font can call Text's constructors

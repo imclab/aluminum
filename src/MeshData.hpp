@@ -1,5 +1,5 @@
-#ifndef INCLUDE_AL_GRAPHICS_MESHDATA_HPP
-#define INCLUDE_AL_GRAPHICS_MESHDATA_HPP
+#ifndef INCLUDE_ALU_MESHDATA_HPP
+#define INCLUDE_ALU_MESHDATA_HPP
 #include <algorithm>
 #include <map>
 #include <string>
@@ -13,11 +13,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-//#include "allocore/math/al_Vec.hpp"
-//#include "allocore/math/al_Matrix4.hpp"
-//#include "allocore/types/al_Buffer.hpp"
-
-namespace al{
+namespace aluminum {
 
   using glm::to_string;
   using glm::vec3;
