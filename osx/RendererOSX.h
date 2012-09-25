@@ -2,8 +2,8 @@
 #import "CocoaGL.h"
 #include <string>
 
-#ifndef ALLOCORE_RENDERER_NATIVE_OSX_AGF 
-#define ALLOCORE_RENDERER_NATIVE_OSX_AGF
+#ifndef ALLOCORE_RENDERER_OSX 
+#define ALLOCORE_RENDERER_OSX
 
 
 class RendererOSX { 
@@ -16,7 +16,6 @@ public:
   int start();
   int start(std::string _name, int x, int y, int w, int h);
 
-
   void toggleFullScreen();
 
   virtual void onCreate();
@@ -25,6 +24,15 @@ public:
 
   int width;
   int height; 
+
+  long setStartTick(); //set base nanos - called by Cocoa at init
+  long tick(); //calculate amount of time passed since start of program - called by Cocoa prior to each onFrame
+  long now(); //get amount of time passed, assumes calculated already with tick()
+  
+  long nowPlusMillis(long millis);
+  long millisToNano(long millis);
+  long startTick;   
+  long currentTick;   
 
   virtual void mouseDragged(int px, int py);
   virtual void mouseDown(int px, int py);

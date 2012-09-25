@@ -17,13 +17,14 @@ OPTIONS="-O3 -Wreturn-type -Wformat -Wmissing-braces -Wparentheses -Wswitch -Wun
 
 INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR"
 LIBS="$ASSIMP $FREEIMAGE"
-SRC="-x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $EXAMPLE_DIR/*.mm"
+SRC=" -x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $EXAMPLE_DIR/*.mm"
 
 cd $BASE_DIR; pwd
 
 #COMPILE
-echo -e "\nbuilding... \n\nc++ $COCOA $OPTIONS -std=c++11 $LIBS $INCLUDE $SRC -o $EXAMPLE_DIR/$APP \n\n"
-c++ $COCOA $OPTIONS -std=c++11 $LIBS $INCLUDE $SRC -o $EXAMPLE_DIR/$APP
+#echo -e "\nbuilding... \n\nc++ $COCOA $OPTIONS -std=c++11 $LIBS $INCLUDE $SRC -o $EXAMPLE_DIR/$APP \n\n"
+echo -e "\nbuilding... \n\nc++ $COCOA $OPTIONS -std=c++11 -stdlib=libc++ $LIBS $INCLUDE $SRC -o $EXAMPLE_DIR/$APP \n\n"
+c++ $COCOA $OPTIONS -std=c++11 -stdlib=libc++ $LIBS $INCLUDE $SRC -o $EXAMPLE_DIR/$APP
 
 #RUN
 cd $EXAMPLE_DIR && ./$APP && rm ./$APP

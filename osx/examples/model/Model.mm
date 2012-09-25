@@ -5,8 +5,12 @@
 #include "MeshUtils.hpp"
 #include "Program.hpp"
 #include "Includes.hpp"
-#include <vector>
+#include "Behavior.hpp"
 
+#include <vector>
+#include <iostream>
+#include <chrono>
+//#include "chrono_io"
 //#include <glm/glm.hpp>
 //#include <glm/gtx/string_cast.hpp>
 //#include <glm/gtc/matrix_transform.hpp>
@@ -14,11 +18,16 @@
 //#include <glm/gtc/type_ptr.hpp>
 
 using namespace aluminum;
+using std::cout;
+using std::chrono::duration_cast;
+using std::chrono::nanoseconds;
+using std::chrono::milliseconds;
+using std::chrono::high_resolution_clock;
 
 class ModelExample : public RendererOSX {
 
   public:
-
+   
     vec3 diffuse = vec3(0.0,1.0,0.0);
     vec3 specular = vec3(1.0,1.0,1.0);
     vec3 ambient = vec3(0.0,0.0,0.3);
@@ -29,7 +38,11 @@ class ModelExample : public RendererOSX {
     GLint posLoc=0;
     GLint normalLoc=1;
 
+    high_resolution_clock::time_point curTick, prevTick;
+    
     MeshBuffer mb;
+
+    Behavior beh;
 
     void loadMeshes(const std::string& name) {
       mb = MeshUtils::loadMesh(name, posLoc, normalLoc, -1, -1);
@@ -66,22 +79,62 @@ class ModelExample : public RendererOSX {
 
       glEnable(GL_DEPTH_TEST);
       glClearColor(0.3,0.3,0.3,1.0);
+
+      //EasingSine* es = new EasingSine(Easing::IN);
+      //EasingSine* es = new EasingSine(Easing::IN);
+      EasingSine es = EasingSine(Easing::IN);
+
+      beh = Behavior(now()).delay(1000).length(100).range(vec3(0.0, 90.0, 0.0)).reversing(true).repeats(20).easing(es);
+      //beh = Behavior(now()).range(360.0).length(10000);
+
     }
 
     void updateModel() {
-      model = glm::rotate(model, 0.7f, vec3(0.0f,1.0f,0.0f));
-      model = glm::rotate(model, 1.1f, vec3(1.0f,0.0f,0.0f));
-      model = glm::rotate(model, 2.3f, vec3(0.0f,0.0f,1.0f));
+      /*model = glm::rotate(model, 0.7f, vec3(0.0f,1.0f,0.0f));*/
+      /*model = glm::rotate(model, 1.1f, vec3(1.0f,0.0f,0.0f));*/
+      /*model = glm::rotate(model, 2.3f, vec3(0.0f,0.0f,1.0f));*/
+      
+      //vec3 offsets = beh.offsets(tick());
+      
+
+      //beh.tick(tick());
+      if (!beh.isDone) 
+      {
+	vec3 totals = beh.tick(now()).totals();
+	
+	model = glm::mat4();
+	model = glm::rotate(model, 180.0f, vec3(0.0f,1.0f,0.0f));
+	
+	model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));
+	model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));
+	model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));
+  
+//	cout << "offsets = " << glm::to_string(beh.offsets) << "\n";	
+	cout << "totals = " << glm::to_string(totals) << "\n";	
+	
+	/*
+	vec3 offsets = beh.tick(now());
+	printf("o %f %f %f\n", offsets.x,offsets.y,offsets.z);
+	//model = glm::translate(model, beh.tick(now()));
+	model = glm::translate(model, offsets);
+	*/
+//	cout << glm::to_string(model) << "\n";
+
+      }
+      // else {
+//	cout << glm::to_string(model) << "\n";
+ //     }
 
       lightPosX += 0.02f;
 
       if (lightPosX > 1.0) { 
 	lightPosX = -1.0f; 
       }
-
     }
 
     void onFrame() {
+      //tick();
+      
       glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -105,5 +158,5 @@ class ModelExample : public RendererOSX {
 };
 
 int main() {
-  return ModelExample().start(); 
+ return ModelExample().start(); 
 }

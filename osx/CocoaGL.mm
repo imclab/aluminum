@@ -44,7 +44,6 @@
 }
 
 
-
 - (void)keyDown:(NSEvent*)keyDownEvent {
 
   char key = [keyDownEvent keyCode];
@@ -81,8 +80,6 @@
 
   //keyIsPressed = YES;
 }
-
-
 
 
 - (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime
@@ -330,11 +327,12 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 }
 
 bool firstTime = true;
+
 - (void) drawView
 {	 
   [[self openGLContext] makeCurrentContext];
 
-  // We draw on a secondary thread through the display link
+    // We draw on a secondary thread through the display link
   // When resizing the view, -reshape is called automatically on the main thread
   // Add a mutex around to avoid the threads accessing the context simultaneously when resizing
   CGLLockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
@@ -342,6 +340,9 @@ bool firstTime = true;
   NSRect rect = [self bounds];
 
   if (firstTime) {
+
+     
+
     printf("in drawView... bounds = %f,%f,%f,%f\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 
     ((RendererOSX*)renderer)->view = self ;
@@ -349,15 +350,20 @@ bool firstTime = true;
     ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
 
     //OSX seems to *require* a default VAO to do anything, even to load shaders... setting a default here (even though each mesh has its own)
+    //really need to set a DEFAULT VAO, since unbinding a meshbuffer will nullify
+    //   our efforts here... TODO: store _glVaoID as a DefaultVAO and be able to get it whenever
+    //   (ie when mesh buffer unbinds, etc)
     GLuint _glVaoID;
     glGenVertexArrays(1, &_glVaoID );	
     glBindVertexArray( _glVaoID );
 
+    ((RendererOSX*)renderer)->setStartTick();
     ((RendererOSX*)renderer)->onCreate();
 
     firstTime = false;
   }
 
+  ((RendererOSX*)renderer)->tick();
 
   //glViewport(0, 0, (int)rect.size.width, (int)rect.size.height);
   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
