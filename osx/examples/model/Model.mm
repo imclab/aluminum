@@ -84,7 +84,7 @@ class ModelExample : public RendererOSX {
       //EasingSine* es = new EasingSine(Easing::IN);
       EasingSine es = EasingSine(Easing::IN);
 
-      beh = Behavior(now()).delay(1000).length(100).range(vec3(0.0, 90.0, 0.0)).reversing(true).repeats(20).easing(es);
+      beh = Behavior(now()).delay(1000).length(3000).range(vec3(0.0, 90.0, 0.0)).reversing(true).repeats(4).polynomial(Easing::OUT, 4);
       //beh = Behavior(now()).range(360.0).length(10000);
 
     }
@@ -94,12 +94,7 @@ class ModelExample : public RendererOSX {
       /*model = glm::rotate(model, 1.1f, vec3(1.0f,0.0f,0.0f));*/
       /*model = glm::rotate(model, 2.3f, vec3(0.0f,0.0f,1.0f));*/
       
-      //vec3 offsets = beh.offsets(tick());
-      
-
-      //beh.tick(tick());
-      if (!beh.isDone) 
-      {
+      if (!beh.isDone) {
 	vec3 totals = beh.tick(now()).totals();
 	
 	model = glm::mat4();

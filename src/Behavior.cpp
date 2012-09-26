@@ -17,6 +17,7 @@ namespace aluminum {
     looping(false);
     reversing(false);
     repeats(0);
+    linear();
  
     init();
   }
@@ -34,7 +35,6 @@ namespace aluminum {
     isActive = false;
     isScheduled = false;
 
-    isEasing = false;
     dir = 1;
     repeat = 0;
   }
@@ -60,38 +60,48 @@ namespace aluminum {
     return *this;
   }
 
-  Behavior& Behavior::easingSine(EASE kind) {...
-   
-  //Behavior& Behavior::easing(Easing* pe) {
-  Behavior& Behavior::easing(Easing pe) {
+  Behavior& Behavior::linear() {
+    isEasing = false;
+    return *this;
+  }
 
-    Easing* ae = &pe;
-    if(dynamic_cast<EasingSine*>(ae)) {
-      printf(" easing is actually easing sine!\n");
-      exit(0);
-    } else {
-     printf("wtf???\n");
-      exit(0);
-    } 
-
-
-    m_easing = ae;
+  Behavior& Behavior::sine(Easing::EASE ease) {
+    m_easing = new EasingSine(ease);
+    isEasing = true;
+    return *this;
+  }
   
-    /*
-    if(dynamic_cast<EasingSine>(m_easing)) {
-      printf(" 2 is easing sine!\n");
-      exit(0);
-    } else {
-     printf("2 wtf???\n");
-      exit(0);
-    } 
-    */
-
+  Behavior& Behavior::elastic() {
+    m_easing = new EasingElastic();
     isEasing = true;
     return *this;
   }
 
-    Behavior& Behavior::repeats(int _n) { //-1 = forever
+  Behavior& Behavior::elastic(int bounce, double d) {
+    m_easing = new EasingElastic(bounce, d);
+    isEasing = true;
+    return *this;
+  }
+
+  Behavior& Behavior::polynomial(Easing::EASE ease, int power) {
+    m_easing = new EasingPolynomial(ease, power);
+    isEasing = true;
+    return *this;
+  }
+
+  Behavior& Behavior::bounce(Easing::EASE ease) {
+    m_easing = new EasingBounce(ease);
+    isEasing = true;
+    return *this;
+  }
+
+  Behavior& Behavior::bounce(Easing::EASE ease, int bounce, double dW, double dH) {
+    m_easing = new EasingBounce(ease, bounce, dW, dH);
+    isEasing = true;
+    return *this;
+  }
+
+  Behavior& Behavior::repeats(int _n) { //-1 = forever
     numRepeats = _n;
     return *this;
   }
@@ -100,7 +110,7 @@ namespace aluminum {
     isLooping = _is;
     return *this;
   }
-  
+
   Behavior& Behavior::reversing(bool _is) {
     isReversing = _is;
     return *this;
@@ -127,21 +137,21 @@ namespace aluminum {
   //testing sine in ease
   //double easing(double perc) {
   //  return -cos(perc * (M_PI * .5)) + 1.0;
- // }
+  // }
 
   double Behavior::calculateOffsetPercentage(double perc, double prevPerc, int dir) {
 
     if (isEasing) {
       printf("hi isEasing!\n");
-    // printf("perc = %f, prevPrec = %f, offPerc = %f\n", perc, prevPerc, (perc - prevPerc));
-   // double offPerc;
-   // offPerc = easing(perc) - easing(prevPerc);
-   // return offPerc * dir;
-    double offPerc = m_easing->in(perc) - m_easing->in(prevPerc);
-    //offPerc = easing(perc) - easing(prevPerc);
-    return offPerc * dir;
-     
-    
+      // printf("perc = %f, prevPrec = %f, offPerc = %f\n", perc, prevPerc, (perc - prevPerc));
+      // double offPerc;
+      // offPerc = easing(perc) - easing(prevPerc);
+      // return offPerc * dir;
+      double offPerc = m_easing->easeFunc(perc) - m_easing->easeFunc(prevPerc);
+      //offPerc = easing(perc) - easing(prevPerc);
+      return offPerc * dir;
+
+
     } else {
       return (perc - prevPerc) * dir;
     }
