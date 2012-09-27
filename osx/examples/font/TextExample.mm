@@ -112,16 +112,16 @@ class TextExample : public RendererOSX {
       //text2 = font.signedDistanceText2D("0001000").justify(1,1).pen(-1,0).color(vec4(1,1,0.0,0.5)).background(vec4(1,0,0,0.2));
       text2 = font.signedDistanceText2D("2D:2d:2d").justify(0,0).pen(.5,.5);
        
-      //text2.meshFromWidth(1.0, width, height);
+      text2.meshFromWidth(0.4, width, height);
       //text2.meshFromHeight(0.5, width, height);
       //text2.mesh(width, height, 2.0);
-      text2.meshBox(0.8, 0.4, width, height);
+      //text2.meshBox(0.8, 0.4, width, height);
      
 
       text3 = font.signedDistanceText3D("333jddd");
-      //text3.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
+      text3.meshFromWidth(0.75, model, view, proj, ivec4(0,0,width,height) );
       //text3.meshFromHeight(0.1, model, view, proj, ivec4(0,0,width,height) );
-      text3.meshBox(0.75, 1.25, model, view, proj, ivec4(0,0,width,height) );
+      //text3.meshBox(0.75, 1.25, model, view, proj, ivec4(0,0,width,height) );
         
 
       //text2.mesh(width, height, 1.0);
@@ -133,7 +133,7 @@ class TextExample : public RendererOSX {
 
     }
 
-
+  /*
     //nice to put this in the actual text class?
     void drawText(Text t) {
       singleTexture.bind(); {
@@ -149,11 +149,12 @@ class TextExample : public RendererOSX {
 
       } singleTexture.unbind();
     }
+*/
 
     void onReshape() {
-        text2.mesh(width, height, 2.0);
-    
-      //text2.meshFromWidth(1.0, width, height);
+      text2.text("abdfdfsdfcdea", width, height);
+      //text2.mesh(width, height, 2.0);
+      //text2.meshFromHeight(0.7, width, height);
     }
 
     void onFrame() {
@@ -196,22 +197,29 @@ class TextExample : public RendererOSX {
       glClearColor(0.0, 0.0, 0.0, 1); //background color.
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-     // text2.drawText2D(width, height, 3.0+offset);
+      //text2.drawText2D(width, height, 3.0+offset);
+     // text2.drawText2D(width, height, 2.0);
 
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
       view = glm::lookAt(vec3(3.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
       //drawText(text3);
+     // text3.draw(model, view, proj); 
 
       proj = mat4();
       view = mat4();
       model = mat4();
-       drawText(text2);
+
+      //text2.draw(model, view, proj);
+      text2.draw();
+  
+      
+ //     drawText(text2);
 
 
     }
 };
 
 int main() {
-  return TextExample().start("TextDemo", 10, 10, 500, 500); 
+  return TextExample().start("TextDemo", 10, 10, 1200, 400); 
 }

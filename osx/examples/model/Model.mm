@@ -34,7 +34,8 @@ class ModelExample : public RendererOSX {
 
     MeshBuffer mb;
 
-    Behavior beh;
+    Behavior rotateBehavior;
+    Behavior lightBehavior;
 
     void loadMeshes(const std::string& name) {
       mb = MeshUtils::loadMesh(name, posLoc, normalLoc, -1, -1);
@@ -58,10 +59,10 @@ class ModelExample : public RendererOSX {
 
       loadProgram(program, "resources/phong");
 
-      loadMeshes("resources/ducky.obj");
+      //loadMeshes("resources/ducky.obj");
       //loadMeshes("resources/angel.obj");
       //loadMeshes("resources/test.nff");
-      //loadScene(scene, "resources/test3.obj");
+      loadMeshes("resources/test3.obj");
       //loadScene(scene, "resources/toyplane.obj");
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
@@ -72,51 +73,21 @@ class ModelExample : public RendererOSX {
       glEnable(GL_DEPTH_TEST);
       glClearColor(0.3,0.3,0.3,1.0);
 
-      //EasingSine* es = new EasingSine(Easing::IN);
-      //EasingSine* es = new EasingSine(Easing::IN);
-      EasingSine es = EasingSine(Easing::IN);
-
-      beh = Behavior(now()).delay(1000).length(3000).range(vec3(0.0, 90.0, 0.0)).reversing(true).repeats(-1).elastic();
-      //beh = Behavior(now()).range(360.0).length(10000);
+      rotateBehavior = Behavior(now()).delay(1000).length(3000).range(vec3(180.0, 90.0, 360.0)).reversing(true).repeats(-1).sine(Easing::IN);
+      lightBehavior = Behavior(now()).range(2.0).length(1000).reversing(true).repeats(-1);
 
     }
 
     void updateModel() {
-      /*model = glm::rotate(model, 0.7f, vec3(0.0f,1.0f,0.0f));*/
-      /*model = glm::rotate(model, 1.1f, vec3(1.0f,0.0f,0.0f));*/
-      /*model = glm::rotate(model, 2.3f, vec3(0.0f,0.0f,1.0f));*/
       
-      if (!beh.isDone) {
-	vec3 totals = beh.tick(now()).totals();
-	
-	model = glm::mat4();
-	model = glm::rotate(model, 180.0f, vec3(0.0f,1.0f,0.0f));
-	
+	lightPosX += lightBehavior.tick(now()).offset();
+
+	vec3 totals = rotateBehavior.tick(now()).totals();
+	model = glm::rotate(mat4(), 180.0f, vec3(0.0f,1.0f,0.0f));
 	model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));
 	model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));
 	model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));
-  
-//	cout << "offsets = " << glm::to_string(beh.offsets) << "\n";	
-	cout << "totals = " << glm::to_string(totals) << "\n";	
-	
-	/*
-	vec3 offsets = beh.tick(now());
-	printf("o %f %f %f\n", offsets.x,offsets.y,offsets.z);
-	//model = glm::translate(model, beh.tick(now()));
-	model = glm::translate(model, offsets);
-	*/
-//	cout << glm::to_string(model) << "\n";
 
-      }
-      // else {
-//	cout << glm::to_string(model) << "\n";
- //     }
-
-      lightPosX += 0.02f;
-
-      if (lightPosX > 1.0) { 
-	lightPosX = -1.0f; 
-      }
     }
 
     void onFrame() {
@@ -132,7 +103,7 @@ class ModelExample : public RendererOSX {
 	glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
 	glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
 
-	glUniform3f(program.uniform("lightPos"), lightPosX, 0.0f, 0.0f);
+	glUniform3f(program.uniform("lightPos"), lightPosX, 0.0f, -0.3f);
 	glUniform3fv(program.uniform("ambient"), 1, ptr(ambient)); 
 	glUniform3fv(program.uniform("diffuse"), 1, ptr(diffuse)); 
 	glUniform3fv(program.uniform("specular"), 1, ptr(specular)); 

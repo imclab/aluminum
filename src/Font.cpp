@@ -118,15 +118,27 @@ namespace aluminum {
   }
 
   Text2D& Text2D::meshFromWidth(float w, int sw, int sh) {
+    float scaleW = ( ((float)font.lineHeight/(float)sw) / (float)(font.lineHeight) ) ;
+    float scaleH = ( ((float)font.lineHeight/(float)sh) / (float)(font.lineHeight) ) ;
+
+    float ar = scaleH/scaleW;
+
     meshW = w;
-    meshH = w * ((float)pixelH/(float)pixelW);
+    meshH = w * ((float)pixelH/(float)pixelW) * ar;
+    
     mesh2D(sw, sh);
     return updateMesh();
   }
 
   Text2D& Text2D::meshFromHeight(float h, int sw, int sh) {
-    meshW = h * ((float)pixelW/(float)pixelH);
+    float scaleW = ( ((float)font.lineHeight/(float)sw) / (float)(font.lineHeight) ) ;
+    float scaleH = ( ((float)font.lineHeight/(float)sh) / (float)(font.lineHeight) ) ;
+
+    float ar = scaleW/scaleH;
+    
+    meshW = h * ((float)pixelW/(float)pixelH) * ar;
     meshH = h;
+   
     mesh2D(sw, sh);
     return updateMesh();
   }
@@ -155,6 +167,15 @@ namespace aluminum {
     return updateMesh();
   }
 
+  Text2D& Text2D::text(string _text) {
+    updateText(_text);
+    return *this; //you will need to call one of the mesh functions!
+  }
+
+  Text2D& Text2D::text(string _text, int sw, int sh) {
+    updateText(_text);
+    return meshFromHeight(meshH, sw, sh);
+  }
  
   Text2D& Text2D::justify(float _jx, float _jy) {
     justifyX = _jx;
@@ -169,6 +190,7 @@ namespace aluminum {
     updateMesh();
     return *this;
   }
+
 
   Text2D& Text2D::updateMesh() {
     float bx0, bx1, by0, by1; 
@@ -201,7 +223,6 @@ namespace aluminum {
     float scaleH = ( ((float)font.lineHeight/(float)screenH) / (float)(font.lineHeight) ) * scaleFont;
   //  printf("scaleW , scaleH = %f %f\n", scaleW , scaleH );
 
-
     //TranslateYOffset = -(fontHeight - font.base) * (yScale*0.5);
 
     //calculate background extent
@@ -218,14 +239,15 @@ namespace aluminum {
     float pen_x = bx0 + ((font.padding/2) * scaleW);
     float pen_y = by0;
 
-    float x, y, w, h, s0, s1, t0, t1;
+    //float x, y, w, h, s0, s1, t0, t1;
+    float x0, x1, y0, y1, s0, s1, t0, t1;
     Glyph* glyph;
 
-    for( size_t i=0; i < text.length(); ++i) {
+    for( size_t i=0; i < m_text.length(); ++i) {
 
-      if (getGlyphLocationInFontAtlas(text[i], glyph, pen_x, pen_y, scaleW, scaleH, x,y,w,h,s0,s1,t0,t1)) {
+       if (getGlyphLocationInFontAtlas(m_text[i], glyph, pen_x, pen_y, scaleW, scaleH, x0, x1, y0, y1,s0,s1,t0,t1)) {
 
-	drawGlyph( vec2(x,y), vec2(x+w, y+h), vec2(s0,t0), vec2(s1,t1) );
+	drawGlyph( vec2(x0,y0), vec2(x1, y1), vec2(s0,t0), vec2(s1,t1) );
 	pen_x += glyph->xadvance * scaleW; 
 
       } else {
@@ -236,15 +258,11 @@ namespace aluminum {
   }
 
 
-
-
-
-
   Text::Text(){}
   Text::Text(Font& _f, const string& _text, bool _useSignedDistance) {
 
     font = _f;
-    text = _text;
+    m_text = _text;
 
     initDefaultVals();
     initDefaultShaders(_useSignedDistance);
@@ -253,19 +271,52 @@ namespace aluminum {
 
     mesh(vec2(0,0), vec2(meshW, meshH));
     updateTexture();
+  }
  
-    //updateMesh();
-    //updateTexture();
- }
+  //grab the mesh buffer if you want to do something with it manually
+  MeshBuffer& Text::getMeshBuffer() {
+    return meshBuffer;
+  }
+
+  //grab the fbo texture if you want to do something with it manually
+  Texture& Text::getTexture() {
+    return texture;
+  }
 
 
-  //hmm
-  //if texturefont - when resizing don't need to make new texture because it won't make a difference, just scale current texture
-  //if signed distance then need to make new texture of a larger/smaller size - else will get fuzzy
-  //i guess the default is always resize, can't hurt
+  //grab the text
+  string& Text::getText() { 
+    return m_text; 
+  }
+ 
+
+  void Text::draw() {
+    draw(mat4(),mat4());
+  }
+  
+  void Text::draw(mat4 M, mat4 V, mat4 P) {
+    draw(V*M, P);
+  }
+     
+  void Text::draw(mat4 MV, mat4 P) {
+    
+    tp.bind(); {
+	glUniformMatrix4fv(tp.uniform("modelview"), 1, 0, ptr(MV));
+	glUniformMatrix4fv(tp.uniform("proj"), 1, 0, ptr(P));
+
+	glUniform1i(tp.uniform("tex0"), 0);
+
+	texture.bind(GL_TEXTURE0); {
+	  meshBuffer.draw();	
+	} texture.unbind(GL_TEXTURE0);
+
+      } tp.unbind();
+    }
+
+
   Text& Text::updateTexture() {
 
-        if (textureW >= MAX_FBO_SIZE) {
+    if (textureW >= MAX_FBO_SIZE) {
       float ar = (float) textureH / (float) textureW;
       textureW = MAX_FBO_SIZE;
       textureH = max((int)(textureW * ar), 1);
@@ -295,38 +346,69 @@ namespace aluminum {
 
   void Text::initDefaultShaders(bool _useSD) {
 
+    //draw fbo texture to screen
+    tp.create();
+    tp.attach(VSH_singleTexture, GL_VERTEX_SHADER);
+    glBindAttribLocation(tp.id(), posLoc, "vertexPosition");
+    glBindAttribLocation(tp.id(), texCoordLoc, "vertexTexCoord");
+    tp.attach(FSH_singleTexture, GL_FRAGMENT_SHADER);
+    tp.link();
+
+    //draw background to fbo
     bp.create();
     bp.attach(VSH_background, GL_VERTEX_SHADER);
     glBindAttribLocation(bp.id(), posLoc, "vertexPosition");
     bp.attach(FSH_background, GL_FRAGMENT_SHADER);
     bp.link();
 
+    //draw text from either signed distance atlas or texture atlas to fbo
     p.create();
     p.attach(VSH_font, GL_VERTEX_SHADER);
     glBindAttribLocation(p.id(), posLoc, "vertexPosition");
     glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
-    
     if (_useSD) {
       p.attach(FSH_signedDistanceFont, GL_FRAGMENT_SHADER);
     } else {
       p.attach(FSH_textureFont, GL_FRAGMENT_SHADER);
     }
-
     p.link();
   }
 
+  //will be required to reset mesh + texture by calling one of the mesh functions
+  Text& Text::updateText(string _t) {
+    m_text = _t;
+    pixelW = getTextPixelWidth() + font.padding;
+    pixelH = font.lineHeight;
+    return *this;
+  }
+
+  //swtich to a custom glyph drawing program
   Text& Text::program(Program& _p) {
     p = _p;
     return updateTexture();
   }
 
+  //switch to custom background and glyph drawing programs
   Text& Text::programs(Program& _p, Program& _bp) {
     p = _p;
     bp = _bp;
     return updateTexture();
   }
 
- 
+  //set the text color - for use with default shaders
+  Text& Text::color(vec4 _txtColor) {
+    txtColor = _txtColor;
+    return updateTexture();
+  }
+
+  //set the background color - for use with default shaders
+  Text& Text::background(vec4 _backgroundColor) {
+    bgColor = _backgroundColor;
+    return updateTexture();
+  }
+
+
+  //private method to used to calculate meshbuffer 
   Text& Text::mesh(vec2 LL, vec2 UR) {
     MeshData md;
     addRectangle(md, LL, UR, vec2(0,0), vec2(1,1));
@@ -342,30 +424,22 @@ namespace aluminum {
 
     posLoc=0;
     texCoordLoc=1;
-
     
+    //the dimensons of the mesh buffer, in model coords, updated by all the "mesh" functions
     meshW = 1.0;
     meshH = 1.0;
 
+    
+    //pixel dimensions of the text from the actual font altas, only changes if text changes (or switching to a tighter fit... to do)
     pixelW = getTextPixelWidth() + font.padding;
     pixelH = font.lineHeight;
-    
     //pixelH = font.highestChar;
     
+    //texture dimensions of the fbo. can be different that the pixelW/H, especially when using signed distance text. Will change if the mesh changes size, moves, rotates. Basically we want to match the texture size to how many pixels the text is taking up.
     textureW = pixelW;
     textureH = pixelH;
 
     mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
-  }
-
-  Text& Text::color(vec4 _txtColor) {
-    txtColor = _txtColor;
-    return updateTexture();
-  }
-
-  Text& Text::background(vec4 _backgroundColor) {
-    bgColor = _backgroundColor;
-    return updateTexture();
   }
 
   int Text::getTextPixelWidth() {
@@ -373,18 +447,19 @@ namespace aluminum {
     int tw = 0;
     Glyph* glyph;
 
-    for( size_t i=0; i < text.length(); ++i) {
-      if (font.getGlyphs().find(text[i]) == font.getGlyphs().end()) {
+    for( size_t i=0; i < m_text.length(); ++i) {
+      if (font.getGlyphs().find(m_text[i]) == font.getGlyphs().end()) {
 	tw += defaultAdvance; 
 	continue;
       }
-      glyph = font.getGlyphs()[text[i]];
+      glyph = font.getGlyphs()[m_text[i]];
       tw += glyph->xadvance;
     }
 
     return tw;
   }
 
+  //draw text into fbo
   void Text::drawGlyph(vec2 vLL, vec2 vUR, vec2 tLL, vec2 tUR) {
 
     MeshData md;
@@ -402,6 +477,7 @@ namespace aluminum {
     } p.unbind();
   }
 
+  //draw background into fbo
   void Text::drawBackground(float bx0, float bx1, float by0, float by1) {
 
     glEnable( GL_BLEND );
@@ -418,22 +494,29 @@ namespace aluminum {
     } bp.unbind();
   }
 
-  bool Text::getGlyphLocationInFontAtlas(const char c, Glyph* &glyph, const float pen_x, const float pen_y, const float scaleW, const float scaleH, float& x, float& y, float& w, float& h, float& s0, float& s1, float& t0,float& t1) {
+  //return (x0,y0)(x1,y1) clip coords of glyph in font atlas and (s0,t0),(s1,t1) tex coords 
+  bool Text::getGlyphLocationInFontAtlas(const char c, Glyph* &glyph, const float pen_x, const float pen_y, const float scaleW, const float scaleH, float& x0, float& x1, float& y0, float& y1, float& s0, float& s1, float& t0, float& t1) {
 
     if (font.getGlyphs().find(c) == font.getGlyphs().end()) {
+      //if we can't find the glyph, return false to indicate need to advance some default amount
       return false;
     }
 
     glyph = font.getGlyphs()[c];
 
-    x = pen_x + ((glyph->xoff - font.padding/2) * scaleW);
-    y = pen_y + ( (-font.base + glyph->yoff-glyph->h - font.padding/2) * scaleH); 
-    w = ((glyph->w + font.padding) * (scaleW)); 
-    h = ((glyph->h + font.padding) * (scaleH));
+    //LL clipcoord
+    x0 = pen_x + ((glyph->xoff - font.padding/2) * scaleW);
+    y0 = pen_y + ( (-font.base + glyph->yoff-glyph->h - font.padding/2) * scaleH); 
+    //UR clipcoord
+    x1 = x0 + ((glyph->w + font.padding) * (scaleW)); 
+    y1 = y0 + ((glyph->h + font.padding) * (scaleH));
 
+    //LL texcoord
     s0 = glyph->s0;
-    s1 = glyph->s1;
     t0 = (1.0 - glyph->t1);
+    
+    //UR texcoord
+    s1 = glyph->s1;
     t1 = (1.0 - glyph->t0);
 
     return true; 
@@ -468,14 +551,15 @@ namespace aluminum {
     float pen_x = bx0 + ((font.padding/2) * scaleW);
     float pen_y = by0;
 
-    float x, y, w, h, s0, s1, t0, t1;
+    //float x, y, w, h, s0, s1, t0, t1;
+    float x0, y0, x1, y1, s0, s1, t0, t1;
     Glyph* glyph;
 
-    for( size_t i=0; i < text.length(); ++i) {
+    for( size_t i=0; i < m_text.length(); ++i) {
 
-      if (getGlyphLocationInFontAtlas(text[i], glyph, pen_x, pen_y, scaleW, scaleH, x,y,w,h,s0,s1,t0,t1)) {
+      if (getGlyphLocationInFontAtlas(m_text[i], glyph, pen_x, pen_y, scaleW, scaleH, x0, x1, y0, y1,s0,s1,t0,t1)) {
 
-	drawGlyph( vec2(x,y), vec2(x+w, y+h), vec2(s0,t0), vec2(s1,t1) );
+	drawGlyph( vec2(x0,y0), vec2(x1, y1), vec2(s0,t0), vec2(s1,t1) );
 	pen_x += glyph->xadvance * scaleW; 
 
       } else {

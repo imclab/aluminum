@@ -90,11 +90,7 @@ namespace aluminum {
 
     
       Font font;
-      string text;
-      Texture texture;
-      Program p;
-      Program bp;
-
+      
       vec4 txtColor; 
       vec4 bgColor; 
 
@@ -106,36 +102,52 @@ namespace aluminum {
       Text& color(vec4 _txtColor); //update texture
       Text& background(vec4 _bgColor); //update texture
 
+      //can grab this data if you want to use it for non-standard things
+      MeshBuffer& getMeshBuffer();
+      Texture& getTexture();
+      string& getText();
+ 
+      //draw the FBO texture
+      void draw(mat4 M, mat4 V, mat4 P);
+      void draw(mat4 MV, mat4 P);
+      void draw();
+
       //void drawText(float px, float py, float sw, float sh, float scaleFont);
 
-      //Text& meshFromWidth(float w); //update mesh
-      
-      MeshBuffer meshBuffer; 
+     
       float meshW, meshH; //the w+h of the mesh buffer holding the text, in world coords (clip coords for now) 
       GLint textureW, textureH; //the w+h of the texture used (for signed dist text, can be some scalar of pixelW/H
       int pixelW, pixelH; //the w+h of text taken from the font atlas
 
     protected: 
-     Text();
+      Text();
       Text(Font& f, const std::string& text);
       Text(Font& f, const std::string& text, bool _useSignedDistance);
-      //Text(Program& _p, Program& _bp, Font& _f, const string& _text);
 
       Text& updateTexture(); 
       int getTextPixelWidth();
       Text& mesh(vec2 LL, vec2 UR); //update mesh
 
+      Text& updateText(string _text);
+
 
       void drawTextIntoFBO();
 
+      string m_text;
+
+      Program p;
+      Program bp;
+      Program tp;
 
       FBO fbo;
-
+      MeshBuffer meshBuffer;
+      Texture texture;
+     
       void initDefaultVals();
       void initDefaultShaders(bool _useSD);
 
       //void drawGlyph(MeshBuffer& mb);
-      Texture makeTexture();
+      //Texture makeTexture();
       //void makeTexture2(FBO& fbo, float pen_x, float pen_y, float screenW, float screenH, float scaleFont);
 
       GLint posLoc;
@@ -196,6 +208,26 @@ namespace aluminum {
 	"\toutputFrag = vec4(textColor.rgb, a);\n"
 	"}\n";
 
+      string VSH_singleTexture = "#version 150\n"
+	"uniform mat4 proj;\n"
+	"uniform mat4 modelview;\n"
+	//"uniform mat4 model;\n"
+	"in vec4 vertexPosition;\n"
+	"in vec4 vertexTexCoord;\n"
+	"out vec2 texCoord;\n"
+	"void main() {\n"
+	"\ttexCoord = vertexTexCoord.xy;\n"
+	"\tgl_Position = proj * modelview * vertexPosition;\n"
+	"}\n"; 
+
+      string FSH_singleTexture = "#version 150\n"
+	"uniform sampler2D tex0;\n"
+	"in vec2 texCoord;\n"
+	"out vec4 outputFrag;\n"
+	"void main(){\n"
+	"\toutputFrag = texture(tex0, texCoord);\n"
+	"}\n";
+
   };
 
   /*
@@ -247,6 +279,11 @@ namespace aluminum {
       
       Text2D& justify(float jx, float jy);
       Text2D& pen(float _px, float _py);
+
+      Text2D& text(string _text);
+      Text2D& text(string _text, int sw, int sh);
+  
+
 
 
 
