@@ -142,7 +142,6 @@ namespace aluminum {
   double Behavior::calculateOffsetPercentage(double perc, double prevPerc, int dir) {
 
     if (isEasing) {
-      printf("hi isEasing!\n");
       // printf("perc = %f, prevPrec = %f, offPerc = %f\n", perc, prevPerc, (perc - prevPerc));
       // double offPerc;
       // offPerc = easing(perc) - easing(prevPerc);
@@ -213,12 +212,12 @@ namespace aluminum {
 
     if (tick < nextTime) {
       isActive = false;
-      printf("too soon!!!!!!!!!!!!!!!!!!! %lu < %lu \n", tick, nextTime);
+      //printf("too soon!!!!!!!!!!!!!!!!!!! %lu < %lu \n", tick, nextTime);
 
       return *this;
     }
   
-    printf("tick =  %lu \n", tick);
+    //printf("tick =  %lu \n", tick);
 
 
 
@@ -226,18 +225,18 @@ namespace aluminum {
     percentage = getRawPercentage(tick - nextTime, loopLength);
 
     if (percentage < 0.0) {
-      printf("somehow percentage < 0!  %f\n", percentage);
+      //printf("somehow percentage < 0!  %f\n", percentage);
     }
 
     if (percentage >= 1.0) {
-      printf("we went too far!!!!!!!!!!!!!!!!!!! %f\n", percentage);
-          printf("we went too far , prevPercentage = %f\n", prevPercentage);
+      //printf("we went too far!!!!!!!!!!!!!!!!!!! %f\n", percentage);
+          //printf("we went too far , prevPercentage = %f\n", prevPercentage);
 
       overshoot = percentage - 1.0;
       percentage = 1.0;
       offsetPercentage = calculateOffsetPercentage(percentage, prevPercentage, dir);
 
-        printf("so only go this far... offset percentage............... %f\n", offsetPercentage);
+        //printf("so only go this far... offset percentage............... %f\n", offsetPercentage);
 
       prevPercentage = percentage;
 
@@ -252,7 +251,7 @@ namespace aluminum {
 	  if (isLooping == true) {
 
 	    offsetPercentage = calculateOffsetPercentage(0.0, 1.0 - offsetPercentage, dir);
-	    printf("last looping... offset percentage... %f\n", offsetPercentage);
+	    //printf("last looping... offset percentage... %f\n", offsetPercentage);
 	    m_offsets += ranges * (float)offsetPercentage;
 	    m_totals += m_offsets;
 	  } else {

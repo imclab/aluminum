@@ -23,13 +23,222 @@ using glm::mat4;
 
 namespace aluminum {
 
-  Text Font::signedDistanceText(const string& _text) {
-    return Text::Text(*this, _text, true);
+  int MAX_FBO_SIZE = 1024;
+ 
+  /* Font factory methods to build either a Text2D or a Text3D */
+  
+  Text2D Font::signedDistanceText2D(const string& _text) {
+    return Text2D::Text2D(*this, _text, true);
   }
 
-  Text Font::text(const string& _text) {
-    return Text::Text(*this, _text, false);
+  Text3D Font::signedDistanceText3D(const string& _text) {
+    return Text3D::Text3D(*this, _text, true);
   }
+
+  Text2D Font::text2D(const string& _text) {
+    return Text2D::Text2D(*this, _text, false);
+  }
+
+  Text3D Font::text3D(const string& _text) {
+    return Text3D::Text3D(*this, _text, false);
+  }
+
+  /* Text3D */
+  
+  Text3D::Text3D() : Text() {initDefaultVals3D();}
+  Text3D::Text3D(Font& f, const std::string& text) : Text(f, text) {initDefaultVals3D();}
+  Text3D::Text3D(Font& _f, const string& _text, bool _useSignedDistance) : Text(_f, _text, _useSignedDistance) {initDefaultVals3D();}
+
+  void Text3D::initDefaultVals3D() {
+  }
+
+  void Text3D::mesh3D(mat4 M, mat4 V, mat4 P, ivec4 VP) {
+
+    //center...
+    vec4 p0 = V * M * vec4(0, 0, 0, 1);    
+    vec4 p1 = V * M * vec4(meshW, meshH, 0, 1);    
+    float z = (p0.z + p1.z) / 2.0;
+    
+    //cout << "p0 : " << glm::to_string(p0) << "\n";
+    //cout << "p1 : " << glm::to_string(p1) << "\n";
+    //cout << "z: " << z << " \n";
+
+    vec3 sLL = glm::project(vec3(-meshW/2.0, -meshH/2.0, z), mat4(), P, VP);
+    vec3 sUR = glm::project(vec3(meshW/2.0, meshH/2.0, z), mat4(), P, VP);
+    textureW = (sUR.x - sLL.x);
+    textureH = (sUR.y - sLL.y);
+
+    //printf("in meshFromWidth PROJECT : texture W/H = %d/%d\n", textureW, textureH);
+
+    mesh(vec2(0,0), vec2(meshW, meshH));
+    updateTexture();
+  }
+
+  
+  Text3D& Text3D::meshFromWidth(float w, mat4 M, mat4 V, mat4 P, ivec4 VP) {
+    meshW = w;
+    meshH = w * ((float)pixelH/(float)pixelW);
+
+    mesh3D(M, V, P, VP);
+    return *this;
+  }
+
+  Text3D& Text3D::meshFromHeight(float h, mat4 M, mat4 V, mat4 P, ivec4 VP) {
+    meshH = h;
+    meshW = h * ((float)pixelW/(float)pixelH);
+    mesh3D(M, V, P, VP);
+    return *this;
+  }
+
+  Text3D& Text3D::meshBox(float w, float h, mat4 M, mat4 V, mat4 P, ivec4 VP) {
+    meshW = w;
+    meshH = h;
+    mesh3D(M, V, P, VP);
+    return *this;
+  }
+ 
+ 
+
+  Text2D::Text2D() : Text() {initDefaultVals2D();}
+  Text2D::Text2D(Font& f, const std::string& text) : Text(f, text) {initDefaultVals2D();}
+  Text2D::Text2D(Font& _f, const string& _text, bool _useSignedDistance) : Text(_f, _text, _useSignedDistance) {initDefaultVals2D();}
+
+  void Text2D::initDefaultVals2D() {
+    penX = 0;
+    penY = 0;
+
+    justifyX=-1;
+    justifyY=-1;
+  }
+
+  void Text2D::mesh2D(int sw, int sh) {
+    //assuming -1->+1 for screen //in reality use glProject method
+    textureW = sw * (meshW * 0.5);
+    textureH = sh * (meshH * 0.5);
+  }
+
+  Text2D& Text2D::meshFromWidth(float w, int sw, int sh) {
+    meshW = w;
+    meshH = w * ((float)pixelH/(float)pixelW);
+    mesh2D(sw, sh);
+    return updateMesh();
+  }
+
+  Text2D& Text2D::meshFromHeight(float h, int sw, int sh) {
+    meshW = h * ((float)pixelW/(float)pixelH);
+    meshH = h;
+    mesh2D(sw, sh);
+    return updateMesh();
+  }
+
+  Text2D& Text2D::meshBox(float w, float h, int sw, int sh) {
+    meshW = w;
+    meshH = h;
+    mesh2D(sw, sh);
+    return updateMesh();
+  }
+
+
+   //set mesh to the exact size of the font - probably most common to use 
+  Text2D&  Text2D::mesh(int sw, int sh) {
+   return mesh(sw, sh, 1.0);
+  }
+
+  Text2D&  Text2D::mesh(int sw, int sh, float scaleFont) {
+    float scaleW = ( ((float)font.lineHeight/(float)sw) / (float)(font.lineHeight) ) * (1.0 * scaleFont);
+    float scaleH = ( ((float)font.lineHeight/(float)sh) / (float)(font.lineHeight) ) * (1.0 * scaleFont);
+    meshW = (getTextPixelWidth() + font.padding) * scaleW;
+    meshH = font.lineHeight * scaleH; //use font.highestChar for a tighter fit
+    textureW = (int) (pixelW * scaleFont * 0.5);
+    textureH = (int) (pixelH * scaleFont * 0.5);
+    printf(".....................textureW/H = %d/%d\n", textureW, textureH);
+    return updateMesh();
+  }
+
+ 
+  Text2D& Text2D::justify(float _jx, float _jy) {
+    justifyX = _jx;
+    justifyY = _jy;
+    updateMesh();
+    return *this;
+  }
+  
+  Text2D& Text2D::pen(float _jx, float _jy) {
+    penX = _jx;
+    penY = _jy;
+    updateMesh();
+    return *this;
+  }
+
+  Text2D& Text2D::updateMesh() {
+    float bx0, bx1, by0, by1; 
+    justifyText(penX, penY, justifyX, justifyY, meshW, meshH, bx0, bx1, by0, by1);
+    //printf( "bx0/by0, bx1/by1 = %f/%f, %f,%f \n", bx0, by0, bx1, by1);
+    Text::mesh(vec2(bx0,by0), vec2(bx1,by1));
+    updateTexture();
+    return *this;
+  }
+
+
+  void Text2D::justifyText(const float pen_x, const float pen_y, const float j_x, const float j_y, const float bw, const float bh, float &bx0, float &bx1, float &by0, float &by1) {
+
+    //justify x
+    float jx = (-bw/2) -j_x * 0.5 * bw;
+    bx0 = pen_x + jx;
+    bx1 = bx0 + bw;
+
+    //justify y
+    float jy = (-bh/2) -j_y * 0.5 * bh;
+    by0 = pen_y + jy;
+    by1 = by0 + bh;
+  }
+
+
+  //draws text directly to screen - no fbo  -- do we want this?
+  void Text2D::drawText2D(float screenW, float screenH, float scaleFont) {
+
+    float scaleW = ( ((float)font.lineHeight/(float)screenW) / (float)(font.lineHeight) ) * scaleFont;
+    float scaleH = ( ((float)font.lineHeight/(float)screenH) / (float)(font.lineHeight) ) * scaleFont;
+  //  printf("scaleW , scaleH = %f %f\n", scaleW , scaleH );
+
+
+    //TranslateYOffset = -(fontHeight - font.base) * (yScale*0.5);
+
+    //calculate background extent
+    float bw = (getTextPixelWidth() + font.padding) * scaleW;
+    float bh = font.lineHeight * scaleH; //use font.highestChar for a tighter fit
+    
+    float bx0, bx1, by0, by1; 
+    justifyText(penX, penY, justifyX, justifyY, bw, bh, bx0, bx1, by0, by1);
+
+    //draw background...
+    drawBackground(bx0, bx1, by0, by1);
+
+    //draw glyphs...
+    float pen_x = bx0 + ((font.padding/2) * scaleW);
+    float pen_y = by0;
+
+    float x, y, w, h, s0, s1, t0, t1;
+    Glyph* glyph;
+
+    for( size_t i=0; i < text.length(); ++i) {
+
+      if (getGlyphLocationInFontAtlas(text[i], glyph, pen_x, pen_y, scaleW, scaleH, x,y,w,h,s0,s1,t0,t1)) {
+
+	drawGlyph( vec2(x,y), vec2(x+w, y+h), vec2(s0,t0), vec2(s1,t1) );
+	pen_x += glyph->xadvance * scaleW; 
+
+      } else {
+	pen_x += defaultAdvance * scaleW;
+      }
+
+    }
+  }
+
+
+
+
+
 
   Text::Text(){}
   Text::Text(Font& _f, const string& _text, bool _useSignedDistance) {
@@ -41,8 +250,11 @@ namespace aluminum {
     initDefaultShaders(_useSignedDistance);
  
     fbo.create(1,1); //textureW, textureH);
+
+    mesh(vec2(0,0), vec2(meshW, meshH));
+    updateTexture();
  
-    updateMesh();
+    //updateMesh();
     //updateTexture();
  }
 
@@ -53,9 +265,7 @@ namespace aluminum {
   //i guess the default is always resize, can't hurt
   Text& Text::updateTexture() {
 
-    int MAX_FBO_SIZE = 512;
-
-    if (textureW >= MAX_FBO_SIZE) {
+        if (textureW >= MAX_FBO_SIZE) {
       float ar = (float) textureH / (float) textureW;
       textureW = MAX_FBO_SIZE;
       textureH = max((int)(textureW * ar), 1);
@@ -124,102 +334,6 @@ namespace aluminum {
     return *this;
   }
 
-  //set mesh to the exact size of the font 
-  Text&  Text::mesh(int sw, int sh) {
-   return mesh(sw, sh, 1.0);
-  }
-
-  Text&  Text::mesh(int sw, int sh, float scaleFont) {
-    float scaleW = ( ((float)font.lineHeight/(float)sw) / (float)(font.lineHeight) ) * (2.0 * scaleFont);
-    float scaleH = ( ((float)font.lineHeight/(float)sh) / (float)(font.lineHeight) ) * (2.0 * scaleFont);
-    meshW = (getTextPixelWidth() + font.padding) * scaleW;
-    meshH = font.lineHeight * scaleH; //use font.highestChar for a tighter fit
-    textureW = (int) (pixelW * scaleFont);
-    textureH = (int) (pixelH * scaleFont);
-    return updateMesh();
-    
-    //float bx0, bx1, by0, by1; 
-    //justifyText(penX, penY, meshW, meshH, bx0, bx1, by0, by1);
-    //mesh(vec2(bx0,by0), vec2(bx1,by1));
-    //return *this;
-  }
-
-  //this is the right idea... think about it
-  
-  //mesh position altered by ? pen? 
-  //pen doesn't really make sense if passing in the model
-  //neither does justify - they should be for 2D text only
-  //
-  //if 3D text, just use model / modelview
-  
-
-  Text& Text::meshFromWidth(float w, mat4 M, mat4 V, mat4 P, ivec4 VP) {
-  //Text& Text::meshFromWidth(float w, float Z, mat4 P, int W, int H) {
-    meshW = w * 1.0;
-    meshH = w * ((float)pixelH/(float)pixelW) * 1.0;
-
-    //center...
-    vec4 p0 = V * M * vec4(0, 0, 0, 1);    
-    vec4 p1 = V * M * vec4(meshW, meshH, 0, 1);    
-    float z = (p0.z + p1.z) / 2.0;
-    
-    //cout << "p0 : " << glm::to_string(p0) << "\n";
-    //cout << "p1 : " << glm::to_string(p1) << "\n";
-    //cout << "z: " << z << " \n";
-
-    vec3 sLL = glm::project(vec3(-meshW/2.0, -meshH/2.0, z), mat4(), P, VP);
-    vec3 sUR = glm::project(vec3(meshW/2.0, meshH/2.0, z), mat4(), P, VP);
-    textureW = (sUR.x - sLL.x);
-    textureH = (sUR.y - sLL.y);
-
-    //printf("in meshFromWidth PROJECT : texture W/H = %d/%d\n", textureW, textureH);
-
-    mesh(vec2(0,0), vec2(meshW, meshH));
-
-    updateTexture();
-
-    return *this;
-
-
-  }
-
-
-
-  //2D
-  Text& Text::meshFromWidth(float w, int sw, int sh) {
-    meshW = w * 1.0;
-    meshH = w * ((float)pixelH/(float)pixelW) * 1.0;
-
-    //assuming -1->+1 for screen //in reality use glProject method
-    textureW = sw * (meshW * 0.5);
-    textureH = sh * (meshH * 0.5);
-
-    printf("in meshFromWidth NORMAL : texture W/H = %d/%d\n", textureW, textureH);
-
-    return updateMesh();
-  }
-
-  //2D
-  Text& Text::meshFromHeight(float h, int sw, int sh) {
-    meshW = h * ((float)pixelW/(float)pixelH);
-    meshH = h;
-
-    //assuming -1->+1 for screen //in reality use glProject method
-    textureW = sw * (meshW * 0.5);
-    textureH = sh * (meshH * 0.5);
-    return updateMesh();
-  }
-
-
-  //private - called when justify or pen is changed
-  Text& Text::updateMesh() {
-    float bx0, bx1, by0, by1; 
-    justifyText(penX, penY, justifyX, justifyY, meshW, meshH, bx0, bx1, by0, by1);
-    printf( "bx0/by0, bx1/by1 = %f/%f, %f,%f \n", bx0, by0, bx1, by1);
-    mesh(vec2(bx0,by0), vec2(bx1,by1));
-    updateTexture();
-    return *this;
-  }
 
   void Text::initDefaultVals() {
 
@@ -229,36 +343,19 @@ namespace aluminum {
     posLoc=0;
     texCoordLoc=1;
 
-    penX = 0;
-    penY = 0;
-
-    justifyX=-1;
-    justifyY=-1;
-
+    
     meshW = 1.0;
     meshH = 1.0;
 
     pixelW = getTextPixelWidth() + font.padding;
     pixelH = font.lineHeight;
-
+    
+    //pixelH = font.highestChar;
+    
     textureW = pixelW;
     textureH = pixelH;
 
     mb1.init(mesh1, posLoc, -1, texCoordLoc, -1); 
-  }
-
-  Text& Text::justify(float _jx, float _jy) {
-    justifyX = _jx;
-    justifyY = _jy;
-    updateMesh();
-    return *this;
-  }
-
-  Text& Text::pen(float _jx, float _jy) {
-    penX = _jx;
-    penY = _jy;
-    updateMesh();
-    return *this;
   }
 
   Text& Text::color(vec4 _txtColor) {
@@ -342,19 +439,6 @@ namespace aluminum {
     return true; 
   }
 
-  void Text::justifyText(const float pen_x, const float pen_y, const float j_x, const float j_y, const float bw, const float bh, float &bx0, float &bx1, float &by0, float &by1) {
-
-    //justify x
-    float jx = (-bw/2) -j_x * 0.5 * bw;
-    bx0 = pen_x + jx;
-    bx1 = bx0 + bw;
-
-    //justify y
-    float jy = (-bh/2) -j_y * 0.5 * bh;
-    by0 = pen_y + jy;
-    by1 = by0 + bh;
-  }
-
   
   //draws text into FBO
   void Text::drawTextIntoFBO() {
@@ -401,58 +485,7 @@ namespace aluminum {
     }
   }
 
-  //draws text to screen
-  void Text::drawText2(float pen_x, float pen_y, float screenW, float screenH, float scaleFont) {
-
-    float scaleW = ( ((float)font.lineHeight/(float)screenW) / (float)(font.lineHeight) ) * scaleFont;
-    float scaleH = ( ((float)font.lineHeight/(float)screenH) / (float)(font.lineHeight) ) * scaleFont;
-  //  printf("scaleW , scaleH = %f %f\n", scaleW , scaleH );
-
-
-    //TranslateYOffset = -(fontHeight - font.base) * (yScale*0.5);
-
-    //calculate background extent
-    float bw = (getTextPixelWidth() + font.padding) * scaleW;
-    float bh = font.lineHeight * scaleH; //use font.highestChar for a tighter fit
-    float bx0, bx1, by0, by1; 
-
-    //justify 
-    justifyText(pen_x, pen_y, justifyX, justifyY, bw, bh, bx0, bx1, by0, by1);  //real one
-    //justifyText(-1,-1, -1,-1, bw, bh, bx0, bx1, by0, by1);
-
-    // bx0 = -1;
-    // bx1 = 1;
-    // by0 = -1;
-    // by1 = 1;
-
- //   printf("bx0/bx1/by0/by1 = %f/%f/%f/%f\n", bx0, bx1, by0, by1);
- //   printf("bw/bh = %f/%f\n", bw, bh);
-
-    //draw background...
-    drawBackground(bx0, bx1, by0, by1);
-
-    //draw glyphs...
-    pen_x = bx0 + ((font.padding/2) * scaleW);
-    pen_y = by0;
-
-    float x, y, w, h, s0, s1, t0, t1;
-    Glyph* glyph;
-
-    for( size_t i=0; i < text.length(); ++i) {
-
-      if (getGlyphLocationInFontAtlas(text[i], glyph, pen_x, pen_y, scaleW, scaleH, x,y,w,h,s0,s1,t0,t1)) {
-
-	drawGlyph( vec2(x,y), vec2(x+w, y+h), vec2(s0,t0), vec2(s1,t1) );
-	pen_x += glyph->xadvance * scaleW; 
-
-      } else {
-	pen_x += defaultAdvance * scaleW;
-      }
-
-    }
-  }
-
-
+  
 
 
 

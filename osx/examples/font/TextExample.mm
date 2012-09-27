@@ -56,8 +56,9 @@ class TextExample : public RendererOSX {
     GLint texCoordLoc=1;
 
     Texture texture;
-    Text text;
-    Text text2;
+    //Text text;
+    Text2D text2;
+    Text3D text3;
 
     Behavior beh;
     Behavior beh2;
@@ -87,7 +88,7 @@ class TextExample : public RendererOSX {
       //  when not using clip space!
       
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-      view = glm::lookAt(vec3(2.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
+      view = glm::lookAt(vec3(3.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
 
      // proj = mat4();
      // view = mat4();
@@ -108,12 +109,20 @@ class TextExample : public RendererOSX {
       Font font;
       loadFont(font, "resources/checkSD"); //signed distance font
       printf("in onCreate : font ptr = %p\n", &font);
-      text2 = font.signedDistanceText("0001000").justify(1,1).pen(-1,0).color(vec4(1,1,0.0,0.5)).background(vec4(1,0,0,0.2));
+      //text2 = font.signedDistanceText2D("0001000").justify(1,1).pen(-1,0).color(vec4(1,1,0.0,0.5)).background(vec4(1,0,0,0.2));
+      text2 = font.signedDistanceText2D("2D:2d:2d").justify(0,0).pen(.5,.5);
        
-     //text2.meshFromWidth(1.0, width, height);
-     text2.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
-      
+      //text2.meshFromWidth(1.0, width, height);
+      //text2.meshFromHeight(0.5, width, height);
+      //text2.mesh(width, height, 2.0);
+      text2.meshBox(0.8, 0.4, width, height);
+     
 
+      text3 = font.signedDistanceText3D("333jddd");
+      //text3.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
+      //text3.meshFromHeight(0.1, model, view, proj, ivec4(0,0,width,height) );
+      text3.meshBox(0.75, 1.25, model, view, proj, ivec4(0,0,width,height) );
+        
 
       //text2.mesh(width, height, 1.0);
       //text2.meshFromWidth(1.0);
@@ -125,6 +134,7 @@ class TextExample : public RendererOSX {
     }
 
 
+    //nice to put this in the actual text class?
     void drawText(Text t) {
       singleTexture.bind(); {
 	glUniformMatrix4fv(singleTexture.uniform("model"), 1, 0, ptr(model));
@@ -141,8 +151,9 @@ class TextExample : public RendererOSX {
     }
 
     void onReshape() {
-     
-      text2.meshFromWidth(1.0, width, height);
+        text2.mesh(width, height, 2.0);
+    
+      //text2.meshFromWidth(1.0, width, height);
     }
 
     void onFrame() {
@@ -154,25 +165,29 @@ class TextExample : public RendererOSX {
 
 
       //update model - 3D text only
-
+      
       float total = beh.tick(now()).total();
       //printf("offset = %f\n", beh.offset());
-      printf("total = %f\n", total);
+      //printf("total = %f\n", total);
       model = mat4();
 
-      model = glm::translate(model, vec3(-text2.meshW/2.0, -text2.meshH/2.0, 0.0));
+      model = glm::translate(model, vec3(-text3.meshW/2.0, -text3.meshH/2.0, 0.0));
 
 
-      model = glm::translate(model, vec3(text2.meshW / 2.0, text2.meshH/2.0, 0.0));
+      model = glm::translate(model, vec3(text3.meshW / 2.0, text3.meshH/2.0, 0.0));
       model = glm::rotate(model, total, vec3(0,0,1));   
-      model = glm::translate(model, vec3(-text2.meshW / 2.0, -text2.meshH/2.0, 0.0));
+      model = glm::translate(model, vec3(-text3.meshW / 2.0, -text3.meshH/2.0, 0.0));
 
-      text2.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
+      //text3.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
+      //text3.meshFromHeight(0.5, model, view, proj, ivec4(0,0,width,height) );
+      
 
+      text2.pen(-0.0, -0.0);
+      text2.justify(0,0);
 
 
       glViewport(0, 0, width, height);
-      
+
       //depth test must be OFF when drawing text - should probably put this in the Font class directly...
       //glEnable( GL_DEPTH_TEST);
       glEnable( GL_BLEND );
@@ -181,9 +196,19 @@ class TextExample : public RendererOSX {
       glClearColor(0.0, 0.0, 0.0, 1); //background color.
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      text2.drawText2(0, 0, width, height, 1.0);
+     // text2.drawText2D(width, height, 3.0+offset);
 
-      drawText(text2);
+
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      view = glm::lookAt(vec3(3.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
+      //drawText(text3);
+
+      proj = mat4();
+      view = mat4();
+      model = mat4();
+       drawText(text2);
+
+
     }
 };
 

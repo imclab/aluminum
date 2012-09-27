@@ -24,10 +24,10 @@ using glm::mat4;
 
 namespace aluminum {
 
-  
- class Text; //need this forward reference so that Font can call Text's constructors
- class TextBuffer;
- 
+
+  class Text3D;
+  class Text2D; //need this forward reference so that Font can call Text's constructors
+  class Text; //need this forward reference so that Font can call Text's constructors 
 
   class Glyph {
     public:
@@ -70,9 +70,12 @@ namespace aluminum {
 
 
       //make a texture/mesh object out of part of the signed font texture
-      Text signedDistanceText(const string& _text);
+      Text2D signedDistanceText2D(const string& _text);
+      Text3D signedDistanceText3D(const string& _text);
+
       //make a texture/mesh object out of part of the font texture
-      Text text(const string& _text);
+      Text2D text2D(const string& _text);
+      Text3D text3D(const string& _text);
 
 
 
@@ -82,15 +85,10 @@ namespace aluminum {
       static Glyph* makeGlyph(std::map<std::string, std::string>& props);   
   };
 
-
   class Text {
     public:
 
-      Text();
-      Text(Font& f, const std::string& text);
-      Text(Font& f, const std::string& text, bool _useSignedDistance);
-      //Text(Program& _p, Program& _bp, Font& _f, const string& _text);
-
+    
       Font font;
       string text;
       Texture texture;
@@ -103,64 +101,52 @@ namespace aluminum {
       Text& program(Program& _p); //update texture
       Text& programs(Program& _p, Program& _bp); //update texture
 
-      Text& justify(float _jx, float _jy); //update mesh
-      Text& pen(float _px, float _py); //update mesh
+      //Text& justify(float _jx, float _jy); //update mesh
+      //Text& pen(float _px, float _py); //update mesh
       Text& color(vec4 _txtColor); //update texture
       Text& background(vec4 _bgColor); //update texture
 
-      void drawText2(float px, float py, float sw, float sh, float scaleFont);
       //void drawText(float px, float py, float sw, float sh, float scaleFont);
-      
-      //Text& meshFromWidth(float w); //update mesh
-      Text& meshFromWidth(float w, int sw, int sh);
-      Text& meshFromWidth(float w, mat4 M, mat4 V, mat4 P, ivec4 VP); //testing...
-   
-      //Text& meshFromHeight(float h); //update mesh
-      Text& meshFromHeight(float h, int sw, int sh); //update mesh
-      Text& mesh(int screenW, int screenH); //update mesh
-      Text& mesh(int screenW, int screenH, float scaleVal); //update mesh
 
+      //Text& meshFromWidth(float w); //update mesh
+      
       MeshBuffer meshBuffer; 
-     float meshW, meshH; //the w+h of the mesh buffer holding the text, in world coords (clip coords for now) 
+      float meshW, meshH; //the w+h of the mesh buffer holding the text, in world coords (clip coords for now) 
       GLint textureW, textureH; //the w+h of the texture used (for signed dist text, can be some scalar of pixelW/H
       int pixelW, pixelH; //the w+h of text taken from the font atlas
 
-    private:
+    protected: 
+     Text();
+      Text(Font& f, const std::string& text);
+      Text(Font& f, const std::string& text, bool _useSignedDistance);
+      //Text(Program& _p, Program& _bp, Font& _f, const string& _text);
+
+      Text& updateTexture(); 
+      int getTextPixelWidth();
+      Text& mesh(vec2 LL, vec2 UR); //update mesh
+
+
       void drawTextIntoFBO();
-      
+
 
       FBO fbo;
-      Text& updateMesh();
-      Text& updateTexture(); 
-      Text& mesh(vec2 LL, vec2 UR); //update mesh
-     
 
-       void initDefaultVals();
+      void initDefaultVals();
       void initDefaultShaders(bool _useSD);
-
-      int getTextPixelWidth();
-      void justifyText(const float pen_x, const float pen_y, const float j_x, const float j_y, const float bw, const float bh, float &bx0, float &bx1, float &by0, float &by1); 
 
       //void drawGlyph(MeshBuffer& mb);
       Texture makeTexture();
       //void makeTexture2(FBO& fbo, float pen_x, float pen_y, float screenW, float screenH, float scaleFont);
 
-      float penX, penY, justifyX, justifyY;
-
-
       GLint posLoc;
       GLint texCoordLoc;
 
-      int defaultAdvance = 20;
+      int defaultAdvance = 20; //maybe should be able to set this?
 
       bool getGlyphLocationInFontAtlas(const char c, Glyph* &glyph, const float pen_x, const float pen_y, const float scaleW, const float scaleH, float& x, float& y, float& w, float& h, float& s0, float& s1, float& t0,float& t1);
 
-
       void drawBackground(float bx0, float bx1, float by0, float by1);
       void drawGlyph(vec2 vLL, vec2 vUR, vec2 tLL, vec2 tUR);
-
-
-      //void drawBackground(Program& p, MeshBuffer& mb);
 
       MeshData mesh1;
       MeshBuffer mb1;
@@ -200,33 +186,82 @@ namespace aluminum {
 
       string FSH_signedDistanceFont = "#version 150\n"
 	"uniform vec4 textColor;\n"
-    "uniform sampler2D tex0;\n"
-    "in vec2 texCoord;\n"
-    "out vec4 outputFrag;\n"
-    "void main(){\n"
-    "\tfloat dist = texture(tex0, texCoord).r;\n"
-    "\tfloat width = fwidth(dist);\n"
-    "\tfloat a = smoothstep(0.5-width, 0.5+width, dist);\n"
-    "\toutputFrag = vec4(textColor.rgb, a);\n"
-    "}\n";
-
-
+	"uniform sampler2D tex0;\n"
+	"in vec2 texCoord;\n"
+	"out vec4 outputFrag;\n"
+	"void main(){\n"
+	"\tfloat dist = texture(tex0, texCoord).r;\n"
+	"\tfloat width = fwidth(dist);\n"
+	"\tfloat a = smoothstep(0.5-width, 0.5+width, dist);\n"
+	"\toutputFrag = vec4(textColor.rgb, a);\n"
+	"}\n";
 
   };
 
   /*
   //put justify, pen, etc, in here... multiple meshes possible for a single TextTexture obj - or is this overkill???
   class TextBuffer : public MeshBuffer {
-    public:
-      TextBuffer();
- 
-      MeshBuffer mb;
-      float w, h;
-    
+  public:
+  TextBuffer();
+
+  MeshBuffer mb;
+  float w, h;
+
 
   };
   */	
 
+
+  class Text3D : public Text {
+    public:
+      Text3D();
+      Text3D(Font& f, const std::string& text);
+      Text3D(Font& f, const std::string& text, bool _useSignedDistance);
+      Text3D& meshFromWidth(float w, mat4 M, mat4 V, mat4 P, ivec4 VP);
+      Text3D& meshFromHeight(float h, mat4 M, mat4 V, mat4 P, ivec4 VP);
+      Text3D& meshBox(float w, float h, mat4 M, mat4 V, mat4 P, ivec4 VP);
+    protected:
+       void initDefaultVals3D();
+       void mesh3D(mat4 M, mat4 V, mat4 P, ivec4 VP);
+
+  };
+
+
+  class Text2D : public Text {
+    public:
+      Text2D();
+      Text2D(Font& f, const std::string& text);
+      Text2D(Font& f, const std::string& text, bool _useSignedDistance);
+      
+      //set font size based on width or height (can be fuzzy if using a texture font atlas)
+      Text2D& meshFromWidth(float w, int sw, int sh);
+      Text2D& meshFromHeight(float h, int sw, int sh);
+      Text2D& meshBox(float w, float h, int sw, int sh);
+
+      //for setting the font exactly to its proper size (not as important when using signed distance font atlas)
+      Text2D& mesh(int screenW, int screenH);
+      Text2D& mesh(int screenW, int screenH, float scaleVal);
+
+      void drawText2D(float sw, float sh, float scaleFont);
+
+      
+      Text2D& justify(float jx, float jy);
+      Text2D& pen(float _px, float _py);
+
+
+
+    protected:
+      float penX, penY, justifyX, justifyY;
+
+      void justifyText(const float pen_x, const float pen_y, const float j_x, const float j_y, const float bw, const float bh, float &bx0, float &bx1, float &by0, float &by1); 
+
+      void mesh2D(int sw, int sh);
+      Text2D& updateMesh();
+      void initDefaultVals2D();
+
+
+
+  };
 
 
 } // ::al
