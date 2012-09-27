@@ -11,11 +11,14 @@ namespace aluminum {
     public:
 
       Texture() {}
-      static Texture& loadTextureData2D(Texture &texture, std::string file);
+
+      //static Texture& loadTexture(std::string file);
+  
+      static Texture& loadTexture(Texture &texture, std::string file);
 
       Texture(int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
       Texture(GLubyte* data, int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
-      void create2D();
+      Texture& create2D();
       Texture& update() ;
 
       Texture& bind (GLenum textureUnit);
@@ -24,7 +27,6 @@ namespace aluminum {
       Texture& unbind ();
 
       GLuint id();
-
       GLenum kind();
       GLint wrapMode();
       GLint minFilter();

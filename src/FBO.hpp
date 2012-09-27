@@ -36,8 +36,8 @@ class FBO {
   
 public:
 
-GLuint width;
-GLuint height;
+GLint width;
+GLint height;
 
  //FBO(Texture t);
  FBO();

@@ -32,7 +32,7 @@
 #include "Texture.hpp"
 #include <vector>
 
-using namespace al;
+using namespace aluminum;
 
 class TextureExample : public RendererOSX {
   
@@ -51,7 +51,7 @@ class TextureExample : public RendererOSX {
     float bloomAmt = 0.0;
 
     void loadTexture(Texture& t, const std::string& name) {
-      t.loadTextureData2D(t, name).create2D();
+      t.loadTexture(t, name);
     } 
 
     void loadProgram(Program &p, const std::string& name) {
@@ -75,7 +75,7 @@ class TextureExample : public RendererOSX {
       mb1.init(MeshUtils::makeRectangle(), posLoc, -1, texCoordLoc, -1); 
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-      view = glm::lookAt(vec3(0.0,0.0,-3), vec3(0,0,0), vec3(0,1,0) );
+      view = glm::lookAt(vec3(0.0,0.0,-2), vec3(0,0,0), vec3(0,1,0) );
       model = glm::mat4();
 
       glEnable(GL_DEPTH_TEST);

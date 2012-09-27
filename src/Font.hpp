@@ -19,6 +19,8 @@
 
 using namespace std;
 using glm::vec2;
+using glm::ivec4;
+using glm::mat4;
 
 namespace aluminum {
 
@@ -54,6 +56,7 @@ namespace aluminum {
       Texture texture;
 
       Font();
+      //static Font& loadFont(Texture& texture, const std::string& _file);
       static Font& loadFont(Font& font, Texture& texture, const std::string& _file);
       int tw;
       int th;
@@ -106,27 +109,33 @@ namespace aluminum {
       Text& background(vec4 _bgColor); //update texture
 
       void drawText2(float px, float py, float sw, float sh, float scaleFont);
-      void drawText(float px, float py, float sw, float sh, float scaleFont);
+      //void drawText(float px, float py, float sw, float sh, float scaleFont);
+      
       //Text& meshFromWidth(float w); //update mesh
       Text& meshFromWidth(float w, int sw, int sh);
+      Text& meshFromWidth(float w, mat4 M, mat4 V, mat4 P, ivec4 VP); //testing...
+   
       //Text& meshFromHeight(float h); //update mesh
       Text& meshFromHeight(float h, int sw, int sh); //update mesh
       Text& mesh(int screenW, int screenH); //update mesh
       Text& mesh(int screenW, int screenH, float scaleVal); //update mesh
 
       MeshBuffer meshBuffer; 
+     float meshW, meshH; //the w+h of the mesh buffer holding the text, in world coords (clip coords for now) 
+      GLint textureW, textureH; //the w+h of the texture used (for signed dist text, can be some scalar of pixelW/H
+      int pixelW, pixelH; //the w+h of text taken from the font atlas
 
     private:
+      void drawTextIntoFBO();
+      
+
       FBO fbo;
       Text& updateMesh();
       Text& updateTexture(); 
       Text& mesh(vec2 LL, vec2 UR); //update mesh
      
 
-      float meshW, meshH; //the w+h of the mesh buffer holding the text, in world coords (clip coords for now) 
-      GLuint textureW, textureH; //the w+h of the texture used (for signed dist text, can be some scalar of pixelW/H
-      int pixelW, pixelH; //the w+h of text taken from the font atlas
-      void initDefaultVals();
+       void initDefaultVals();
       void initDefaultShaders(bool _useSD);
 
       int getTextPixelWidth();

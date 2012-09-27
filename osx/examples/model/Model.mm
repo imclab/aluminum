@@ -10,12 +10,6 @@
 #include <vector>
 #include <iostream>
 #include <chrono>
-//#include "chrono_io"
-//#include <glm/glm.hpp>
-//#include <glm/gtx/string_cast.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/matrix_access.hpp>
-//#include <glm/gtc/type_ptr.hpp>
 
 using namespace aluminum;
 using std::cout;
@@ -38,8 +32,6 @@ class ModelExample : public RendererOSX {
     GLint posLoc=0;
     GLint normalLoc=1;
 
-    high_resolution_clock::time_point curTick, prevTick;
-    
     MeshBuffer mb;
 
     Behavior beh;
@@ -84,7 +76,7 @@ class ModelExample : public RendererOSX {
       //EasingSine* es = new EasingSine(Easing::IN);
       EasingSine es = EasingSine(Easing::IN);
 
-      beh = Behavior(now()).delay(1000).length(3000).range(vec3(0.0, 90.0, 0.0)).reversing(true).repeats(4).polynomial(Easing::OUT, 4);
+      beh = Behavior(now()).delay(1000).length(3000).range(vec3(0.0, 90.0, 0.0)).reversing(true).repeats(-1).elastic();
       //beh = Behavior(now()).range(360.0).length(10000);
 
     }

@@ -27,43 +27,42 @@
 #include "Texture.hpp"
 #include "FBO.hpp"
 #include "Font.hpp"
+#include "Behavior.hpp"
 
 #define GLM_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 
 #include <iostream>
+#include <chrono>
 
 
-using namespace al;
+using namespace aluminum;
 
 using glm::to_string;
 using glm::vec3;
 using glm::vec4;
+using glm::ivec4;
 using glm::mat4;
 
 class TextExample : public RendererOSX {
   public:
 
-    Mat4f model, view, proj;
+    mat4 model, view, proj;
 
-    Program program, passthrough, backgroundProgram;
+    Program program, singleTexture, backgroundProgram;
 
     GLint posLoc=0;
     GLint texCoordLoc=1;
 
     Texture texture;
-    MeshBuffer mb1, mb2;
-    //FBO fbo;      
-    Font font;
     Text text;
     Text text2;
 
-    void loadTexture(Texture& t, const std::string& name) {
-      t.loadTextureData2D(t, name).create2D();
-    } 
+    Behavior beh;
+    Behavior beh2;
 
-    void loadProgram(Program &p, const std::string& name) {
+    void loadProgram(Program& p, const std::string& name) {
 
       p.create();
 
@@ -76,149 +75,114 @@ class TextExample : public RendererOSX {
       p.link();
     }
 
-    void loadBackgroundProgram(Program &p, const std::string& name) {
-
-      p.create();
-
-      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
-      glBindAttribLocation(p.id(), posLoc, "vertexPosition");
-
-      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
-
-      p.link();
-    }
-
-    void loadFont(Font &fa, const std::string& name) {
-      //fa = Font(name);
+    void loadFont(Font& font, const std::string& name) {
       Texture fontTex;
-      loadTexture(fontTex, name + ".png"); 
-
-
-      fa.loadFont(fa, fontTex, name);
-      std::cout << "texture name ... " << name << "\n";
-      //loadTexture(texture, name + ".png");
-      //loadAtlas(name + ".fnt");
-
-      // exit(0);
+      Texture::loadTexture(fontTex, name + ".png");
+      Font::loadFont(font, fontTex, name);
     }
 
     void onCreate() {
 
+      //still need to test the glm::project method to get right font size
+      //  when not using clip space!
+      
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      view = glm::lookAt(vec3(2.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
 
-      // loadBackgroundProgram(backgroundProgram, "resources/background");
+     // proj = mat4();
+     // view = mat4();
+      model = mat4();
 
-      loadProgram(passthrough, "resources/texture");
+      vec3 sLL = glm::project(vec3(0,0,0), view*model, proj, ivec4(0,0,width,height));
+      vec3 sUR = glm::project(vec3(1,1,0), view*model, proj, ivec4(0,0,width,height));
 
-      //normal font atlas
-      //loadProgram(program, "resources/textureFont");
-      loadFont(font, "resources/ooo");
-
-      //signed distance font atals
-      // loadProgram(program, "resources/signedDistanceFont");
-      //loadFont(font, "resources/checkSD");
-
-      // text = Text(program, font, "{[;!@}]|0");
-      //text2 = Text(backgroundProgram, font, "ajkjf38&^Q").justify(0,0).background(Vec4f(0,1,0,1)).color(Vec4f(1.0,0,0.0,1.0));
-
-      // text2 = Text(program, backgroundProgram, font, "abcdefghij").justify(0,0).background(Vec4f(0,1,0,1)).color(Vec4f(1.0,0,0.0,1.0));
-
-      //text2 = font.signedDistanceText("abc").justify(0,0);  
-      //text2 = font.text("abcdef").justify(-1,-1).pen(-1,-1).meshFromHeight(mb2, 0.6);  
-      //text2 = font.text("0001000").justify(-1,0).pen(0,0).program(program).color(Vec4f(1,1,1,1)).background(Vec4f(0,0,0,0));
-      //text2 = font.signedDistanceText("0001000").justify(0,0).pen(0,0).color(Vec4f(1,1,1,1)).background(Vec4f(1,0,0,1));
-      text2 = font.text("0001000").justify(0,0).pen(0,0).color(Vec4f(1,1,1,1)).background(Vec4f(1,0,0,1));
-
-      text2.meshFromWidth(2.0, width, height);
-      //text2.mesh(width, height, 1.0);
-      //text2.meshFromWidth(1.0);
+      cout << " LL: " << glm::to_string(sLL) << " \n UR: " << glm::to_string(sUR) << "\n";
 
 
-      //text2 = font.signedDistanceText("0001000").justify(-1,-1).pen(-1,-1).mesh(width, height).color(Vec4f(1,1,1,1)).background(Vec4f(0,0,0,0));  
+
+      loadProgram(singleTexture, "resources/texture");
+
+      //loadFont(font, "resources/ooo"); //texture font
+      //text2 = font.text("0001000").justify(0,0).pen(0,0).color(vec4(1,1,1,1)).background(vec4(1,0,0,1));
+
+      Font font;
+      loadFont(font, "resources/checkSD"); //signed distance font
+      printf("in onCreate : font ptr = %p\n", &font);
+      text2 = font.signedDistanceText("0001000").justify(1,1).pen(-1,0).color(vec4(1,1,0.0,0.5)).background(vec4(1,0,0,0.2));
+       
+     //text2.meshFromWidth(1.0, width, height);
+     text2.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
       
 
 
-      // proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      //  view = Matrix4f::lookAt(Vec3f(0.0,0.0,3), Vec3f(0,0,0), Vec3f(0,1,0) );
-      proj = Matrix4f::identity();
-      view = Matrix4f::identity();
-      model = Matrix4f::identity();
+      //text2.mesh(width, height, 1.0);
+      //text2.meshFromWidth(1.0);
 
-Vec4f a = Vec4f(5,6,7,8);
-vec4 blah = vec4(a.x, a.y, a.z, a.w);
+      
+    beh = Behavior(now()).delay(1000).length(8000).range(360.0).repeats(-1).sine(Easing::IN).reversing(true);
+    beh2 = Behavior(now()).delay(1000).length(5000).range(-5.0).repeats(-1).reversing(true);
 
- vec4 Position = vec4(glm::vec3(0.0), 1.0);
-   mat4 Model = mat4(1.0);
-   Model[3] = vec4(1.0, 1.0, 0.0, 1.0);
-   vec4 Transformed = Model * Position;
-   
-  vec3 Hey = Transformed.xyz();
-  
-  std::cout << to_string(Hey) << "\n";
-  
-  std::cout << Transformed[0];
-  std::cout << "bye...\n";
-
-exit(0);
     }
 
 
     void drawText(Text t) {
-      passthrough.bind(); {
-	glUniformMatrix4fv(passthrough.uniform("model"), 1, 0, model.ptr());
-	glUniformMatrix4fv(passthrough.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(passthrough.uniform("proj"), 1, 0, proj.ptr());
+      singleTexture.bind(); {
+	glUniformMatrix4fv(singleTexture.uniform("model"), 1, 0, ptr(model));
+	glUniformMatrix4fv(singleTexture.uniform("view"), 1, 0, ptr(view));
+	glUniformMatrix4fv(singleTexture.uniform("proj"), 1, 0, ptr(proj));
 
-	glUniform1i(passthrough.uniform("tex0"), 0);
+	glUniform1i(singleTexture.uniform("tex0"), 0);
 
 	t.texture.bind(GL_TEXTURE0); {
 	  t.meshBuffer.draw();	
 	} t.texture.unbind(GL_TEXTURE0);
 
-      } passthrough.unbind();
+      } singleTexture.unbind();
     }
 
-    float scaleFont = 0.99;
-    float px = -1.0;
-    int fn = 0;
-    float textw = 0.1;
-    float dir = 1;  
+    void onReshape() {
+     
+      text2.meshFromWidth(1.0, width, height);
+    }
 
     void onFrame() {
 
-/*
-      text2.meshFromWidth(textw, width, height);
-      textw += 0.5 * dir;
-      if (textw > 8.0) {
-	textw = 8.0; dir *= -1;
-      }
-      else if (textw < 0.1) {
-	textw = 0.1; dir *= -1;
-      }
-      //text2.justify(px, -1);
-      //text2.color(Vec4f(0.0,1.0,0.0,1.0));
-      if (scaleFont < 1.0) {
-	//	text2.background(Vec4f(0.0,scaleFont,0.0,1.0));
-	fn++;
-      }
-      px += 0.01;
-*/
+      //update view     
+
+      float offset = beh2.tick(now()).total();
+      //view = glm::lookAt(vec3(0.0,0.0,5.0+offset), vec3(0,0,0), vec3(0,1,0) );
+
+
+      //update model - 3D text only
+
+      float total = beh.tick(now()).total();
+      //printf("offset = %f\n", beh.offset());
+      printf("total = %f\n", total);
+      model = mat4();
+
+      model = glm::translate(model, vec3(-text2.meshW/2.0, -text2.meshH/2.0, 0.0));
+
+
+      model = glm::translate(model, vec3(text2.meshW / 2.0, text2.meshH/2.0, 0.0));
+      model = glm::rotate(model, total, vec3(0,0,1));   
+      model = glm::translate(model, vec3(-text2.meshW / 2.0, -text2.meshH/2.0, 0.0));
+
+      text2.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
+
+
 
       glViewport(0, 0, width, height);
+      
+      //depth test must be OFF when drawing text - should probably put this in the Font class directly...
+      //glEnable( GL_DEPTH_TEST);
       glEnable( GL_BLEND );
       glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
       glClearColor(0.0, 0.0, 0.0, 1); //background color.
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      text2.drawText2(0, -0.5, width, height, scaleFont);
+      text2.drawText2(0, 0, width, height, 1.0);
 
-      // scaleFont -= 0.004;
-
-      //if (scaleFont > 1.0) {scaleFont = 0.0;}
-
-
-      //text2.pen(0.0, 0.0);
-      //drawText(text, mb1);
       drawText(text2);
     }
 };
