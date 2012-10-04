@@ -17,7 +17,7 @@ OPTIONS="-O3 -Wreturn-type -Wformat -Wmissing-braces -Wparentheses -Wswitch -Wun
 
 INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR"
 LIBS="$ASSIMP $FREEIMAGE"
-SRC=" -x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $EXAMPLE_DIR/*.mm"
+SRC=" -x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $EXAMPLE_DIR/$APP.mm"
 
 cd $BASE_DIR; pwd
 

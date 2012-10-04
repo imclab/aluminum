@@ -4,6 +4,9 @@
 
 namespace aluminum {
 
+  using std::cout;
+  using glm::to_string;
+
   //will merge multiple meshes
   MeshBuffer MeshUtils::loadMesh(const std::string& path, int pL, int nL, int tL, int cL) {
 
@@ -14,7 +17,13 @@ namespace aluminum {
     for (unsigned int i = 0; i < s->meshes(); i++) {
       MeshData tmp;
       s->meshWithIndices(i, tmp);
-      tmp.transform( glm::scale(mat4(), vec3(s->getScaleVal())) );
+      
+      mat4 t = mat4();
+      //t = glm::translate(t, vec3(0,-13.0,0));
+      t = glm::scale(t, vec3(s->getScaleVal()));
+      t = glm::translate(t, -vec3(1.888721, 28.287216, 5.450432));
+       tmp.transform( t );
+      //tmp.transform( glm::scale(mat4(), vec3(s->getScaleVal())) );
       modelMesh.addMesh(tmp); //merge this mesh into single mesh
     }
 
@@ -82,7 +91,7 @@ namespace aluminum {
        aiProcess_FindInvalidData |
        aiProcess_ImproveCacheLocality |
        aiProcess_OptimizeMeshes;
-       */
+    */ 
 
     const aiScene * scene = aiImportFile(path.c_str(), flags);
 
@@ -222,7 +231,9 @@ namespace aluminum {
   float MeshUtils::Scene :: getScaleVal() const {
     vec3 min, max;
     getBounds(min,max);
+    cout << "in getScaleVal() : bounds min = " << glm::to_string(min) << ", max = " << glm::to_string(max) << "\n";
     vec3 scene_center = (min + max) * vec3(0.5,0.5,0.5);
+    cout << "in getScaleVal() : scene center = " << to_string(scene_center) << "\n";
 
     float scaleVal = max[0] - min[0];
     scaleVal = std::max(max[1] - min[1], scaleVal);

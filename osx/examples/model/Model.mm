@@ -60,21 +60,22 @@ class ModelExample : public RendererOSX {
       loadProgram(program, "resources/phong");
 
       //loadMeshes("resources/ducky.obj");
-      //loadMeshes("resources/angel.obj");
+      loadMeshes("resources/angel.obj");
       //loadMeshes("resources/test.nff");
-      loadMeshes("resources/test3.obj");
+      //loadMeshes("resources/test3.obj");
+      //loadMeshes("resources/A1.obj");
       //loadScene(scene, "resources/toyplane.obj");
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
       view = glm::lookAt(vec3(0.0,0.0,-5), vec3(0,0,0), vec3(0,1,0) );
       model = glm::rotate(glm::mat4(), 180.0f, vec3(0.0,1.0,0.0));
-      model = glm::translate(model, vec3(0.0f,-0.0f,0.0f));
+      //model = glm::translate(model, vec3(0.0f,-0.0f,0.0f));
 
       glEnable(GL_DEPTH_TEST);
       glClearColor(0.3,0.3,0.3,1.0);
 
-      rotateBehavior = Behavior(now()).delay(1000).length(3000).range(vec3(180.0, 90.0, 360.0)).reversing(true).repeats(-1).sine(Easing::IN);
-      lightBehavior = Behavior(now()).range(2.0).length(1000).reversing(true).repeats(-1);
+      rotateBehavior = Behavior(now()).delay(1000).length(15000).range(vec3(180.0, 90.0, 360.0)).reversing(true).repeats(-1).sine();
+      lightBehavior = Behavior(now()).range(2.0).length(20000).reversing(true).repeats(-1).sine(Easing::IN);
 
     }
 
@@ -83,10 +84,12 @@ class ModelExample : public RendererOSX {
 	lightPosX += lightBehavior.tick(now()).offset();
 
 	vec3 totals = rotateBehavior.tick(now()).totals();
-	model = glm::rotate(mat4(), 180.0f, vec3(0.0f,1.0f,0.0f));
-	model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));
-	model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));
-	model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));
+	model = glm::mat4();
+	//model = glm::translate(model, vec3(0.0f,-2.0f,0.0f));
+	/*model = glm::rotate(model, 180.0f, vec3(0.0f,1.0f,0.0f));*/
+	/*model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));*/
+	/*model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));*/
+	/*model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));*/
 
     }
 

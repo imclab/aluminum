@@ -65,6 +65,10 @@ namespace aluminum {
     return *this;
   }
 
+  Behavior& Behavior::sine() {
+    return sine(Easing::IN);
+  }
+ 
   Behavior& Behavior::sine(Easing::EASE ease) {
     m_easing = new EasingSine(ease);
     isEasing = true;
@@ -143,14 +147,8 @@ namespace aluminum {
 
     if (isEasing) {
       // printf("perc = %f, prevPrec = %f, offPerc = %f\n", perc, prevPerc, (perc - prevPerc));
-      // double offPerc;
-      // offPerc = easing(perc) - easing(prevPerc);
-      // return offPerc * dir;
       double offPerc = m_easing->easeFunc(perc) - m_easing->easeFunc(prevPerc);
-      //offPerc = easing(perc) - easing(prevPerc);
       return offPerc * dir;
-
-
     } else {
       return (perc - prevPerc) * dir;
     }

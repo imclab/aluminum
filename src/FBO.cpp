@@ -3,7 +3,7 @@
 #include <sstream>
 #include "FBO.hpp"
 
-namespace aluminum {
+namespace aluminum{
 
 ///////////////////////////////////////////////////////////////////////////////
 // convert OpenGL 3.2 core profile's internal format enum to string

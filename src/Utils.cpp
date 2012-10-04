@@ -17,6 +17,7 @@
 namespace aluminum {
   using std::vector;
   using glm::vec3;
+  using glm::vec4;
 
   void Utils::randomSeed() {
     srand((unsigned)time(0)); 
@@ -24,6 +25,21 @@ namespace aluminum {
 
   float Utils::random() {
     return glm::compRand1(0,1);
+  }
+
+  
+  long Utils::randomLong(long min, long max) {
+    //seems like a bit of a bug for negative ints... this fixes it though
+    if (min < 0) {
+      min = min-1;
+    } 
+
+    if (max > 0) {
+      max = max+1;
+    }
+
+    return (long) glm::compRand1(min, max);
+    // return min + int( ((max-min)+1) * random() ); 
   }
 
   int Utils::randomInt(int min, int max) {
@@ -39,6 +55,7 @@ namespace aluminum {
     return (int) glm::compRand1(min, max);
     // return min + int( ((max-min)+1) * random() ); 
   }
+
 
   vector<int> Utils::randomInts(int howMany, int min, int max) {
     vector<int> ints;
@@ -66,6 +83,26 @@ namespace aluminum {
 
   vec3 Utils::randomVec3(float min, float max) {
     return glm::compRand3(min, max);
+  }
+
+  vec4 Utils::randomColor() {
+    vec3 c = glm::compRand3(0.0f, 1.0f);
+    return vec4(c.x, c.y, c.z, 1.0); 
+  }
+
+  vec4 Utils::randomColor(float alpha) {
+    vec3 c = glm::compRand3(0.0f, 1.0f);
+    return vec4(c.x, c.y, c.z, alpha); 
+  }
+
+  vec4 Utils::randomColor(float min, float max) {
+    vec3 c = glm::compRand3(min, max);
+    return vec4(c.x, c.y, c.z, 1.0); 
+  }
+
+  vec4 Utils::randomColor(float min, float max, float alpha) {
+    vec3 c = glm::compRand3(min, max);
+    return vec4(c.x, c.y, c.z, alpha); 
   }
 
 

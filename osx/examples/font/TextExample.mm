@@ -90,8 +90,8 @@ class TextExample : public RendererOSX {
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
       view = glm::lookAt(vec3(3.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
 
-     // proj = mat4();
-     // view = mat4();
+      proj = mat4();
+      view = mat4();
       model = mat4();
 
       vec3 sLL = glm::project(vec3(0,0,0), view*model, proj, ivec4(0,0,width,height));
@@ -103,25 +103,27 @@ class TextExample : public RendererOSX {
 
       loadProgram(singleTexture, "resources/texture");
 
-      //loadFont(font, "resources/ooo"); //texture font
-      //text2 = font.text("0001000").justify(0,0).pen(0,0).color(vec4(1,1,1,1)).background(vec4(1,0,0,1));
+ Font font;
 
-      Font font;
+      //loadFont(font, "resources/ooo"); //texture font
       loadFont(font, "resources/checkSD"); //signed distance font
-      printf("in onCreate : font ptr = %p\n", &font);
+      
+printf("in onCreate : font ptr = %p\n", &font);
       //text2 = font.signedDistanceText2D("0001000").justify(1,1).pen(-1,0).color(vec4(1,1,0.0,0.5)).background(vec4(1,0,0,0.2));
       text2 = font.signedDistanceText2D("2D:2d:2d").justify(0,0).pen(.5,.5);
+      //text2 = font.text2D("2D:2d:2d").justify(0,0).pen(.5,.5);
        
-      text2.meshFromWidth(0.4, width, height);
+      //text2.meshFromWidth(0.4, width, height);
       //text2.meshFromHeight(0.5, width, height);
       //text2.mesh(width, height, 2.0);
-      //text2.meshBox(0.8, 0.4, width, height);
+      text2.meshBox(0.8, 0.8, width, height);
      
 
       text3 = font.signedDistanceText3D("333jddd");
-      text3.meshFromWidth(0.75, model, view, proj, ivec4(0,0,width,height) );
-      //text3.meshFromHeight(0.1, model, view, proj, ivec4(0,0,width,height) );
-      //text3.meshBox(0.75, 1.25, model, view, proj, ivec4(0,0,width,height) );
+      //text3 = font.text3D("333jddd");
+      //text3.meshFromWidth(3.5, model, view, proj, ivec4(0,0,width,height) );
+      //text3.meshFromHeight(0.5, model, view, proj, ivec4(0,0,width,height) );
+      text3.meshBox(0.75, 1.25, model, view, proj, ivec4(0,0,width,height) );
         
 
       //text2.mesh(width, height, 1.0);
@@ -152,9 +154,10 @@ class TextExample : public RendererOSX {
 */
 
     void onReshape() {
-      text2.text("abdfdfsdfcdea", width, height);
-      //text2.mesh(width, height, 2.0);
+      text2.text("abdf", width, height);
+      text2.mesh(width, height, 1.0);
       //text2.meshFromHeight(0.7, width, height);
+      //text2.meshBox(0.8, 0.8, width, height);
     }
 
     void onFrame() {
@@ -172,16 +175,19 @@ class TextExample : public RendererOSX {
       //printf("total = %f\n", total);
       model = mat4();
 
-      model = glm::translate(model, vec3(-text3.meshW/2.0, -text3.meshH/2.0, 0.0));
+      //model = glm::translate(model, vec3(-text3.meshW/2.0, -text3.meshH/2.0, 0.0));
+      model = glm::translate(model, vec3(-text3.meshW/2.0, -text3.meshH/2.0, offset));
 
 
-      model = glm::translate(model, vec3(text3.meshW / 2.0, text3.meshH/2.0, 0.0));
-      model = glm::rotate(model, total, vec3(0,0,1));   
-      model = glm::translate(model, vec3(-text3.meshW / 2.0, -text3.meshH/2.0, 0.0));
+     // model = glm::translate(model, vec3(text3.meshW / 2.0, text3.meshH/2.0, 0.0));
+     // model = glm::rotate(model, total, vec3(0,0,1));   
+     // model = glm::translate(model, vec3(-text3.meshW / 2.0, -text3.meshH/2.0, 0.0));
 
       //text3.meshFromWidth(2.0, model, view, proj, ivec4(0,0,width,height) );
       //text3.meshFromHeight(0.5, model, view, proj, ivec4(0,0,width,height) );
-      
+      //text3.meshFromWidth(3.5, model, view, proj, ivec4(0,0,width,height) );
+      //text3.meshBox(1.0, 1.0, model, view, proj, ivec4(0,0,width,height) );
+       
 
       text2.pen(-0.0, -0.0);
       text2.justify(0,0);
@@ -202,9 +208,9 @@ class TextExample : public RendererOSX {
 
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-      view = glm::lookAt(vec3(3.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
+      view = glm::lookAt(vec3(0.0,0.0,5.0), vec3(0,0,0), vec3(0,1,0) );
       //drawText(text3);
-     // text3.draw(model, view, proj); 
+      text3.draw(model, view, proj); 
 
       proj = mat4();
       view = mat4();

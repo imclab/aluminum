@@ -5,7 +5,7 @@
 
 namespace aluminum {
 
-  /*
+  
 MeshData& MeshData::reset() {
 	vertices().clear();
 	normals().clear();
@@ -14,7 +14,7 @@ MeshData& MeshData::reset() {
 	indices().clear();
 	return *this;
 }
-  */
+  
 
 void MeshData::invertNormals() {
 	int Nv = normals().size();

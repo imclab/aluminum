@@ -53,6 +53,9 @@ namespace aluminum {
 
       /// @param[out] min		minimum corner of bounding box
       /// @param[out] max		maximum corner of bounding box
+
+      MeshData& reset();
+	
       void getBounds(vec3& min, vec3& max) const;
 
       Vertex getCenter() const;

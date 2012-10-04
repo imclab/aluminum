@@ -16,11 +16,11 @@ namespace aluminum {
     public:
       enum EASE {IN, OUT, IN_OUT, OUT_IN};
       EASE ease;
-      
-      virtual double in(double perc) = 0;
-      virtual double out(double perc) = 0; 
-      virtual double inout(double perc) = 0; 
-      virtual double outin(double perc) = 0; 
+     
+      virtual double in(double perc) = 0; 
+      virtual double out(double perc) = 0;
+      virtual double inout(double perc) = 0;
+      virtual double outin(double perc) = 0;
 
       Easing(EASE _ease) { ease = _ease; }
 
@@ -63,6 +63,7 @@ namespace aluminum {
 
   class EasingSine : public Easing {
     public:
+      EasingSine() : EasingSine(IN) {  }
       EasingSine(Easing::EASE _ease) : Easing(_ease) {}
       virtual double in(double perc) { return -cos(perc * (M_PI * .5)) + 1.0; }
       virtual double out(double perc) { return sin(perc * M_PI * .5); }
@@ -184,6 +185,7 @@ namespace aluminum {
       Behavior& range(float _r);
 
       //easing
+      Behavior& sine();
       Behavior& sine(Easing::EASE _e);
       Behavior& polynomial(Easing::EASE _e, int exponent);
       Behavior& bounce(Easing::EASE _e);

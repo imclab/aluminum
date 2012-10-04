@@ -307,6 +307,11 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
  
 }
 
+
+bool firstTime = true;
+
+
+
 - (void) reshape
 {	
   [super reshape];
@@ -321,13 +326,13 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 
   ((RendererOSX*)renderer)->width =  (int)rect.size.width ;
   ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
-  ((RendererOSX*)renderer)->onReshape();
+  
+  if (!firstTime) {
+    ((RendererOSX*)renderer)->onReshape();
+  }
 
   CGLUnlockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
 }
-
-bool firstTime = true;
-
 - (void) drawView
 {	 
   [[self openGLContext] makeCurrentContext];
