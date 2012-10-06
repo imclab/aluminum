@@ -1,26 +1,33 @@
 #ifndef INCLUDE_ALU_MESHDATA_HPP
 #define INCLUDE_ALU_MESHDATA_HPP
-#include <algorithm>
-#include <map>
-#include <string>
-#include <vector>
 
 
+//#include <algorithm>
+//#include <map>
+//#include <string>
+//#include <vector>
+
+/*
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
+*/
 
+#include "Includes.hpp"
 
 namespace aluminum {
 
   using glm::to_string;
+  using glm::ivec2;
+  using glm::ivec4;
   using glm::vec3;
   using glm::vec4;
   using glm::mat4;
 
   using std::vector;
+
   /// Stores buffers related to rendering graphical objects
 
   /// A mesh is a collection of buffers storing vertices, colors, indices, etc.

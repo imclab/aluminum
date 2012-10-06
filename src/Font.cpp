@@ -1,4 +1,5 @@
 #include "Font.hpp"
+/*
 #include "FBO.hpp"
 #include "Shapes.hpp"
 
@@ -10,7 +11,9 @@
 #include <sstream>
 #include <fstream>
 #include <stdlib.h>
+*/
 
+/*
 using std::map;
 using std::string;
 
@@ -21,6 +24,7 @@ using glm::vec3;
 using glm::vec4;
 using glm::ivec4;
 using glm::mat4;
+*/
 
 namespace aluminum {
 
@@ -688,6 +692,7 @@ namespace aluminum {
 
 	p2.bind(); {
     
+	  //glUniformMatrix4fv(p2.uniform("modelview"), 1, 0, glm::value_ptr(V * M));
 	  glUniformMatrix4fv(p2.uniform("modelview"), 1, 0, glm::value_ptr(V * M));
 	  glUniformMatrix4fv(p2.uniform("proj"), 1, 0, glm::value_ptr(P));
    
@@ -769,7 +774,8 @@ namespace aluminum {
     return true; 
   }
 
-  
+ 
+ /* 
   //draws text into FBO
   //
   //test this out!
@@ -826,7 +832,7 @@ namespace aluminum {
 
 
   }
-
+  */
 
   /*
   //OLD

@@ -1,14 +1,14 @@
 #ifndef INCLUDE_ALU_PROGRAM_HPP
 #define INCLUDE_ALU_PROGRAM_HPP
 
-#include <string>
-#include <map>
-
+//#include <string>
+//#include <map>
 #include "Includes.hpp"
 
-using namespace std;
+namespace aluminum{
 
-namespace aluminum {
+  using namespace std;
+
 
   class Shader {
     public:

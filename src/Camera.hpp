@@ -1,18 +1,20 @@
 #ifndef INCLUDE_AL_CAM2_HPP
 #define INCLUDE_AL_CAM2_HPP
 
+/*
 #include <string>
-//#include "allocore/math/al_Vec.hpp"
-//#include "allocore/math/al_Matrix4.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
+*/
+#include "Includes.hpp"
 
-using glm::to_string;
+namespace aluminum {
+
+  using glm::to_string;
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 
-namespace aluminum {
 
   class Camera {
 

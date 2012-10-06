@@ -1,3 +1,6 @@
+
+
+
 #ifndef INCLUDE_ALU_MESHUTILS_HPP
 #define INCLUDE_ALU_MESHUTILS_HPP
 
@@ -27,6 +30,11 @@
 */
 
 
+#include "MeshUtils.hpp" 
+#include "MeshBuffer.hpp" 
+#include "MeshData.hpp" 
+
+
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
@@ -34,25 +42,26 @@
 #include "assimp/types.h"
 #include "assimp/matrix4x4.h"
 
-#include "MeshData.hpp" 
-#include "MeshBuffer.hpp" 
-#include <vector>
+//#include <vector>
 
 
+/*
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
+*/
 
+namespace aluminum {
+
+ 
 using glm::to_string;
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 
-
-namespace aluminum {
 
   class MeshUtils {
 

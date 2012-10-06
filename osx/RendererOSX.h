@@ -1,9 +1,11 @@
 
-#import "CocoaGL.h"
-#include <string>
 
 #ifndef ALLOCORE_RENDERER_OSX 
 #define ALLOCORE_RENDERER_OSX
+
+#import "CocoaGL.h"
+//#import <string>
+//class CocoaGL;
 
 
 class RendererOSX { 

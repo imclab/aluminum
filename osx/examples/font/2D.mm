@@ -17,6 +17,7 @@
 
  */
 
+#include "Includes.hpp"
 
 #include "RendererOSX.h"
 #include "MeshBuffer.hpp"
@@ -30,6 +31,7 @@
 #include "Utils.hpp"
 #include "Behavior.hpp"
 
+/*
 #define GLM_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -37,6 +39,7 @@
 #include <iostream>
 #include <chrono>
 #include <sstream> 
+*/
 
 using namespace aluminum;
 

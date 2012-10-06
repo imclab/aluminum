@@ -1,18 +1,19 @@
-#include <cstdio>
-#include <iostream>
-#include <sstream>
-#include <ctime> 
-#include <cstdlib>
+//#include <cstdio>
+//#include <iostream>
+//#include <sstream>
+//#include <ctime> 
+//#include <cstdlib>
 
 #include "Utils.hpp"
 
+/*
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/random.hpp>
-
+*/
 
 namespace aluminum {
   using std::vector;

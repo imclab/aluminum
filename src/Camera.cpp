@@ -1,20 +1,25 @@
+#include "Camera.hpp"
+/*
 #include <cstdio>
 #include <iostream>
 #include <sstream>
-#include "Camera.hpp"
 
+
+  
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
+*/
+namespace aluminum {
 
-using glm::to_string;
+using glm::to_string; 
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 
-namespace aluminum {
+
 
 #define radians(x) (x * M_PI / 180.0f)
 #define degrees(x) (180.0 * x / M_PI)

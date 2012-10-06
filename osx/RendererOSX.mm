@@ -1,7 +1,9 @@
-#import <Cocoa/Cocoa.h>
-#include "RendererOSX.h"
-#include <chrono>
-#include <iostream>
+
+#include "Includes.hpp"
+//#import <Cocoa/Cocoa.h>
+//#import "RendererOSX.h"
+#import <chrono>
+#import <iostream>
 
 using std::cout;
 using std::chrono::duration_cast;

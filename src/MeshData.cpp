@@ -1,10 +1,7 @@
 
-#include "Includes.hpp"
 #include "MeshData.hpp"
-#include <algorithm>
 
 namespace aluminum {
-
   
 MeshData& MeshData::reset() {
 	vertices().clear();

@@ -1,21 +1,28 @@
 #ifndef INCLUDE_ALU_FONT_HPP
 #define INCLUDE_ALU_FONT_HPP
 
-#include <string>
-#include <map>
 
 #include "Texture.hpp"
 #include "Program.hpp"
 #include "MeshData.hpp"
 #include "MeshBuffer.hpp"
 #include "FBO.hpp"
+#include "Shapes.hpp"
+
+/*
+#include <string>
+#include <map>
+
 
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
+*/
 
+  
+namespace aluminum {
 
 using namespace std;
 using glm::vec2;
@@ -23,7 +30,6 @@ using glm::ivec2;
 using glm::ivec4;
 using glm::mat4;
 
-namespace aluminum {
 
 
   class Text3D;
@@ -110,7 +116,7 @@ namespace aluminum {
       static Program tp;
       static bool defaultShadersInstalled;
 
-      void drawIntoFBO(FBO& fbo); //new
+      //void drawIntoFBO(FBO& fbo); //new
 
 
     protected: 
@@ -131,7 +137,7 @@ namespace aluminum {
 
       string m_text;
 
-      FBO fbo;
+      //FBO fbo;
       MeshData meshData;
       MeshBuffer meshBuffer;
       //Texture texture;

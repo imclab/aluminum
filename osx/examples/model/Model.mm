@@ -1,17 +1,20 @@
 
+#include "Includes.hpp"
+
 #include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
 #include "Program.hpp"
-#include "Includes.hpp"
 #include "Behavior.hpp"
+#include "Texture.hpp"
 
-#include <vector>
-#include <iostream>
-#include <chrono>
+//#include <vector>
+//#include <iostream>
+//#include <chrono>
 
 using namespace aluminum;
+
 using std::cout;
 using std::chrono::duration_cast;
 using std::chrono::nanoseconds;
@@ -21,7 +24,7 @@ using std::chrono::high_resolution_clock;
 class ModelExample : public RendererOSX {
 
   public:
-   
+
     vec3 diffuse = vec3(0.0,1.0,0.0);
     vec3 specular = vec3(1.0,1.0,1.0);
     vec3 ambient = vec3(0.0,0.0,0.3);
@@ -80,22 +83,22 @@ class ModelExample : public RendererOSX {
     }
 
     void updateModel() {
-      
-	lightPosX += lightBehavior.tick(now()).offset();
 
-	vec3 totals = rotateBehavior.tick(now()).totals();
-	model = glm::mat4();
-	//model = glm::translate(model, vec3(0.0f,-2.0f,0.0f));
-	/*model = glm::rotate(model, 180.0f, vec3(0.0f,1.0f,0.0f));*/
-	/*model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));*/
-	/*model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));*/
-	/*model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));*/
+      lightPosX += lightBehavior.tick(now()).offset();
+
+      vec3 totals = rotateBehavior.tick(now()).totals();
+      model = glm::mat4();
+      //model = glm::translate(model, vec3(0.0f,-2.0f,0.0f));
+      /*model = glm::rotate(model, 180.0f, vec3(0.0f,1.0f,0.0f));*/
+      /*model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));*/
+      /*model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));*/
+      /*model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));*/
 
     }
 
     void onFrame() {
       //tick();
-      
+
       glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -119,5 +122,5 @@ class ModelExample : public RendererOSX {
 };
 
 int main() {
- return ModelExample().start(); 
+  return ModelExample().start(); 
 }

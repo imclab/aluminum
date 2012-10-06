@@ -1,12 +1,15 @@
 #ifndef INCLUDE_ALU_UTILS_HPP
 #define INCLUDE_ALU_UTILS_HPP
 
+#include "Includes.hpp"
+
+/*
 #include <string>
 #include <vector>
-#include "Includes.hpp"
-#include "Texture.hpp"
 
-#include <glm/glm.hpp>
+#include "Texture.hpp"
+*/  
+//#include <glm/glm.hpp>
 
 namespace aluminum {
 

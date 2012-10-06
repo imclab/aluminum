@@ -1,6 +1,3 @@
-#include <cstdio>
-#include <iostream>
-#include <sstream>
 #include "FBO.hpp"
 
 namespace aluminum{

@@ -1,16 +1,11 @@
 #ifndef INCLUDE_AL_FBO2_HPP
 #define INCLUDE_AL_FBO2_HPP
 
-#include <string>
-#include "Includes.hpp"
+//#include <string>
+//#include "Includes.hpp"
 #include "Texture.hpp"
 
 namespace aluminum {
-
-//@class Texture;
-
-
-
 
 class RBO {
   public:

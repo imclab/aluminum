@@ -1,12 +1,14 @@
 #ifndef INCLUDE_ALU_BEHAVIOR_HPP
 #define INCLUDE_ALU_BEHAVIOR_HPP
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "Includes.hpp"
+//#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
 
 namespace aluminum {
 
   using glm::dvec3;
+
   using glm::vec2;
   using glm::vec3;
   using glm::vec4;

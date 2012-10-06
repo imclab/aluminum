@@ -1,6 +1,6 @@
-#include <math.h>
+//#include <math.h>
 #include "Shapes.hpp"
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
 
 namespace aluminum {
 

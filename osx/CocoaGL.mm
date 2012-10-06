@@ -1,6 +1,7 @@
-#import "CocoaGL.h"
-#include "Includes.hpp"
-#include "RendererOSX.h"
+
+//#import "CocoaGL.h"
+#import "Includes.hpp"
+//#import "RendererOSX.h"
 
 //allegedly... test this out...
 //you can change the OpenGL graphics context at any time using the setOpenGLContext: method.

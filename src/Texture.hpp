@@ -1,8 +1,11 @@
 #ifndef INCLUDE_ALU_TEXTURE_HPP
 #define INCLUDE_ALU_TEXTURE_HPP
 
-#include <string>
+//#include <string>
 #include "Includes.hpp"
+
+#include "freeimage/FreeImage.h"
+
 
 namespace aluminum {
 

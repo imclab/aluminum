@@ -1,5 +1,6 @@
 #include "Program.hpp"
 
+/*
 #include <stdio.h>
 #include <string.h>
 #include <map>
@@ -7,11 +8,13 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+*/
+  
+namespace aluminum {
 
-using std::map;
+  using std::map;
 using std::string;
 
-namespace aluminum {
 
   Shader::Shader(const std::string& source, GLenum type) {
     mID = glCreateShader(type);

@@ -2,7 +2,7 @@
 #define INCLUDE_AL_GRAPHICS_SHAPES2_HPP
 
 #include "MeshData.hpp"
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
 
 namespace aluminum {
 

@@ -2,6 +2,7 @@
 #import <Carbon/Carbon.h> //for keyboard keycode info
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CVDisplayLink.h>
+//#include "RendererOSX.h"
 
 @interface CocoaGL : NSOpenGLView {
   CVDisplayLinkRef displayLink;
