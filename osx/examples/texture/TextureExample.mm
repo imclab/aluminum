@@ -20,6 +20,7 @@
 
  */
 
+#include "Includes.hpp"
 
 #include "RendererOSX.h"
 #include "MeshBuffer.hpp"
@@ -27,10 +28,7 @@
 #include "MeshUtils.hpp"
 #include "Program.hpp"
 #include "Shapes.hpp"
-#include "Includes.hpp"
-
 #include "Texture.hpp"
-#include <vector>
 
 using namespace aluminum;
 

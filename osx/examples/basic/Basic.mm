@@ -1,9 +1,17 @@
+
+#include "Includes.hpp"
+
 #include "RendererOSX.h"
+#include "MeshBuffer.hpp"
+#include "MeshData.hpp"
+#include "MeshUtils.hpp"
 #include "Program.hpp"
+#include "Shapes.hpp"
+#include "Texture.hpp"
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
-using namespace al;
+using namespace aluminum;
 
 class Basic : public RendererOSX {
   public:
@@ -11,15 +19,15 @@ class Basic : public RendererOSX {
     Program program;
     GLuint vao, vbo, ibo, indices[3] = {0,1,2};
 
-    Vec3f vertices[6] = {
-      Vec3f( -1.0, -1.0, 0.0 ), Vec3f( 0.0, 1.0, 0.0  ), Vec3f( 1.0, -1.0, 0.0  ), //vertex
-      Vec3f( 1.0,0.0,0.0), Vec3f(0.0,1.0,0.0), Vec3f(0.0,0.0,1.0), //color
+    vec3 vertices[6] = {
+      vec3( -1.0, -1.0, 0.0 ), vec3( 0.0, 1.0, 0.0  ), vec3( 1.0, -1.0, 0.0  ), //vertex
+      vec3( 1.0,0.0,0.0), vec3(0.0,1.0,0.0), vec3(0.0,0.0,1.0), //color
     };
 
     GLint posLoc = 0;
     GLint colLoc = 1;
-    Mat4f proj;
-    Mat4f mv;
+    mat4 proj;
+    mat4 mv;
 
 
     void loadProgram(Program &p, const std::string& name) {
@@ -50,18 +58,18 @@ class Basic : public RendererOSX {
       glBufferData( GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_DYNAMIC_DRAW );
 
       glEnableVertexAttribArray( posLoc );
-      glVertexAttribPointer( posLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0*sizeof(Vec3f)));
+      glVertexAttribPointer( posLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0*sizeof(vec3)));
 
       glEnableVertexAttribArray( colLoc );
-      glVertexAttribPointer( colLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(3*sizeof(Vec3f)));
+      glVertexAttribPointer( colLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(3*sizeof(vec3)));
 
       glGenBuffers(1, &ibo);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
       glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*3, indices, GL_DYNAMIC_DRAW);
 
       // Set up modelvew and projection matrix
-      proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      mv = Matrix4f::lookAt(Vec3f(0,0,-2.5), Vec3f(0,0,0), Vec3f(0,1,0) );
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      mv = glm::lookAt(vec3(0,0,-2.5), vec3(0,0,0), vec3(0,1,0) );
     }
 
     virtual void onFrame(){
@@ -73,8 +81,8 @@ class Basic : public RendererOSX {
       // Draw our vbos to the screen
       program.bind(); {
 
-	glUniformMatrix4fv(program.uniform("mv"), 1, 0, mv.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
+	glUniformMatrix4fv(program.uniform("mv"), 1, 0, ptr(mv));
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
 
 	glBindVertexArray( vao ); 
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
@@ -111,5 +119,5 @@ class Basic : public RendererOSX {
 };
 
 int main(){ 
-  return Basic().start("Allomin::Basic", 100, 100, 400, 300); 
+  return Basic().start("aluminum::Basic", 100, 100, 400, 300); 
 }

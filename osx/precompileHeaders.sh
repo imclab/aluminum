@@ -14,4 +14,5 @@ cd $BASE_DIR;
 
 echo -e "\nPRE-COMPILING HEADERS... \n\nc++ -x objective-c++-header -std=c++11 -stdlib=libc++ $INCLUDE $OSX_DIR/Includes.hpp "  
 
-time c++ -x objective-c++-header -std=c++11 -stdlib=libc++ $INCLUDE $OSX_DIR/Includes.hpp  
+time c++ -x objective-c++-header -std=c++11 -stdlib=libc++ $INCLUDE $OSX_DIR/Includes.hpp 
+

@@ -19,7 +19,6 @@ echo -e "\nBUILDING obj files for static library... \n\nc++ -std=c++11 -stdlib=l
 # use -H below to double check if the headers have been precompiled
 time c++ -c -x objective-c++ -include $OSX_DIR/Includes.hpp -std=c++11 -stdlib=libc++ $INCLUDE $SRC 
 
-
 ### 2. ARCHIVE
 echo -e "\n\n\nARCHIVING obj files into static library aluminum.a..."
 
