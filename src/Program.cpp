@@ -42,6 +42,7 @@ using std::string;
     glDeleteShader(id()); 
   }
 
+/*
   string Program::loadText( const std::string& filename){
 
     std::ifstream file;
@@ -57,6 +58,28 @@ using std::string;
     file.close();
 
     return stream.str();
+  }
+*/
+
+  void Program::loadText(std::string& text, const std::string& filename){
+
+    std::ifstream file;
+    file.open(filename.c_str());
+
+    if (!file) {
+      printf("in Shader::loadSourceFromFile : error, couldn't find file!\n");
+      exit(0);
+    }
+
+    std::stringstream stream;
+    stream << file.rdbuf();
+    file.close();
+
+    string aaa = stream.str();
+    cout << "you loaded in : " << aaa << "\n";
+
+    text = stream.str();	
+    //return stream.str();
   }
 
   
@@ -96,7 +119,7 @@ using std::string;
 	printf ("   errors in fragment shader: \n");
       }
       printf("%s\n", s.log());
-      exit(0);
+      //exit(0);
     }
 
     return *this; 

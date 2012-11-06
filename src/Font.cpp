@@ -40,19 +40,23 @@ namespace aluminum {
   /* Font factory methods to build either a Text2D or a Text3D */
   
   Text2D Font::signedDistanceText2D(const string& _text) {
-    return Text2D::Text2D(*this, _text, true);
+    //return Text2D::Text2D(*this, _text, true);
+    return Text2D(*this, _text, true);
   }
 
   Text3D Font::signedDistanceText3D(const string& _text) {
-    return Text3D::Text3D(*this, _text, true);
+    //return Text3D::Text3D(*this, _text, true);
+    return Text3D(*this, _text, true);
   }
 
   Text2D Font::text2D(const string& _text) {
-    return Text2D::Text2D(*this, _text, false);
+    //return Text2D::Text2D(*this, _text, false);
+    return Text2D(*this, _text, false);
   }
 
   Text3D Font::text3D(const string& _text) {
-    return Text3D::Text3D(*this, _text, false);
+    //return Text3D::Text3D(*this, _text, false);
+    return Text3D(*this, _text, false);
   }
 
   /* Text3D */

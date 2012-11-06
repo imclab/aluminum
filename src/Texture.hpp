@@ -4,7 +4,7 @@
 //#include <string>
 #include "Includes.hpp"
 
-#include "freeimage/FreeImage.h"
+//#include "freeimage/FreeImage.h"
 
 
 namespace aluminum {

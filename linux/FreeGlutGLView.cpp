@@ -86,12 +86,17 @@ FreeGlutGLView* FreeGlutGLView::start(void* _renderer, std::string name) {
 	int argc = 2;
 
 	glutInit(&argc, argv);
+	fprintf(stderr, "yo a\n");
 	glutInitContextVersion(3,2);
+	fprintf(stderr, "yo bbb\n");
 
 
 	glutInitContextFlags(GLUT_CORE_PROFILE | GLUT_DEBUG);
+	//glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
+	fprintf(stderr, "yo c \n");
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	fprintf(stderr, "yo d\n");
 
 /*
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_MULTISAMPLE );
@@ -104,12 +109,17 @@ FreeGlutGLView* FreeGlutGLView::start(void* _renderer, std::string name) {
 */
 
 	glutInitWindowSize(200,200);
-	glutCreateWindow(name.c_str());
+	fprintf(stderr, "yo e\n");
+	//glutCreateWindow(name.c_str());
+	glutCreateWindow("abc");
+	fprintf(stderr, "yo f\n");
+
 
 //	glutGameModeString("1280x1024:32@60");
 //	glutEnterGameMode();
 	
 	renderer->onCreate();
+fprintf(stderr, "yo g\n");
 
 	glutDisplayFunc(&display);
 	glutReshapeFunc(&reshape);
@@ -117,8 +127,14 @@ FreeGlutGLView* FreeGlutGLView::start(void* _renderer, std::string name) {
 	glutMouseFunc(&button);
 	glutMotionFunc(&motion);
 	glutIdleFunc(&animate);
+	fprintf(stderr, "yo h\n");
 
 	gettimeofday(&lastTime, NULL);
+	fprintf(stderr, "yo i\n");
+
+
+	
+
 
 
 	glutMainLoop();
