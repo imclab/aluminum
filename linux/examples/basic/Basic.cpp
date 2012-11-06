@@ -1,12 +1,7 @@
 
 #include "Includes.hpp"
 
-//#include "MeshBuffer.hpp"
-//#include "MeshData.hpp"
-//#include "MeshUtils.hpp"
 #include "Program.hpp"
-//#include "Shapes.hpp"
-//#include "Texture.hpp"
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
@@ -34,38 +29,28 @@ class Basic : public RendererLinux {
 
     void loadProgram(Program &p, const std::string& name) {
 
-fprintf(stderr, " in basic load program...1\n");
-
       p.create();
-fprintf(stderr, " in basic load program...2\n");
-
-
-
 	
      string text;
      p.loadText(text, name + ".vsh");
-	cout << "text here is " << text << "\n";
       p.attach(text, GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
       glBindAttribLocation(p.id(), colLoc, "vertexColor");
 
      string text2;
      p.loadText(text2, name + ".fsh");
-	cout << "text2 here is " << text2 << "\n";
       p.attach(text2, GL_FRAGMENT_SHADER);
 
       p.link();
-fprintf(stderr, " in basic load program...5\n");
     }
 
     virtual void onCreate() {
-fprintf(stderr, "in onCreate : basic...\n");
 
-/*
+
 char* verGL = (char*)glGetString(GL_VERSION);
-char* verGLSL = (char*)glGetString(GLSL_VERSION);
+char* verGLSL = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 printf("GL %s GLSL %s\n", verGL, verGLSL);
-*/
+
 
       // Load our shader program
       loadProgram(program, "resources/basic");
@@ -96,7 +81,6 @@ printf("GL %s GLSL %s\n", verGL, verGLSL);
 
     virtual void onFrame(){
 
-//fprintf(stderr, "in onFrame : basic...\n");
 
 /*
 char* verGL = (char*)glGetString(GL_VERSION);
