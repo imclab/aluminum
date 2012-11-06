@@ -31,16 +31,20 @@ class Basic : public RendererLinux {
 
       p.create();
 	
-     string text;
-     p.loadText(text, name + ".vsh");
-      p.attach(text, GL_VERTEX_SHADER);
+    // string text;
+    // p.loadText(text, name + ".vsh");
+    //  p.attach(text, GL_VERTEX_SHADER);
+     
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
+
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
       glBindAttribLocation(p.id(), colLoc, "vertexColor");
 
-     string text2;
-     p.loadText(text2, name + ".fsh");
-      p.attach(text2, GL_FRAGMENT_SHADER);
+    // string text2;
+    // p.loadText(text2, name + ".fsh");
+    //  p.attach(text2, GL_FRAGMENT_SHADER);
 
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
       p.link();
     }
 

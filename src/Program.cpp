@@ -42,7 +42,7 @@ using std::string;
     glDeleteShader(id()); 
   }
 
-/*
+
   string Program::loadText( const std::string& filename){
 
     std::ifstream file;
@@ -59,8 +59,8 @@ using std::string;
 
     return stream.str();
   }
-*/
 
+/*
   void Program::loadText(std::string& text, const std::string& filename){
 
     std::ifstream file;
@@ -81,7 +81,7 @@ using std::string;
     text = stream.str();	
     //return stream.str();
   }
-
+*/
   
   Program& Program::create() {
     mID = glCreateProgram(); 

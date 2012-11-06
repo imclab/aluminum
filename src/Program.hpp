@@ -49,8 +49,8 @@ namespace aluminum{
       Program& create();
       Program& attach(std::string source, GLenum type);
 
-      //std::string loadText(const std::string& v); 
-      void loadText(std::string& text, const std::string& v); 
+      std::string loadText(const std::string& v); 
+      //void loadText(std::string& text, const std::string& v); 
 
 
 
