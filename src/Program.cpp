@@ -112,14 +112,18 @@ using std::string;
 	 */
     }
 
-    if (s.log() != NULL) {
-      if (s.type() == GL_VERTEX_SHADER) {
-	printf ("   errors in vertex shader: \n");
-      } else if (s.type() == GL_FRAGMENT_SHADER) {
-	printf ("   errors in fragment shader: \n");
-      }
-      printf("%s\n", s.log());
-      //exit(0);
+    const char* lg = s.log();
+    if (lg != NULL) {
+	    string ls(lg);
+	    if  (ls.length() > 1) {
+		    if (s.type() == GL_VERTEX_SHADER) {
+			    printf ("   errors in vertex shader: \n");
+		    } else if (s.type() == GL_FRAGMENT_SHADER) {
+			    printf ("   errors in fragment shader: \n");
+		    }
+		    printf("LOG: %s\n", lg);
+		    exit(0);
+	    }
     }
 
     return *this; 
@@ -129,81 +133,107 @@ using std::string;
 
 
   Program& Program::attach(Shader& s) {
-    printf("program is = %d, shader id = %d\n", id(), s.id());
-    glAttachShader(id(), s.id());  //agf this is the right one!
+	  printf("program is = %d, shader id = %d\n", id(), s.id());
+	  glAttachShader(id(), s.id());  //agf this is the right one!
 
-    // TODO: check for geometry shader extensions
-    //#ifdef GL_EXT_geometry_shader4
-    //	printf("GL_EXT_geometry_shader4 defined\n");
-    //#endif
-    //#ifdef GL_ARB_geometry_shader4
-    //	printf("GL_ARB_geometry_shader4 defined\n");
-    //#endif
+	  // TODO: check for geometry shader extensions
+	  //#ifdef GL_EXT_geometry_shader4
+	  //	printf("GL_EXT_geometry_shader4 defined\n");
+	  //#endif
+	  //#ifdef GL_ARB_geometry_shader4
+	  //	printf("GL_ARB_geometry_shader4 defined\n");
+	  //#endif
 
-    if (s.type() == GL_GEOMETRY_SHADER) {
-      /* agf	
-	 glProgramParameteri(id(),GL_GEOMETRY_INPUT_TYPE, mInPrim);
-	 glProgramParameteri(id(),GL_GEOMETRY_OUTPUT_TYPE, mOutPrim);
-	 glProgramParameteri(id(),GL_GEOMETRY_VERTICES_OUT,mOutVertices);
-	 */
+	  if (s.type() == GL_GEOMETRY_SHADER) {
+		  /* agf	
+		     glProgramParameteri(id(),GL_GEOMETRY_INPUT_TYPE, mInPrim);
+		     glProgramParameteri(id(),GL_GEOMETRY_OUTPUT_TYPE, mOutPrim);
+		     glProgramParameteri(id(),GL_GEOMETRY_VERTICES_OUT,mOutVertices);
+		   */
+	  }
+
+  const char* lg = s.log();
+    if (lg != NULL) {
+	    string ls(lg);
+	    if  (ls.length() > 1) {
+		    if (s.type() == GL_VERTEX_SHADER) {
+			    printf ("   errors in vertex shader: \n");
+		    } else if (s.type() == GL_FRAGMENT_SHADER) {
+			    printf ("   errors in fragment shader: \n");
+		    }
+		    printf("LOG: %s\n", lg);
+		    exit(0);
+	    }
     }
 
-    if (s.log() != NULL) {
-      if (s.type() == GL_VERTEX_SHADER) {
-	printf ("   errors in vertex shader: \n");
-      } else if (s.type() == GL_FRAGMENT_SHADER) {
-	printf ("   errors in fragment shader: \n");
-      }
-      printf("%s\n", s.log());
-      exit(0);
-    }
-
-    return *this; 
+/*
+	  if (s.log() != NULL) {
+		  if (s.type() == GL_VERTEX_SHADER) {
+			  printf ("   errors in vertex shader: \n");
+		  } else if (s.type() == GL_FRAGMENT_SHADER) {
+			  printf ("   errors in fragment shader: \n");
+		  }
+		  printf("%s\n", s.log());
+		  exit(0);
+	  }
+*/
+	  return *this; 
   }
 
   Program& Program::link()  { 
 
-    glLinkProgram(id()); 
+	  glLinkProgram(id()); 
 
-    int isValid;
-    glValidateProgram(id());
-    glGetProgramiv(id(), GL_VALIDATE_STATUS, &isValid);
-    if (!isValid) {
-      printf("in Program::link - %d is not valid!!!\n", id());
+	  int isValid;
+	  glValidateProgram(id());
+	  glGetProgramiv(id(), GL_VALIDATE_STATUS, &isValid);
+	  if (!isValid) {
+		  printf("in Program::link - %d is not valid!!!\n", id());
+	  }
+
+
+  const char* lg = log();
+    if (lg != NULL) {
+	    string ls(lg);
+	    if  (ls.length() > 0) {
+		    printf("program.id = %d, LOG: %s\n", id(), lg);
+		    exit(0);
+	    }
     }
 
-    if (log() != NULL) {
-      printf("program %d errors %s\n", id(), log());
-      //exit(0);
-    }
+/*
+	  if (log() != NULL) {
+		  printf("program %d errors %s\n", id(), log());
+		  //exit(0);
+	  }
+*/
+	  //  printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
 
-    //  printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
+	  mapUniforms();
+	  mapAttributes();
+	  listParams();
 
-    mapUniforms();
-    mapAttributes();
-    listParams();
-
-    return *this; 
+	  return *this; 
   }
 
 
   Program& Program::detach(Shader& s)  { 
-    glDetachShader(id(), s.id()); 
-    return *this; 
+	  glDetachShader(id(), s.id()); 
+	  return *this; 
   }
 
 
   const char* Program::log() const {
-    GLint lsize; get(GL_INFO_LOG_LENGTH, &lsize);
-    if(0==lsize) return NULL;
+	  GLint lsize; get(GL_INFO_LOG_LENGTH, &lsize);
+	  if(0==lsize) return NULL;
 
-    static char buf[4096];
-    glGetProgramInfoLog(id(), 4096, NULL, buf);
-    return buf;
+	  static char buf[4096];
+	  glGetProgramInfoLog(id(), 4096, NULL, buf);
+	  return buf;
   }
 
   void Program::destroy(){ 
-    glDeleteProgram(id()); 
+	  glDeleteProgram(id()); 
   }
 
   void Program::bind(){
