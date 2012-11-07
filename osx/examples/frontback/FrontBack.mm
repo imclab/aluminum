@@ -1,3 +1,4 @@
+#include "Includes.hpp"
 
 #include "Program.hpp"
 #include "RendererOSX.h"
@@ -8,13 +9,7 @@
 #include "Camera.hpp"
 #include "Utils.hpp"
 
-#include <glm/glm.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/matrix_access.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-using namespace al;
+using namespace aluminum;
 
 class FrontBack : public RendererOSX {
   public:
@@ -37,19 +32,11 @@ class FrontBack : public RendererOSX {
       for(int j=0; j<20; ++j){
 	//int Nv = addCube(mesh1, true, 0.5);
 	tempMesh = MeshUtils::makeCube(0.5);
-	//Mat4f xfm;
-	//xfm.setIdentity();
 	mat4 xfm = mat4();
-	//xfm.scale(rnd::uniform(1.,0.2));
 	xfm = glm::scale(xfm, vec3(1.1) );
-	//Vec3f p;
-	//rnd::ball<3>(p.elems());
 	vec3 p = Utils::randomVec3(-1,1) * 4.0f;
-	//p *= 2.0; //.scale(2.0);
-	xfm = glm::translate(xfm, p); //Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
-	//mesh1.transform(xfm, mesh1.vertices().size()-Nv);
+	xfm = glm::translate(xfm, p); 
 	tempMesh.transform(xfm, tempMesh.vertices().size()-24);
-
 	mesh1.addMesh(tempMesh);
       }
 
@@ -57,18 +44,10 @@ class FrontBack : public RendererOSX {
 	int Nv = addSphere(mesh2, 0.5, 30, 30);
 	
 	mat4 xfm = mat4();
-//	xfm.scale(rnd::uniform(0.5,0.1));
 	xfm = glm::scale(xfm, vec3(0.5) );
-
-	//vec3 p = glm::normalize(glm::vecRand3(-1.0f, 1.0f)) * 4.0f;
-	
 	vec3 p = glm::normalize(Utils::randomVec3(-1,1)) * (Utils::randomFloat(5.0,5.0));
-	//rnd::ball<3>(p.elems());
-	//p.normalize();
-	xfm = glm::translate(xfm, p); //Vec3f(rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
-//rnd::uniformS(20.), rnd::uniformS(20.), rnd::uniformS(20.)));
+	xfm = glm::translate(xfm, p);
 	mesh2.transform(xfm, mesh2.vertices().size()-Nv);
-	//addCube(mesh2, true, 0.5);
 	
       }
 

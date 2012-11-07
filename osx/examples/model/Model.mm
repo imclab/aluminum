@@ -9,17 +9,7 @@
 #include "Behavior.hpp"
 #include "Texture.hpp"
 
-//#include <vector>
-//#include <iostream>
-//#include <chrono>
-
 using namespace aluminum;
-
-using std::cout;
-using std::chrono::duration_cast;
-using std::chrono::nanoseconds;
-using std::chrono::milliseconds;
-using std::chrono::high_resolution_clock;
 
 class ModelExample : public RendererOSX {
 
@@ -62,12 +52,12 @@ class ModelExample : public RendererOSX {
 
       loadProgram(program, "resources/phong");
 
-      loadMeshes("resources/ducky.obj");
-      //loadMeshes("resources/angel.obj");
+      //loadMeshes("resources/ducky.obj");
+      loadMeshes("resources/angel.obj");
       //loadMeshes("resources/test.nff");
       //loadMeshes("resources/test3.obj");
       //loadMeshes("resources/A1.obj");
-      //loadScene(scene, "resources/toyplane.obj");
+      //loadMeshes("resources/toyplane.obj");
 
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
       view = glm::lookAt(vec3(0.0,0.0,-5), vec3(0,0,0), vec3(0,1,0) );
@@ -97,7 +87,6 @@ class ModelExample : public RendererOSX {
     }
 
     void onFrame() {
-      //tick();
 
       glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

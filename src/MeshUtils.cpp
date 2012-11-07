@@ -18,13 +18,22 @@ namespace aluminum {
     for (unsigned int i = 0; i < s->meshes(); i++) {
       MeshData tmp;
       s->meshWithIndices(i, tmp);
-      
+
+      //transfrom to center of screen - should probably be an option...
       mat4 t = mat4();
-      //t = glm::translate(t, vec3(0,-13.0,0));
-      t = glm::scale(t, vec3(s->getScaleVal()));
-      t = glm::translate(t, -vec3(1.888721, 28.287216, 5.450432));
-       tmp.transform( t );
-      //tmp.transform( glm::scale(mat4(), vec3(s->getScaleVal())) );
+
+      float scaleVal = s->getScaleVal();
+      //printf("scaleVal = %f\n", scaleVal);
+      t = glm::scale(t, vec3(scaleVal));
+
+      vec3 center;
+      s->getCenter(center);
+      //printf("::: center = %f/%f/%f\n", center.x, center.y, center.z);
+
+      t = glm::translate(t, -center);
+
+      tmp.transform( t );
+      
       modelMesh.addMesh(tmp); //merge this mesh into single mesh
     }
 
@@ -92,7 +101,7 @@ namespace aluminum {
        aiProcess_FindInvalidData |
        aiProcess_ImproveCacheLocality |
        aiProcess_OptimizeMeshes;
-    */ 
+       */ 
 
     const aiScene * scene = aiImportFile(path.c_str(), flags);
 
@@ -178,15 +187,23 @@ namespace aluminum {
 	//read vertices, normals, colors, texcoord
 	for (unsigned int index = 0; index < amesh->mNumVertices; ++index){
 	  if(hascolors) {
+	
 	    mesh.color(vec4FromAIColor4D(amesh->mColors[0][index]));
 	  }
 	  if(hasnormals) {
-	    mesh.normal(vec3FromAIVector3D(amesh->mNormals[index]));
+	    vec3 n = vec3FromAIVector3D(amesh->mNormals[index]);
+	    //printf("p%d, n=%f/%f/%f\n", index, n.x, n.y, n.z);
+	    mesh.normal(n);
 	  }
 	  if(hastexcoords) {
-	    mesh.texCoord(vec3FromAIVector3D(amesh->mTextureCoords[0][index]));
+	    vec3 tc = vec3FromAIVector3D(amesh->mTextureCoords[0][index]);
+	    //printf("p%d, tc=%f/%f/%f\n", index, tc.x, tc.y, tc.z);
+	    mesh.texCoord(tc);
 	  }
-	  mesh.vertex(vec3FromAIVector3D(amesh->mVertices[index]));			
+
+	  vec3 v = vec3FromAIVector3D(amesh->mVertices[index]);
+	  //printf("p%d, v=%f/%f/%f\n", index, v.x, v.y, v.z);
+	  mesh.vertex(v);			
 	}
 
 	//read faces as indices
@@ -228,13 +245,24 @@ namespace aluminum {
   }
 
 
+  void MeshUtils::Scene :: getCenter(vec3& center) const {
+    vec3 min, max;
+    getBounds(min,max);
+    //cout << "in getScaleVal() : bounds min = " << glm::to_string(min) << ", max = " << glm::to_string(max) << "\n";
+    center = (min + max) * vec3(0.5,0.5,0.5);
+    //cout << "in getCenter() : scene center = " << to_string(center) << "\n";
+
+
+  }
+	  
 
   float MeshUtils::Scene :: getScaleVal() const {
     vec3 min, max;
     getBounds(min,max);
-    cout << "in getScaleVal() : bounds min = " << glm::to_string(min) << ", max = " << glm::to_string(max) << "\n";
-    vec3 scene_center = (min + max) * vec3(0.5,0.5,0.5);
-    cout << "in getScaleVal() : scene center = " << to_string(scene_center) << "\n";
+    //cout << "in getScaleVal() : bounds min = " << glm::to_string(min) << ", max = " << glm::to_string(max) << "\n";
+    
+    //vec3 scene_center = (min + max) * vec3(0.5,0.5,0.5);
+    //cout << "in getScaleVal() : scene center = " << to_string(scene_center) << "\n";
 
     float scaleVal = max[0] - min[0];
     scaleVal = std::max(max[1] - min[1], scaleVal);

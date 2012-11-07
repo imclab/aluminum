@@ -80,6 +80,7 @@ namespace aluminum {
       //MeshData& scale(const Vec<3,T>& v){ return scale(v[0],v[1],v[2]); }
       //template <class T>
       MeshData& scale(const vec3& v){ return scale(v[0],v[1],v[2]); }
+      //MeshData& scale(const vec3& v);
 
       /// Translate all vertices
       MeshData& translate(float x, float y, float z);
@@ -87,7 +88,7 @@ namespace aluminum {
       //template <class T>
       //MeshData& translate(const Vec<3,T>& v){ return translate(v[0],v[1],v[2]); }
       //template <class T>
-      MeshData& translate(const vec3& v){ return translate(v[0],v[1],v[2]); }
+      MeshData& translate(const vec3& v) { return translate(v[0],v[1],v[2]); }
 
       /// Transform vertices by projective transform matrix
 

@@ -123,15 +123,20 @@ void MeshData::unitize(bool proportional) {
   }
 }
 
+//MeshData& MeshData::translate(const vec3& t){
 MeshData& MeshData::translate(float x, float y, float z){
-  const Vertex xfm(x,y,z);
+  //const Vertex xfm(x,y,z);
+  vec3 xfm = vec3(x,y,z);
+
   for(size_t i=0; i<vertices().size(); ++i)
     mVertices[i] += xfm;
   return *this;
 }
 
-MeshData& MeshData::scale(float x, float y, float z){
-  const Vertex xfm(x,y,z);
+//MeshData& MeshData::scale(const vec3& s)
+MeshData& MeshData::scale(float x, float y, float z) {
+  //const Vertex xfm(x,y,z);
+  vec3 xfm = vec3(x,y,z);
   for(size_t i=0; i<vertices().size(); ++i)
     mVertices[i] *= xfm;
 	return *this;

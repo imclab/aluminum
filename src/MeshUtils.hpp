@@ -97,7 +97,7 @@ using glm::mat4;
 	  /// get scene extents
 	  void getBounds(vec3& min, vec3& max) const;
 	  float getScaleVal() const;
-
+	  void getCenter(vec3& center) const;
 	  /// print out information about the Scene
 	  void dump() const;
 

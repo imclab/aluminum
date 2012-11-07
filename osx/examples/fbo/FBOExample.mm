@@ -17,6 +17,7 @@ to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in a
 
 */
 
+#include "Includes.hpp"
 
 #include "RendererOSX.h"
 #include "MeshBuffer.hpp"
@@ -25,19 +26,20 @@ to fix, i updated the freeimage lib to use the type BOOL_FI instead of BOOL in a
 #include "Program.hpp"
 #include "Shapes.hpp"
 #include "FBO.hpp"
+#include "Behavior.hpp"
 
 #include "Texture.hpp"
 
-using namespace al;
+using namespace aluminum;
 
 class FBOExample : public RendererOSX {
   public:
 
-    Vec3f diffuse = Vec3f(0.0,1.0,0.0);
-    Vec3f specular = Vec3f(1.0,1.0,1.0);
-    Vec3f ambient = Vec3f(0.0,0.0,0.3);
+    vec3 diffuse = vec3(0.0,1.0,0.0);
+    vec3 specular = vec3(1.0,1.0,1.0);
+    vec3 ambient = vec3(0.0,0.0,0.3);
     float lightPosX = -1.0f;
-    Mat4f model, view, proj;
+    mat4 model, view, proj;
 
     Program program;
     GLuint vao[1];
@@ -45,22 +47,17 @@ class FBOExample : public RendererOSX {
     GLint texCoordLoc=1;
 
     MeshBuffer cubeMeshBuffer;
-    std::vector<MeshBuffer> mb;
+    MeshBuffer mb;
 
     Texture texture;
     FBO fbo;
 
+    Behavior rotateBehavior;
+   
 
 
-
-    void loadMeshes(const std::string& name) {    
-
-      std::vector<MeshData> md;
-      MeshUtils::loadMeshes(md, name);
-
-      for (unsigned long i = 0; i < md.size(); i++) {
-	mb.push_back((MeshBuffer()).init(md[i], posLoc, -1, texCoordLoc, -1));
-      }
+    void loadMeshes(const std::string& name) {
+      mb = MeshUtils::loadMesh(name, posLoc, -1, texCoordLoc, -1);
     }
 
     void loadCube() {
@@ -70,7 +67,7 @@ class FBOExample : public RendererOSX {
     }
 
     void loadTexture(Texture& t, const std::string& name) {
-      t.loadTextureData2D(t, name).create2D();
+      t.loadTexture(t, name);
     } 
 
 
@@ -99,27 +96,31 @@ class FBOExample : public RendererOSX {
 
       loadTexture(texture, "resources/hubble.jpg");
       loadProgram(program, "resources/texture");
+  
       loadMeshes("resources/ducky.obj");
       loadCube();
       setUpFBO(fbo);
 
-      proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
-      model = Matrix4f::identity();
-      model.rotate(M_PI/2, 0,2).rotate(45.0, 1,2).rotate(8.0, 0,1);
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      view = glm::lookAt(vec3(0.0,0.0,-5), vec3(0,0,0), vec3(0,1,0) );
+      model = glm::mat4();
+     // model.rotate(M_PI/2, 0,2).rotate(45.0, 1,2).rotate(8.0, 0,1);
+
+      rotateBehavior = Behavior(now()).delay(1000).length(5000).range(vec3(180.0, 90.0, 360.0)).reversing(true).repeats(-1).sine();
+
 
       glEnable(GL_DEPTH_TEST);
       glViewport(0, 0, width, height);
       glClearColor(0.3,0.3,0.3,1.0);
     }
 
-    void draw(Mat4f model, MeshBuffer& mb, Texture& t) {
+    void draw(mat4 model, MeshBuffer& mb, Texture& t) {
 
       program.bind(); {
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
+	glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
 
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
-	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
 
 	t.bind(GL_TEXTURE0);
 
@@ -134,17 +135,23 @@ class FBOExample : public RendererOSX {
 
     void onFrame(){
 
-      model.rotate(0.01, 0, 1).rotate(0.025, 0, 2).rotate(0.015, 1, 2);
+  model = glm::mat4();
+     
+      vec3 totals = rotateBehavior.tick(now()).totals();
+     model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));
+      model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));
+      model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));
+
+
+      //model.rotate(0.01, 0, 1).rotate(0.025, 0, 2).rotate(0.015, 1, 2);
 
       //draw the duck into an offscreen texture
       fbo.bind(); {
 	glClearColor(0.5,0.2,0.2,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	for (unsigned long i = 0; i < mb.size(); i++) {
-	  draw(model, mb[i], texture);
-	  mb[i].draw();	
-	}
+	  draw(model, mb, texture);
+	  mb.draw();	
 
       } fbo.unbind();
 
@@ -159,6 +166,5 @@ class FBOExample : public RendererOSX {
 };
 
 int main() {
-  FBOExample().start(); 
-  return 0;
+  return FBOExample().start(); 
 }

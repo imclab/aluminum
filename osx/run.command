@@ -9,6 +9,9 @@
 #   ./run.command -sc examples/model/Model.mm
 #  force re-precompiling headers, build static lib, compile and run app 
 #   ./run.command -p examples/stereo/Stereo.mm
+#  clean by removing aluminum.a, the precompiled headers, and the application binary (this last one is optional)
+#   ./run.command -z
+#   ./run.command -z examples/stereo/MyApp.mm
   
 #default builder flags, can be changed with -c, -r, -b, -s, -p. Use -? for help.
 BUILD=1
@@ -147,6 +150,5 @@ fi
 
 if [ "$RUN" -eq 1 ]; then 
   ### 3. RUN the app
-  $APP_PATH/$APP
-  #cd $APP_PATH && ./$APP
+  cd $APP_PATH && ./$APP
 fi

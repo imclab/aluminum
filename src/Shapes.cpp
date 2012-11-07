@@ -211,6 +211,7 @@ namespace aluminum {
   int addSphere(MeshData& m, double radius, int slices, int stacks){
 
     vec3 N, V;
+    vec3 Tex; //agf
 
     struct CSin{
       CSin(double frq, double radius=1.)
@@ -225,6 +226,7 @@ namespace aluminum {
 
     int Nv = m.vertices().size();
 
+    //phi, theta?
     CSin P( M_PI/stacks); P.r = P.dr*radius; P.i = P.di*radius;
     CSin T((M_PI*2.0)/slices);
 
@@ -234,8 +236,19 @@ namespace aluminum {
     V = vec3(0,0,radius);
     //N = vec3(0,0,radius).normalize();
     N = glm::normalize(vec3(0,0,radius));
+
+    //Tex = vec3(1 - (float) i / slices, 1 - (float) (j+1) / stacks);
+	//Tex = vec3(1 - (float) i / slices,
+	//			1 - (float) (j) / stacks, 0.0);
+		
+    Tex = vec3(0.0, 0.0, 0.0);  //agf
+    m.texCoord(Tex); //agf
+
     m.vertex(V);
     m.normal(N);
+
+    
+
     for(int i=0; i<slices; ++i){
       m.index(Nv+1 + i);
       m.index(Nv+1 + ((i+1)%slices));
@@ -254,8 +267,15 @@ namespace aluminum {
 	int i01 = Nv+1 + jp1*slices + i;
 	int i11 = Nv+1 + jp1*slices + ip1;
 	V = vec3(T.r*P.i, T.i*P.i, P.r);
+
+	printf("st/sl = %d/%d : %f/%f/%f\n", j,i, V.x, V.y, V.z);
 	//N = vec3(T.r*P.i, T.i*P.i, P.r).normalize();
 	N = glm::normalize(vec3(T.r*P.i, T.i*P.i, P.r));
+
+
+	Tex = vec3(1 - (float) i / slices,
+				1 - (float) (j) / stacks, 0.0);
+	m.texCoord(Tex);
 
 	//m.vertex(T.r*P.i, T.i*P.i, P.r);
 	m.vertex(V);
@@ -275,10 +295,19 @@ namespace aluminum {
     int icap = m.vertices().size() + slices;
     for(int i=0; i<slices; ++i){
       V = vec3(T.r*P.i, T.i*P.i, P.r);
+
+      printf("sl = %d : %f/%f/%f\n", i, V.x, V.y, V.z);
+	
       //N = vec3(T.r*P.i, T.i*P.i, P.r).normalize();
       N = glm::normalize(vec3(T.r*P.i, T.i*P.i, P.r));
       m.vertex(V);
       m.normal(N);
+
+      Tex = vec3(1.0, 1.0, 0.0);  //agf
+      m.texCoord(Tex); //agf
+
+
+
       //  m.vertex(T.r*P.i, T.i*P.i, P.r);
       m.index(icap - slices + ((i+1)%slices));
       m.index(icap - slices + i);

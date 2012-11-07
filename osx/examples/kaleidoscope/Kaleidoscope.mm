@@ -1,7 +1,7 @@
 
 
 // fragment shader example from http://www.iquilezles.org/apps/shadertoy/
-
+#include "Includes.hpp"
 #include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
@@ -9,15 +9,14 @@
 #include "Texture.hpp"
 #include "Program.hpp"
 #include "Shapes.hpp"
-#include <vector>
 
-using namespace al;
+using namespace aluminum;
 
 class Kaleidoscope : public RendererOSX {
 
   public:
 
-    Mat4f model, view, proj;
+    mat4 model, view, proj;
 
     Program program;
     GLint posLoc=0;
@@ -26,7 +25,7 @@ class Kaleidoscope : public RendererOSX {
     MeshBuffer mb1;
 
     void loadTexture(Texture& t, const std::string& name) {
-      t.loadTextureData2D(t, name).create2D();
+      t.loadTexture(t, name);
     } 
 
     void loadProgram(Program &p, const std::string& name) {
