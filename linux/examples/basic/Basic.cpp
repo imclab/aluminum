@@ -149,6 +149,6 @@ int main(){
 */
 
 int main(){ 
-  Basic().start(); 
+  Basic().start("basic example"); 
   return 0;
 }

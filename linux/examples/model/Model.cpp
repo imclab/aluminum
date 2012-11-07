@@ -1,120 +1,125 @@
 
-#include "FreeGlutGLView.hpp"
-#include "RendererLinux.hpp"
+#include "Includes.hpp"
+
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
 #include "Program.hpp"
-#include <vector>
+#include "Behavior.hpp"
+#include "Texture.hpp"
 
-using namespace al;
+using namespace aluminum;
+
+using std::cout;
+using std::chrono::duration_cast;
+using std::chrono::nanoseconds;
+using std::chrono::milliseconds;
+using std::chrono::high_resolution_clock;
 
 class ModelExample : public RendererLinux {
 
   public:
 
-    Vec3f diffuse = Vec3f(0.0,1.0,0.0);
-    Vec3f specular = Vec3f(1.0,1.0,1.0);
-    Vec3f ambient = Vec3f(0.0,0.0,0.3);
+    vec3 diffuse = vec3(0.0,1.0,0.0);
+    vec3 specular = vec3(1.0,1.0,1.0);
+    vec3 ambient = vec3(0.0,0.0,0.3);
     float lightPosX = -1.0f;
-    Mat4f model, view, proj;
+    mat4 model, view, proj;
 
     Program program;
     GLint posLoc=0;
     GLint normalLoc=1;
 
-    std::vector<MeshData> md;
-    std::vector<MeshBuffer> mb;
-      
+    MeshBuffer mb;
 
-    void loadMeshes(const std::string& name) {    
-      
-      MeshUtils::loadMeshes(md, name);
+    Behavior rotateBehavior;
+    Behavior lightBehavior;
 
-      for (unsigned long i = 0; i < md.size(); i++) {
-	mb.push_back((MeshBuffer()).init(md[i], posLoc, normalLoc, -1, -1));
-      }
+    void loadMeshes(const std::string& name) {
+      mb = MeshUtils::loadMesh(name, posLoc, normalLoc, -1, -1);
     }
 
     void loadProgram(Program &p, const std::string& name) {
 
       p.create();
 
-      Shader sv = Shader::sourceFromFile(name + ".vsh", GL_VERTEX_SHADER);
-      Shader sf = Shader::sourceFromFile(name + ".fsh", GL_FRAGMENT_SHADER);
-
-      p.attach(sv);
-
+      p.attach(p.loadText(name + ".vsh"), GL_VERTEX_SHADER);
       glBindAttribLocation(p.id(), posLoc, "vertexPosition");
       glBindAttribLocation(p.id(), normalLoc, "vertexNormal");
 
-      p.attach(sf);
+      p.attach(p.loadText(name + ".fsh"), GL_FRAGMENT_SHADER);
+      //glBindFragDataLocation(id(), 0, "frag"); //agf
 
       p.link();
-
-      p.listParams();
-
-      printf("program.id = %d, vertex.glsl = %d, frag.glsl = %d\n", p.id(), sv.id(), sf.id());
     }
 
     void onCreate() {
 
       loadProgram(program, "resources/phong");
 
-      loadMeshes("resources/ducky.obj");
-      //loadScene(scene, "resources/test3.obj");
+      //loadMeshes("resources/ducky.obj");
+      //loadMeshes("resources/angel.obj");
+fprintf(stderr, "a0\n");
+      loadMeshes("resources/test.nff");
+fprintf(stderr, "a1\n");
+      //loadMeshes("resources/test3.obj");
+      //loadMeshes("resources/A1.obj");
       //loadScene(scene, "resources/toyplane.obj");
 
-      proj = Matrix4f::perspective(45, 1.0, 0.1, 100);
-      view = Matrix4f::lookAt(Vec3f(0.0,0.0,-5), Vec3f(0,0,0), Vec3f(0,1,0) );
-      model = Matrix4f::identity();
-      model.rotate(M_PI/2, 0,2).rotate(45.0, 1,2).rotate(8.0, 0,1);
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      view = glm::lookAt(vec3(0.0,0.0,-5), vec3(0,0,0), vec3(0,1,0) );
+      model = glm::rotate(glm::mat4(), 180.0f, vec3(0.0,1.0,0.0));
+      //model = glm::translate(model, vec3(0.0f,-0.0f,0.0f));
 
       glEnable(GL_DEPTH_TEST);
-     
-    }
-
-    void draw(Mat4f model) {
-      glViewport(0, 0, width, height);
       glClearColor(0.3,0.3,0.3,1.0);
 
+      //rotateBehavior = Behavior(now()).delay(1000).length(5000).range(vec3(180.0, 90.0, 360.0)).reversing(true).repeats(-1).sine();
+      //lightBehavior = Behavior(now()).range(2.0).length(20000).reversing(true).repeats(-1).sine(Easing::IN);
+fprintf(stderr, "a2\n");
 
-      lightPosX += 0.02f;
-      if (lightPosX > 1.0) { lightPosX = -1.0f; }
-
-      program.begin(); {
-	glUniformMatrix4fv(program.uniform("model"), 1, 0, model.ptr());
-	glUniformMatrix4fv(program.uniform("view"), 1, 0, view.ptr());
-	glUniformMatrix4fv(program.uniform("proj"), 1, 0, proj.ptr());
-
-	glUniform3f(program.uniform("lightPos"), lightPosX, 0.0f, 0.0f);
-	glUniform3fv(program.uniform("ambient"), 1, ambient.ptr()); 
-	glUniform3fv(program.uniform("diffuse"), 1, diffuse.ptr()); 
-	glUniform3fv(program.uniform("specular"), 1, specular.ptr()); 
-
-	for (unsigned long i = 0; i < mb.size(); i++) {
-	  mb[i].draw();	
-	}
-
-	/*for (unsigned i=0; i< scene->meshes(); i++) {*/
-	/*  modelMeshBuffer[i].draw();*/
-	/*}*/
-
-      } program.end();
     }
 
-    void onFrame(){
+    void updateModel() {
+/*
+      lightPosX += lightBehavior.tick(now()).offset();
+
+      vec3 totals = rotateBehavior.tick(now()).totals();
+      model = glm::mat4();
+      //model = glm::translate(model, vec3(0.0f,-2.0f,0.0f));
+      model = glm::rotate(model, 180.0f, vec3(0.0f,1.0f,0.0f));
+      model = glm::rotate(model, totals.x, vec3(1.0f,0.0f,0.0f));
+      model = glm::rotate(model, totals.y, vec3(0.0f,1.0f,0.0f));
+      model = glm::rotate(model, totals.z, vec3(0.0f,0.0f,1.0f));
+*/
+    }
+
+    void onFrame() {
+      //tick();
+
+      glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      model.rotate(0.01, 0, 1);
+      updateModel();
 
-      model.rotate(0.02, 0, 2);
-      model.rotate(0.015, 1, 2);
-      draw(model);
+      program.bind(); {
+	glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
+	glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
+	glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
+
+	glUniform3f(program.uniform("lightPos"), lightPosX, 0.0f, -0.3f);
+	glUniform3fv(program.uniform("ambient"), 1, ptr(ambient)); 
+	glUniform3fv(program.uniform("diffuse"), 1, ptr(diffuse)); 
+	glUniform3fv(program.uniform("specular"), 1, ptr(specular)); 
+
+	mb.draw();
+
+      } program.unbind();
+
     }
 };
 
 int main() {
   ModelExample().start(); 
-  return 0;
+	return 0;
 }

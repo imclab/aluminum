@@ -7,7 +7,6 @@ int height;
 RendererLinux* renderer;
 static struct timeval lastTime;
 
-
 FreeGlutGLView::FreeGlutGLView() {}
 
 void reshape(GLint _w, GLint _h) {
@@ -42,11 +41,18 @@ void animate() {
 	glutPostRedisplay();
 }
 
-void button(int button, int state, int x, int y ) {
+void pressed(int button, int state, int x, int y ) {
 	printf("button : %d %d %d %d\n", button, state, x, y);
+	//check state to see if sending down or up...
+	renderer->mouseDown(x,y);
 }
-void motion(int x, int y ) {
+void dragged(int x, int y ) {
 	printf("motion : %d %d\n", x, y);
+	renderer->mouseDragged(x,y);
+}
+void moved(int x, int y ) {
+	printf("motion : %d %d\n", x, y);
+	renderer->mouseMoved(x,y);
 }
 
 
@@ -75,28 +81,22 @@ FreeGlutGLView* FreeGlutGLView::start(void* _renderer) {
 	return FreeGlutGLView::start(_renderer, "allomin");
 }
 
+
 FreeGlutGLView* FreeGlutGLView::start(void* _renderer, std::string name) {
 
 	renderer = (RendererLinux*) _renderer;
 
-	printf("HRERERE!\n");
-	fprintf(stderr, "yo\n");
-
-	char* argv[] = {"foo", "bar"};
-	int argc = 2;
+	/* annoying useless setup for glutInit */
+	char* argv[] = {strdup(name.c_str())};
+	int argc = 1;
 
 	glutInit(&argc, argv);
-	fprintf(stderr, "yo a\n");
 	glutInitContextVersion(3,2);
-	fprintf(stderr, "yo bbb\n");
-
 
 	glutInitContextFlags(GLUT_CORE_PROFILE | GLUT_DEBUG);
 	//glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
-	fprintf(stderr, "yo c \n");
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	fprintf(stderr, "yo d\n");
 
 /*
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_MULTISAMPLE );
@@ -110,8 +110,8 @@ FreeGlutGLView* FreeGlutGLView::start(void* _renderer, std::string name) {
 
 	glutInitWindowSize(200,200);
 	fprintf(stderr, "yo e\n");
-	//glutCreateWindow(name.c_str());
-	glutCreateWindow("abc");
+	glutCreateWindow(name.c_str());
+	//glutCreateWindow("abc");
 	fprintf(stderr, "yo f\n");
 
 
@@ -124,8 +124,9 @@ fprintf(stderr, "yo g\n");
 	glutDisplayFunc(&display);
 	glutReshapeFunc(&reshape);
 	glutKeyboardFunc(&keyboard);
-	glutMouseFunc(&button);
-	glutMotionFunc(&motion);
+	glutMouseFunc(&pressed);
+	glutMotionFunc(&dragged);
+	glutPassiveMotionFunc(&moved);
 	glutIdleFunc(&animate);
 	fprintf(stderr, "yo h\n");
 

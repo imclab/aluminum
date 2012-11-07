@@ -25,6 +25,14 @@ public:
 //  FreeGlutGLView* view;
   void accessView();
 
+
+virtual void mouseDragged(int px, int py);
+virtual void mouseDown(int px, int py);
+virtual void mouseUp(int px, int py);
+virtual void mouseMoved(int px, int py);
+
+
+
   
 
   
