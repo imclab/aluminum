@@ -5,7 +5,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install gcc-4.7
 sudo apt-get install g++-4.7
-...
+
 sudo ln -s /usr/bin/gcc-4.7 /usr/bin/gcc
 sudo ln -s /usr/bin/g++-4.7 /usr/bin/g++
 
