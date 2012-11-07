@@ -23,7 +23,13 @@ sudo make install
 Had an issue with compiling assimp3... followed this...
 http://blogmonsalve.blogspot.com/2012/10/compilando-assimp-en-kubuntu-1204.html
 
+Seems like there are issues if libassimp2 is still around... not sure why... maybe misreading a header file???
+aiFace was returning errors & causing segfaults...
 
+I completely purged it using:
+sudo apt-get purge libassimp2
+sudo apt-get purge libassimp-dev
+or some combination like that...
 
 Install FreeGlut2.6+ and GL3:
 

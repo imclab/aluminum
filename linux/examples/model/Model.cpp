@@ -57,10 +57,10 @@ class ModelExample : public RendererLinux {
 
       loadProgram(program, "resources/phong");
 
-      //loadMeshes("resources/ducky.obj");
+      loadMeshes("resources/ducky.obj");
       //loadMeshes("resources/angel.obj");
 fprintf(stderr, "a0\n");
-      loadMeshes("resources/test.nff");
+      //loadMeshes("resources/test.nff");
 fprintf(stderr, "a1\n");
       //loadMeshes("resources/test3.obj");
       //loadMeshes("resources/A1.obj");

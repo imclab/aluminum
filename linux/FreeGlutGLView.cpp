@@ -42,16 +42,16 @@ void animate() {
 }
 
 void pressed(int button, int state, int x, int y ) {
-	printf("button : %d %d %d %d\n", button, state, x, y);
+//	printf("button : %d %d %d %d\n", button, state, x, y);
 	//check state to see if sending down or up...
 	renderer->mouseDown(x,y);
 }
 void dragged(int x, int y ) {
-	printf("motion : %d %d\n", x, y);
+//	printf("motion : %d %d\n", x, y);
 	renderer->mouseDragged(x,y);
 }
 void moved(int x, int y ) {
-	printf("motion : %d %d\n", x, y);
+//	printf("motion : %d %d\n", x, y);
 	renderer->mouseMoved(x,y);
 }
 
@@ -109,17 +109,12 @@ FreeGlutGLView* FreeGlutGLView::start(void* _renderer, std::string name) {
 */
 
 	glutInitWindowSize(200,200);
-	fprintf(stderr, "yo e\n");
 	glutCreateWindow(name.c_str());
-	//glutCreateWindow("abc");
-	fprintf(stderr, "yo f\n");
-
 
 //	glutGameModeString("1280x1024:32@60");
 //	glutEnterGameMode();
 	
 	renderer->onCreate();
-fprintf(stderr, "yo g\n");
 
 	glutDisplayFunc(&display);
 	glutReshapeFunc(&reshape);
@@ -128,15 +123,8 @@ fprintf(stderr, "yo g\n");
 	glutMotionFunc(&dragged);
 	glutPassiveMotionFunc(&moved);
 	glutIdleFunc(&animate);
-	fprintf(stderr, "yo h\n");
 
 	gettimeofday(&lastTime, NULL);
-	fprintf(stderr, "yo i\n");
-
-
-	
-
-
 
 	glutMainLoop();
 
