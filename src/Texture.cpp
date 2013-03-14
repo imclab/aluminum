@@ -125,6 +125,8 @@ namespace aluminum {
 
       case FIC_RGB:
 	printf("FIC_RGB\n");
+	// dib = FreeImage_ConvertTo32Bits(dib);
+	// type = FreeImage_GetColorType(dib);
 	pixFormat = GL_RGB;
 	break;
       case FIC_RGBALPHA:
@@ -172,9 +174,9 @@ namespace aluminum {
     texture.pixelFormat = pixFormat;
     texture.type = GL_UNSIGNED_BYTE;
     //texture.wrapMode(GL_CLAMP_TO_EDGE);
-    texture.wrapMode(GL_REPEAT);
-    texture.minFilter(GL_LINEAR);
-    texture.maxFilter(GL_LINEAR);
+    texture.mWrapMode = GL_REPEAT; //(GL_REPEAT);
+    texture.mMinFilter = GL_NEAREST; //(GL_LINEAR);
+    texture.mMaxFilter= GL_NEAREST; //(GL_LINEAR);
 
     texture.create2D(); 
     // FreeImage_Unload(dib);
@@ -194,9 +196,18 @@ namespace aluminum {
     type = _type; //GL_UNSIGNED_BYTE, GL_FLOAT, etc
     kind(GL_TEXTURE_2D);
 
+
+    mWrapMode = GL_REPEAT; //(GL_REPEAT);
+    mMinFilter = GL_NEAREST; //(GL_LINEAR);
+    mMaxFilter= GL_NEAREST; //(GL_LINEAR);
+
+    /*
     wrapMode(GL_REPEAT); //GL_CLAMP_TO_EDGE;
     minFilter(GL_LINEAR);
     maxFilter(GL_LINEAR);
+    //minFilter(GL_NEAREST);
+    //maxFilter(GL_NEAREST);
+    */
 
     data = new GLubyte[width * height * 4];
 
@@ -217,12 +228,54 @@ namespace aluminum {
     type = _type; //GL_UNSIGNED_BYTE, GL_FLOAT, etc
     kind(GL_TEXTURE_2D);
 
-    wrapMode(GL_CLAMP_TO_EDGE);
-    minFilter(GL_LINEAR);
-    maxFilter(GL_LINEAR);
+     mWrapMode = GL_REPEAT; //(GL_REPEAT);
+    mMinFilter = GL_NEAREST; //(GL_LINEAR);
+    mMaxFilter= GL_NEAREST; //(GL_LINEAR);
+
 
     create2D();
   }
+
+
+  void Texture::flipBufferX(unsigned char* buffer, int _w, int _h) {
+ 
+    GLuint left;
+    GLuint right;
+    
+    _w *= 4; //GL_RGBA or BGRA
+
+    for (int y = 0; y < _h; y++) {
+      for (int x = 0; x < _w/2; x+=4) {
+	for (int i = 0; i < 4; i++) {
+
+	  left = buffer[(y * _w) + (x) + i];
+	  right = buffer[(y * _w) + (_w-4) - (x) + i];
+
+	  buffer[(y * _w) + (x) + i] = right;
+	  buffer[(y * _w) + (_w-4) - (x) + i] = left;
+	}
+      }
+    }
+  }
+
+  void Texture::flipBufferY(unsigned char* buffer, int _w, int _h) {
+    // gl renders “upside down” so swap top to bottom into new array.
+    GLuint top;
+    GLuint bottom;
+    _w *= 4; //GL_RGBA or BGRA
+    for(int y = 0; y < _h / 2; y++) {
+      for(int x = 0; x < _w; x++) {
+	//Swap top and bottom bytes
+	top = buffer[y * _w + x];
+	bottom = buffer[(_h - 1 - y) * _w + x];
+	buffer[(_h - 1 - y) * _w + x] = top;
+	buffer[y * _w + x] = bottom;
+
+      }
+    }
+  }
+
+
 
   void Texture::dump() {
     printf("texture id = %d\n", texID);
@@ -285,18 +338,25 @@ namespace aluminum {
   }
 
 
-  Texture& Texture::update() {
-    glBindTexture(kind(), texID); {
-
+  Texture& Texture::updateParameters() {
+    bind(); {
       glTexParameteri(kind(), GL_TEXTURE_MIN_FILTER, minFilter()); 
       glTexParameteri(kind(), GL_TEXTURE_MAG_FILTER, maxFilter());
 
       glTexParameteri(kind(), GL_TEXTURE_WRAP_S, wrapMode());
       glTexParameteri(kind(), GL_TEXTURE_WRAP_T, wrapMode());
+    } unbind();
+  
+    return *this;
+  
+  }
+
+  Texture& Texture::updateData() {
+    bind(); {
 
       glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, data);
 
-    } glBindTexture(kind(), 0);
+    } unbind();
 
     return *this;
   }
@@ -308,25 +368,41 @@ namespace aluminum {
 
   GLenum Texture::kind() {
     return mKind;
-  }
+}
 
-  GLint Texture::wrapMode() {
-    return mWrapMode;
-  }
-  GLint Texture::minFilter() {
-    return mMinFilter;
-  }
+GLint Texture::wrapMode() {
+  return mWrapMode;
+}
 
-  GLint Texture::maxFilter() {
-    return mMaxFilter;
-  }
+GLint Texture::minFilter() {
+  return mMinFilter;
+}
+
+GLint Texture::maxFilter() {
+  return mMaxFilter;
+}
+
 
 
   Texture& Texture::kind(GLenum _kind) { mKind = _kind; return *this; }
-  Texture& Texture::wrapMode(GLint _wrapMode) { mWrapMode = _wrapMode; return *this;}
-  Texture& Texture::minFilter(GLint _minFilter) {mMinFilter = _minFilter; return *this;}
-  Texture& Texture::maxFilter(GLint _maxFilter) {mMaxFilter = _maxFilter; return *this;}
+  Texture& Texture::wrapMode(GLint _wrapMode) { 
+    mWrapMode = _wrapMode; 
+    updateParameters();
+    return *this;
+  }
+  
+  Texture& Texture::minFilter(GLint _minFilter) {
+    mMinFilter = _minFilter; 
+    updateParameters();
+    return *this;
+  }
+  
+  Texture& Texture::maxFilter(GLint _maxFilter) {
+    mMaxFilter = _maxFilter; 
+    updateParameters();
+    return *this;
+  }
 
 
 
-} // al::
+}

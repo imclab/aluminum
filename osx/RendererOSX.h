@@ -7,7 +7,6 @@
 //#import <string>
 //class CocoaGL;
 
-
 class RendererOSX { 
   
 public:
@@ -23,6 +22,7 @@ public:
   virtual void onCreate();
   virtual void onFrame();
   virtual void onReshape();
+  //virtual void tryVideoStuff();
 
   int width;
   int height; 
@@ -44,6 +44,7 @@ public:
 
   CocoaGL* getView();
   CocoaGL* view;
+
 };
 
 

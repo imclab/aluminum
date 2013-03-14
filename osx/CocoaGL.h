@@ -12,7 +12,6 @@
 
   BOOL cursorOn;
   BOOL stereoOn;
-
 }
 
 +(CocoaGL* )start:(void*) _renderer 

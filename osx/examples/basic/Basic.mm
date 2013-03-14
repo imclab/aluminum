@@ -20,8 +20,8 @@ class Basic : public RendererOSX {
     GLuint vao, vbo, ibo, indices[3] = {0,1,2};
 
     vec3 vertices[6] = {
-      vec3( -1.0, -1.0, 0.0 ), vec3( 0.0, 1.0, 0.0  ), vec3( 1.0, -1.0, 0.0  ), //vertex
-      vec3( 1.0,0.0,0.0), vec3(0.0,1.0,0.0), vec3(0.0,0.0,1.0), //color
+      vec3( -1.0, -1.0, 0.0 ), vec3( 0.0, 1.0, 0.0 ), vec3( 1.0, -1.0, 0.0 ), //vertex
+      vec3( 1.0,0.0,0.0 ), vec3( 0.0,1.0,0.0 ), vec3( 0.0,0.0,1.0 ), //color
     };
 
     GLint posLoc = 0;
@@ -75,7 +75,7 @@ class Basic : public RendererOSX {
     virtual void onFrame(){
 
       // Clear viewport
-      glViewport(0,0,width, height);
+      glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       // Draw our vbos to the screen

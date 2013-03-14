@@ -20,7 +20,7 @@ RUN=1
 PRE=0
 CLEAN=0
 
-while getopts "crbspz?" opt; do
+while getopts "hcrbspz?" opt; do
   case $opt in
 
     c) echo "...compile only"
@@ -45,7 +45,7 @@ while getopts "crbspz?" opt; do
     z) echo "...clean"
       CLEAN=1
       ;;
-    \?) echo -e "\n...help"
+    h) echo -e "\n\taluminum run.command help file"
       echo -e "\n\tvalid flags are:"
       echo -e "\t -c : compile only"
       echo -e "\t -r : run only"
@@ -53,6 +53,17 @@ while getopts "crbspz?" opt; do
       echo -e "\t -b : force building static lib"
       echo -e "\t -p : force precompiling headers"
       echo -e "\t -z : clean"
+      echo -e "\n\tdefault flags are: -bcr\n"
+      exit ;;
+    \?) echo -e "\n\taluminum run.command help file"
+      echo -e "\n\tvalid flags are:"
+      echo -e "\t -c : compile only"
+      echo -e "\t -r : run only"
+      echo -e "\t -s : skip building static lib"
+      echo -e "\t -b : force building static lib"
+      echo -e "\t -p : force precompiling headers"
+      echo -e "\t -z : clean"
+      echo -e "\n\tdefault flags are: -bcr\n"
       exit ;;
 
   esac
@@ -81,18 +92,25 @@ echo "APP = $APP"
 BASE_DIR="$RUN_PATH/.."
 SRC_DIR="$BASE_DIR/src"
 OSX_DIR="$RUN_PATH"
-LIB_DIR="$OSX_DIR/lib"
-INCLUDE_DIR="$OSX_DIR/include"
+#LIB_DIR="$OSX_DIR/lib"
+LIB_DIR="/opt/local/lib"
+#INCLUDE_DIR="$OSX_DIR/include"
+INCLUDE_DIR="/opt/local/include"
 
+FFMPEG="-L/opt/local/lib -lavformat -lavcodec -lswscale -lavutil"
 ASSIMP="$LIB_DIR/libassimp.dylib"
 FREEIMAGE="$LIB_DIR/libfreeimage.dylib" 
 
-COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.7 -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation"
+#COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.7 -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation -framework AVFoundation -framework CoreMedia "
+COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk -mmacosx-version-min=10.8 -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation -framework AVFoundation -framework CoreMedia "
 
 OPTIONS="-O3 -Wreturn-type -Wformat -Wmissing-braces -Wparentheses -Wswitch -Wunused-variable -Wsign-compare -Wno-unknown-pragmas -Woverloaded-virtual"
 
-INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR"
-LIBS="$ASSIMP $FREEIMAGE"
+#INCLUDE_FFMPEG="-I$INCLUDE_DIR/libswscale -I$INCLUDE_DIR/libavcodec -I$INCLUDE_DIR/libavformat" 
+
+#INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR $INCLUDE_FFMPEG -I./$APP_PATH"
+INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR -I./$APP_PATH"
+LIBS="$ASSIMP $FREEIMAGE" #$FFMPEG"
 SRC=" -x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $APP_SRC"
 
 
@@ -141,10 +159,17 @@ fi
 
 if [ "$COMPILE" -eq 1 ]; then 
 
-  ### 2. COMPILE w/aluminum lib
-  echo -e "\n\n\nCOMPILING user code with aluminum static lib... \n\nc++ $COCOA $OPTIONS -std=c++11 -stdlib=libc++ $BASE_DIR/aluminum.a $LIBS $INCLUDE $APP_PATH/$APP_SRC -o $APP_PATH/$APP"
+  ###2a. remove existing binary if it exists - if the next compile fails then the user might not realize it if the old version starts to run...
+  if [[ -n "$APP" ]]; then
+    echo "rm $APP_PATH/$APP"
+    rm $APP_PATH/$APP
+  fi
 
-  time c++ $COCOA $OPTIONS -std=c++11 -stdlib=libc++ $BASE_DIR/aluminum.a $LIBS $INCLUDE $APP_PATH/$APP_SRC -o $APP_PATH/$APP
+  ### 2. COMPILE w/aluminum lib
+  #echo -e "\n\n\nCOMPILING user code with aluminum static lib... \n\nc++ $COCOA $OPTIONS -std=c++11 -stdlib=libc++ $BASE_DIR/aluminum.a $LIBS $INCLUDE $APP_PATH/$APP_SRC -o $APP_PATH/$APP"
+  echo -e "\n\n\nCOMPILING user code with aluminum static lib... \n\nc++ $COCOA $OPTIONS -std=c++11 -stdlib=libc++ $BASE_DIR/aluminum.a $LIBS $INCLUDE $APP_PATH/*.mm -o $APP_PATH/$APP"
+
+  time c++ $COCOA $OPTIONS -std=c++11 -stdlib=libc++ $BASE_DIR/aluminum.a $LIBS $INCLUDE $APP_PATH/*.mm -o $APP_PATH/$APP
 
 fi 
 

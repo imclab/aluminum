@@ -61,6 +61,7 @@ int NUM_TEXTS = 10;
 class TextExample : public RendererOSX {
   public:
 
+GLuint vao;
     ivec4 VP;
     stringstream s;
     int num = 0;
@@ -74,7 +75,11 @@ class TextExample : public RendererOSX {
     }
 
     void onCreate() {
-    
+// Create a vertex array object
+      glGenVertexArrays( 1, &vao );
+      glBindVertexArray( vao );
+
+   
       VP = ivec4(0, 0, width, height);
    
       Font font;
@@ -96,6 +101,8 @@ class TextExample : public RendererOSX {
       tr = font.signedDistanceText2D("top right").background(bc).color(fc);
       bl = font.signedDistanceText2D("bottom left").background(bc).color(fc);
       br = font.signedDistanceText2D("bottom right").background(bc).color(fc);
+
+ 
     }
 
     void onReshape() {
@@ -103,6 +110,9 @@ class TextExample : public RendererOSX {
     }
 
     void onFrame() {
+
+     glBindVertexArray( vao );
+
 
       glViewport(0, 0, width, height);
       glClearColor(0.0, 0.0, 0.0, 1);

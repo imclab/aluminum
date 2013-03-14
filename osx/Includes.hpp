@@ -33,7 +33,7 @@
 #include "assimp/types.h"
 #include "assimp/matrix4x4.h"
 
-#include "freeimage/FreeImage.h"
+#include "FreeImage.h"
 
 #include "CocoaGL.h"
 #include "RendererOSX.h"

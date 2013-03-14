@@ -22,7 +22,8 @@ namespace aluminum {
       Texture(int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
       Texture(GLubyte* data, int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
       Texture& create2D();
-      Texture& update() ;
+      Texture& updateData() ;
+      Texture& updateParameters() ;
 
       Texture& bind (GLenum textureUnit);
       Texture& unbind (GLenum textureUnit);
@@ -39,6 +40,10 @@ namespace aluminum {
       Texture& minFilter(GLint _minFilter);
       Texture& maxFilter(GLint _maxFilter);
 
+      //static void flipBufferY(GLubyte* buffer, int _w, int _h);
+      static void flipBufferX(unsigned char* buffer, int _w, int _h);
+      static void flipBufferY(unsigned char* buffer, int _w, int _h);
+ 
       void destroy();
 
       void dump();
@@ -47,12 +52,13 @@ namespace aluminum {
       int height;
       int depth; //only for GL_TEXTURE_3D
 
+      const GLubyte* data;
+
     protected:
 
       GLuint texID;
 
-      const GLubyte* data;
-      GLenum mKind; //GL_TEXTURE_2D, GL_TEXTURE_3D, or GL_TEXTURE_CUBE_MAP 
+         GLenum mKind; //GL_TEXTURE_2D, GL_TEXTURE_3D, or GL_TEXTURE_CUBE_MAP 
       GLint internalFormat; //GL_RGBA, GL_R3_G3_B2, etc
       GLenum pixelFormat; //e.g. GL_RGBA, GL_BGRA
       GLenum type; //e.g. GL_UNSIGNED_BYTE, GL_FLOAT

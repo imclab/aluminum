@@ -52,8 +52,8 @@ class ModelExample : public RendererOSX {
 
       loadProgram(program, "resources/phong");
 
-      //loadMeshes("resources/ducky.obj");
-      loadMeshes("resources/angel.obj");
+      loadMeshes("resources/ducky.obj");
+      //loadMeshes("resources/angel.obj");
       //loadMeshes("resources/test.nff");
       //loadMeshes("resources/test3.obj");
       //loadMeshes("resources/A1.obj");

@@ -1,7 +1,7 @@
 #include "Includes.hpp"
 
+//#include "RendererOSX.h"
 #include "Program.hpp"
-#include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
 #include "Shapes.hpp"
@@ -143,6 +143,13 @@ class Stereo : public RendererOSX {
     float angZ = 0.0;
 
     void onFrame(){
+  
+      //glClearColor(1.0,0.0,0.0,1.0);
+      //glViewport(0, 0, width, height);
+      //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+     
+
+
       if (camera.isTransformed) {
 	camera.transform();
       }
@@ -151,19 +158,19 @@ class Stereo : public RendererOSX {
       angY += 0.007;
       angZ += 0.003;
 
-      /*
-      model1 = mat4();
-      model1.rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(0,0,-5));
-      model2.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(0,0,+5));
-      //model1.setIdentity().translate(vec3(0,0,-5));
-      //model2.setIdentity().translate(vec3(0,0,+5));
+      
+    //  model1 = mat4();
+    //  model1.rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(0,0,-5));
+    //  model2.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(0,0,+5));
+      //...model1.setIdentity().translate(vec3(0,0,-5));
+      //...model2.setIdentity().translate(vec3(0,0,+5));
 
       
-      //model3.setIdentity().translate(vec3(-5,0,0));
-      //model4.setIdentity().translate(vec3(+5,0,0));
-      model3.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(-5,0,0));
-      model4.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(+5,0,0));
-      */
+      //...model3.setIdentity().translate(vec3(-5,0,0));
+      //...model4.setIdentity().translate(vec3(+5,0,0));
+      //model3.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(-5,0,0));
+      //model4.setIdentity().rotate(angX, 0,2).rotate(angY, 1,2).rotate(angZ, 0,1).translate(vec3(+5,0,0));
+      
 
       model1 = glm::translate(mat4(), vec3(0,0,-5));
       model2 = glm::translate(mat4(), vec3(0,0,+5));
@@ -180,8 +187,6 @@ class Stereo : public RendererOSX {
       if (drawAnaglyph) {
 	glColorMask(true, false, false, true);
       }
-
-
 
       glViewport(0, 0, width, height/2); {
 	glScissor(0,0,width,height/2);
@@ -220,7 +225,9 @@ class Stereo : public RendererOSX {
       glColorMask(true, true, true, true);
 
 
-      /*
+       }
+
+   /*
 	 else if (drawActive) {
 	 glViewport(0,0,width, height);
 
@@ -278,7 +285,6 @@ class Stereo : public RendererOSX {
 	 draw(camera.backView);
 	 }
        */
-    }
 
 
     virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {

@@ -25,7 +25,8 @@ namespace aluminum {
   }
 
   float Utils::random() {
-    return glm::compRand1(0,1);
+    //return glm::compRand1(0,1);
+    return glm::linearRand(0,1);
   }
 
   
@@ -39,7 +40,8 @@ namespace aluminum {
       max = max+1;
     }
 
-    return (long) glm::compRand1(min, max);
+    //return (long) glm::compRand1(min, max);
+    return (long) glm::linearRand(min, max);
     // return min + int( ((max-min)+1) * random() ); 
   }
 
@@ -53,7 +55,8 @@ namespace aluminum {
       max = max+1;
     }
 
-    return (int) glm::compRand1(min, max);
+    return (int) glm::linearRand(min, max);
+    //return (int) glm::compRand1(min, max);
     // return min + int( ((max-min)+1) * random() ); 
   }
 
@@ -69,7 +72,8 @@ namespace aluminum {
   }
 
   float Utils::randomFloat(float min, float max) {
-    return (float) glm::compRand1(min, max);
+    //return (float) glm::compRand1(min, max);
+    return (float) glm::linearRand(min, max);
   }
 
   vector<float> Utils::randomFloats(int howMany, float min, float max) {
@@ -83,26 +87,31 @@ namespace aluminum {
   }
 
   vec3 Utils::randomVec3(float min, float max) {
-    return glm::compRand3(min, max);
+    //return glm::compRand3(min, max);
+    return glm::linearRand(vec3(min), vec3(max));
   }
 
   vec4 Utils::randomColor() {
-    vec3 c = glm::compRand3(0.0f, 1.0f);
+    //vec3 c = glm::compRand3(0.0f, 1.0f);
+    vec3 c = glm::linearRand(vec3(0.0f), vec3(1.0f));
     return vec4(c.x, c.y, c.z, 1.0); 
   }
 
   vec4 Utils::randomColor(float alpha) {
-    vec3 c = glm::compRand3(0.0f, 1.0f);
+    //vec3 c = glm::compRand3(0.0f, 1.0f);
+    vec3 c = glm::linearRand(vec3(0.0f), vec3(1.0f));
     return vec4(c.x, c.y, c.z, alpha); 
   }
 
   vec4 Utils::randomColor(float min, float max) {
-    vec3 c = glm::compRand3(min, max);
+    //vec3 c = glm::compRand3(min, max);
+    vec3 c = glm::linearRand(vec3(min), vec3(max));
     return vec4(c.x, c.y, c.z, 1.0); 
   }
 
   vec4 Utils::randomColor(float min, float max, float alpha) {
-    vec3 c = glm::compRand3(min, max);
+    //vec3 c = glm::compRand3(min, max);
+    vec3 c = glm::linearRand(vec3(min), vec3(max));
     return vec4(c.x, c.y, c.z, alpha); 
   }
 

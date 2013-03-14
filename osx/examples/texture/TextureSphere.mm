@@ -71,7 +71,7 @@ class TextureExample : public RendererOSX {
       loadTexture(texture, "resources/hubble.jpg");
 
       MeshData md;
-      addSphere(md, 0.1, 3, 3);
+      addSphere(md, 0.1, 30, 30);
 
       mb1.init(md, posLoc, -1, texCoordLoc, -1); 
 

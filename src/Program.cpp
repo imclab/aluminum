@@ -13,7 +13,7 @@
 namespace aluminum {
 
   using std::map;
-using std::string;
+  using std::string;
 
 
   Shader::Shader(const std::string& source, GLenum type) {

@@ -5,6 +5,8 @@
 #import <chrono>
 #import <iostream>
 
+//#import "VideoPlayer.h"
+
 using std::cout;
 using std::chrono::duration_cast;
 using std::chrono::nanoseconds;
@@ -79,7 +81,16 @@ void RendererOSX::tick() {
 void RendererOSX::onFrame() { }
 void RendererOSX::onCreate() { }
 void RendererOSX::onReshape() { }
- 
+
+/*
+void RendererOSX::tryVideoStuff() {
+  //printf("hi!\n");
+  VideoPlayer* vp = [[VideoPlayer alloc] init];      
+  [vp test]; 
+
+}
+*/
+
 CocoaGL* RendererOSX::getView() {
   return view;
 }

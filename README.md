@@ -11,4 +11,8 @@ Originally created to add OpenGL 3.2 & OpenGL ES 2.0 to the allocore framework. 
 
 Linux requires freeglut2.6 (or above?), see readme in linux directory.
 
+***
+
+Issues - /opt/local/include/FreeImage.h has some kind of clash - resolve by replacing all instances of BOOL with BOOL_FI. (BOOL is tyepdef for int32, not sure what the issue is, but easy enough to fix).
+
 

@@ -347,8 +347,6 @@ bool firstTime = true;
 
   if (firstTime) {
 
-     
-
     printf("in drawView... bounds = %f,%f,%f,%f\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 
     ((RendererOSX*)renderer)->view = self ;

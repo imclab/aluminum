@@ -4,7 +4,8 @@ OSX_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 BASE_DIR="$OSX_DIR/.."
 SRC_DIR="$BASE_DIR/src"
-INCLUDE_DIR="$OSX_DIR/include"
+#INCLUDE_DIR="$OSX_DIR/include"
+INCLUDE_DIR="/opt/local/include"
 
 INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR"
 
