@@ -69,12 +69,22 @@ using glm::mat4;
 
       static MeshData makeCube(float s);
 
-      static MeshData makeRectangle(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
+     static MeshData makeRectangle(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
+
 
       static MeshData makeRectangle(vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR);
       static MeshData makeRectangle(float _w, float _h);
+      static MeshData makeRectangle(float _w, float _h, bool flipHoriz, bool flipVer);
       static MeshData makeClipRectangle();
+      
+      static MeshData makeClipRectangle(bool flipHoriz, bool flipVert);
+   
       static MeshData makeRectangle();
+
+     //static MeshData& makeRectangle3( MeshData &m, vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
+     //static MeshData& makeRectangle3( MeshData &m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR);
+
+
 
 
       class Scene {

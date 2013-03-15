@@ -2,7 +2,52 @@
 #include "MeshData.hpp"
 
 namespace aluminum {
+ 
+MeshData::MeshData() {} 
+
+
+MeshData& MeshData::create() {
+  return *this;
+}
+
+/*MeshData& MeshData::makeRectangle2(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3) {
+
+    reset();
+    vec3 n = glm::cross(v1 - v0, v2 - v0);
+
+    static const vec3 vs[] = { v0, v1, v2, v3 };
+    static const vec3 ns[] = { n, n, n, n };
+    static const vec3 ts[] = { t0, t1, t2, t3 };
+    static const unsigned int indices[] = { 0,1,2, 2,1,3 };
+    //static const unsigned int indices[] = { 0,1,2, 1,2,3 };
+
+    vertex(vs, 4);
+    normal(ns, 4);
+    texCoord(ts, 4);
+    index(indices, 6);
+
+    return *this;
+  }
+
   
+  MeshData& MeshData::makeRectangle2(vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR) {
+        
+    vec3 v0 = vec3(vLL.x, vLL.y,0);
+    vec3 v1 = vec3(vLL.x,vUR.y,0);
+    vec3 v2 = vec3(vUR.x,vLL.y,0);
+    vec3 v3 = vec3(vUR.x,vUR.y,0);
+
+    vec3 t0 = vec3(tcLL.x,tcLL.y,0);
+    vec3 t1 = vec3(tcLL.x,tcUR.y,0);
+    vec3 t2 = vec3(tcUR.x,tcLL.y,0);
+    vec3 t3 = vec3(tcUR.x,tcUR.y,0);
+
+    makeRectangle2(v0,v1,v2,v3,t0,t1,t2,t3);
+    return *this;
+  }
+*/
+
+
 MeshData& MeshData::reset() {
 	vertices().clear();
 	normals().clear();

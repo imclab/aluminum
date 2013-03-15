@@ -12,8 +12,10 @@ namespace aluminum{
 
       MeshBuffer() {}
 
-      MeshBuffer& init(MeshData _data, int p, int n, int tc, int c);
-      MeshBuffer& update(MeshData _data, int p, int n, int tc, int c);
+      //MeshBuffer& init(MeshData &_data, int p, int n, int tc, int c);
+      //MeshBuffer& update(MeshData &_data, int p, int n, int tc, int c);
+      MeshBuffer init(MeshData _data, int p, int n, int tc, int c);
+      MeshBuffer update(MeshData _data, int p, int n, int tc, int c);
 
       virtual void draw();
 

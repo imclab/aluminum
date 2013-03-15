@@ -6,6 +6,7 @@
 namespace aluminum {
 
   using std::cout;
+  using std::endl;
   using glm::to_string;
 
   //will merge multiple meshes
@@ -338,7 +339,7 @@ namespace aluminum {
     vec3 t2 = vec3(1,0,0);
     vec3 t3 = vec3(1,1,0);
 
-    static const vec3 vs[] = { 
+    const vec3 vs[] = { 
       v2, v3, v6, v7, //right
       v4, v5, v0, v1, //left
       v0, v1, v2, v3, //front
@@ -347,7 +348,7 @@ namespace aluminum {
       v0, v4, v2, v6 //bottom
     };
 
-    static const vec3 ns[] = { 
+    const vec3 ns[] = { 
       n4, n4, n4, n4, 
       n5, n5, n5, n5,
       n0, n0, n0, n0,
@@ -356,7 +357,7 @@ namespace aluminum {
       n3, n3, n3, n3 
     };
 
-    static const vec3 ts[] = { 
+    const vec3 ts[] = { 
       t0, t1, t2, t3,
       t0, t1, t2, t3,
       t0, t1, t2, t3,
@@ -365,7 +366,7 @@ namespace aluminum {
       t0, t1, t2, t3 
     };
 
-    static const unsigned int indices[] = {
+    const unsigned int indices[] = {
       0,1,2, 2,1,3, 4,5,6, 6,5,7,
       8,9,10, 10,9,11, 12,13,14, 14,13,15,
       16,17,18, 18,17,19, 20,21,22, 22,21,23
@@ -379,17 +380,21 @@ namespace aluminum {
     return m;
   }
 
+  
   MeshData MeshUtils::makeRectangle(vec3 v0, vec3 v1, vec3 v2, vec3 v3,  
       vec3 t0, vec3 t1, vec3 t2, vec3 t3) {
 
+    
     MeshData m;
+    //m.create();
 
     vec3 n = glm::cross(v1 - v0, v2 - v0);
 
-    static const vec3 vs[] = { v0, v1, v2, v3 };
-    static const vec3 ns[] = { n, n, n, n };
-    static const vec3 ts[] = { t0, t1, t2, t3 };
-    static const unsigned int indices[] = { 0,1,2, 2,1,3 };
+     const vec3 vs[] = { v0, v1, v2, v3 };
+     const vec3 ns[] = { n, n, n, n };
+     const vec3 ts[] = { t0, t1, t2, t3 };
+     const unsigned int indices[] = { 0,1,2, 2,1,3 };
+    //static const unsigned int indices[] = { 0,1,2, 1,2,3 };
 
     m.vertex(vs, 4);
     m.normal(ns, 4);
@@ -398,10 +403,9 @@ namespace aluminum {
 
     return m;
   }
+  
 
   MeshData MeshUtils::makeRectangle(vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR) {
-
-    MeshData m;
 
     vec3 v0 = vec3(vLL.x, vLL.y,0);
     vec3 v1 = vec3(vLL.x,vUR.y,0);
@@ -416,6 +420,58 @@ namespace aluminum {
     return makeRectangle(v0,v1,v2,v3,t0,t1,t2,t3);
   }
 
+  /*
+  MeshData& MeshUtils::makeRectangle3(MeshData &m, vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3) {
+
+    printf("in MeshUtils::makeRectangle\n");
+
+    vec3 n = glm::cross(v1 - v0, v2 - v0);
+
+    //m.vertex(v0);m.vertex(v1);m.vertex(v2);m.vertex(v3);
+    //m.normal(n);m.normal(n);m.normal(n);m.normal(n);
+    //m.texCoord(t0);m.texCoord(t1);m.texCoord(t2);m.texCoord(t3);
+    //m.index(0);m.index(1);m.index(2);m.index(2);m.index(1);m.index(3);
+
+    vec3 vs[] = { v0, v1, v2, v3 };
+    vec3 ns[] = { n, n, n, n };
+    vec3 ts[] = { t0, t1, t2, t3 };
+    unsigned int indices[] = { 0,1,2, 2,1,3 };
+   
+    m.vertex(vs, 4);
+    m.normal(ns, 4);
+    m.texCoord(ts, 4);
+    m.index(indices, 6);
+ 
+
+    return m; //should be able to return the MeshData I passed in right???
+  }
+
+ 
+  
+  MeshData& MeshUtils::makeRectangle3( MeshData &m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR) {
+       
+    printf("in MeshUtils::makeRectangle\n");
+    vec3 v0 = vec3(vLL.x, vLL.y,0);
+    vec3 v1 = vec3(vLL.x,vUR.y,0);
+    vec3 v2 = vec3(vUR.x,vLL.y,0);
+    vec3 v3 = vec3(vUR.x,vUR.y,0);
+
+    vec3 t0 = vec3(tcLL.x,tcLL.y,0);
+    vec3 t1 = vec3(tcLL.x,tcUR.y,0);
+    vec3 t2 = vec3(tcUR.x,tcLL.y,0);
+    vec3 t3 = vec3(tcUR.x,tcUR.y,0);
+
+    cout << "in MeshUtils A" << glm::to_string(t0) << endl;
+    cout << "in MeshUtils A" << glm::to_string(t1) << endl;
+    cout << "in MeshUtils A" << glm::to_string(t2) << endl;
+    cout << "in MeshUtils A" << glm::to_string(t3) << endl;
+
+    //passing the vec3s by value - so its ok 
+    return makeRectangle3(m, v0,v1,v2,v3,t0,t1,t2,t3); //should be able to return the MeshData I passed in right???
+  }
+  */      
+
+
   MeshData MeshUtils::makeRectangle(float _w, float _h) {
 
     float w = _w/2.0;
@@ -424,6 +480,39 @@ namespace aluminum {
     return makeRectangle(vec2(-w,-h), vec2(w,h), vec2(0,0), vec2(1,1)); 
   }
 
+
+  MeshData MeshUtils::makeRectangle(float _w, float _h, bool flipHoriz, bool flipVert) {
+
+    float w = _w/2.0;
+    float h = _h/2.0;
+
+    vec2 tLL;
+    vec2 tUR;
+
+    if (flipHoriz && flipVert) {
+      printf("HERE flip both\n");
+      tLL = vec2(1,1);
+      tUR = vec2(0,0);
+    } else if (flipHoriz) {
+      printf("HERE flip horiz\n");
+      tLL = vec2(1,0);
+      tUR = vec2(0,1);
+    } else if (flipVert) {
+      printf("HERE flip vert\n");
+      tLL = vec2(0,1);
+      tUR = vec2(1,0);
+    } else {
+      printf("HERE dont flip\n");
+      tLL = vec2(0,0);
+      tUR = vec2(1,1);
+    }
+
+
+
+    return makeRectangle(vec2(-w,-h), vec2(w,h), tLL, tUR); 
+  }
+
+
   MeshData MeshUtils::makeRectangle() {
     return makeRectangle(1,1);
   }
@@ -431,6 +520,12 @@ namespace aluminum {
   MeshData MeshUtils::makeClipRectangle() {
     return makeRectangle(2,2);
   }
+  
+  //flipHoriz = over y axis; flipVert = over x axis
+  MeshData MeshUtils::makeClipRectangle(bool flipHoriz, bool flipVert) {
+    return makeRectangle(2,2,flipHoriz,flipVert);
+  }
+
 
 
 }

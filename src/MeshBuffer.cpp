@@ -47,7 +47,7 @@ namespace aluminum {
 
 
 
-  MeshBuffer& MeshBuffer::update(MeshData _data, int p, int n, int tc, int c) {
+  MeshBuffer MeshBuffer::update(MeshData _data, int p, int n, int tc, int c) {
     data = _data;
 
     glBindVertexArray( vao[0] ); {
@@ -79,7 +79,8 @@ namespace aluminum {
     return *this;
   }
 
-  MeshBuffer& MeshBuffer::init(MeshData _data, int p, int n, int tc, int c) {
+  MeshBuffer MeshBuffer::init(MeshData _data, int p, int n, int tc, int c) {
+  //MeshBuffer MeshBuffer::init(MeshData &_data, int p, int n, int tc, int c) {
 
     glGenVertexArrays( 1, vao );
     glGenBuffers(4, vbo);

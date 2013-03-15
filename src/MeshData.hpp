@@ -22,6 +22,7 @@ namespace aluminum {
   using glm::to_string;
   using glm::ivec2;
   using glm::ivec4;
+  using glm::vec2;
   using glm::vec3;
   using glm::vec4;
   using glm::mat4;
@@ -44,7 +45,7 @@ namespace aluminum {
       typedef vector<Vertex>		Vertices;
       typedef vector<Normal>		Normals;
       typedef vector<Color>		Colors;
-      typedef vector<TexCoord>	TexCoords;
+      typedef vector<TexCoord>	        TexCoords;
       typedef vector<Index>		Indices;
 
       /*	
@@ -61,6 +62,14 @@ namespace aluminum {
       /// @param[out] min		minimum corner of bounding box
       /// @param[out] max		maximum corner of bounding box
 
+      MeshData();
+      MeshData& create();
+
+      //MeshData& makeRectangle2(vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR);
+      //MeshData& makeRectangle2(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
+
+
+   
       MeshData& reset();
 	
       void getBounds(vec3& min, vec3& max) const;
@@ -140,6 +149,11 @@ namespace aluminum {
       void vertex(float x, float y, float z=0){ vertex(Vertex(x,y,z)); }
       void vertex(const Vertex& v){ vertices().push_back(v); }
       
+      //this code is problematic...
+     // void vertex(const vec3 buf[], int size){
+     //	for(int i=0; i<size; ++i) vertex(buf[i][0], buf[i][1], buf[i][2]);
+     // } 
+        
       void vertex(const vec3 *buf, int size){
 	for(int i=0; i<size; ++i) vertex(buf[i][0], buf[i][1], buf[i][2]);
       }

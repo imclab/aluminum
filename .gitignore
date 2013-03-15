@@ -21,6 +21,9 @@ DerivedData
 *.lo
 *.o
 
+# Precompiled Headers
+*.hpp.gch
+
 # Compiled Dynamic libraries
 *.so
 *.dylib

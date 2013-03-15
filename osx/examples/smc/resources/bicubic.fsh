@@ -90,21 +90,19 @@ float Triangular( float f ) {
 
 void main() {
 
-  vec2 TexCoord = texCoord; 
-
   float texelSizeX = 1.0 / float(tWidth); //size of one texel 
   float texelSizeY = 1.0 / float(tHeight); //size of one texel 
   vec4 nSum = vec4( 0.0, 0.0, 0.0, 0.0 );
   vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
 
   
-  float a = fract( TexCoord.x * tWidth ); // get the decimal part
-  float b = fract( TexCoord.y * tHeight ); // get the decimal part
+  float a = fract( texCoord.x * tWidth ); // get the decimal part
+  float b = fract( texCoord.y * tHeight ); // get the decimal part
 
   for( int m = -1; m <=2; m++ ) {
     for( int n =-1; n<= 2; n++) {
       vec4 vecData = texture(tex0, 
-	  TexCoord + vec2(texelSizeX * float( m ), texelSizeY * float( n )));
+	  texCoord + vec2(texelSizeX * float( m ), texelSizeY * float( n )));
 
       float f  = BSpline( float( m ) - a );
       //float f  = Triangular( float( m ) - a );
@@ -121,8 +119,8 @@ void main() {
 
    outputFrag = nSum / nDenom;
   
-  //outputFrag = vec4(a,TexCoord.x,0.0, 1.0);
-  //outputFrag = texture(tex0, TexCoord);
+  //outputFrag = vec4(a,texCoord.x,0.0, 1.0);
+  //outputFrag = texture(tex0, texCoord);
 
 
   /*

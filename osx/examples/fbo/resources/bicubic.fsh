@@ -98,8 +98,8 @@ void main() {
   vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
 
   
-  float a = fract( TexCoord.x * tWidth ); // get the decimal part
-  float b = fract( TexCoord.y * tHeight ); // get the decimal part
+  float a = fract( TexCoord.x * float(tWidth) ); // get the decimal part
+  float b = fract( TexCoord.y * float(tHeight) ); // get the decimal part
 
   for( int m = -1; m <=2; m++ ) {
     for( int n =-1; n<= 2; n++) {
@@ -119,11 +119,17 @@ void main() {
     }
   }
 
-   outputFrag = nSum / nDenom;
+  outputFrag = nSum / nDenom;
   
-  //outputFrag = vec4(a,TexCoord.x,0.0, 1.0);
+  /*
+  if (a > 0.98) {
+    outputFrag = vec4(a, texture(tex0, TexCoord).gb, 1.0);
+  } else {
   //outputFrag = texture(tex0, TexCoord);
-
+    outputFrag = vec4(0.0);
+  }
+  //outputFrag = texture(tex0, TexCoord);
+  */
 
   /*
 

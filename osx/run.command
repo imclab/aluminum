@@ -12,7 +12,12 @@
 #  clean by removing aluminum.a, the precompiled headers, and the application binary (this last one is optional)
 #   ./run.command -z
 #   ./run.command -z examples/stereo/MyApp.mm
-  
+ 
+
+OSX_VERSION="$(sw_vers -productVersion | grep -o '[0-9][0-9]\.[0-9]')";
+echo -e "\n\nYou are running OSX version $OSX_VERSION\n\n"
+
+
 #default builder flags, can be changed with -c, -r, -b, -s, -p. Use -? for help.
 BUILD=1
 COMPILE=1
@@ -101,8 +106,8 @@ FFMPEG="-L/opt/local/lib -lavformat -lavcodec -lswscale -lavutil"
 ASSIMP="$LIB_DIR/libassimp.dylib"
 FREEIMAGE="$LIB_DIR/libfreeimage.dylib" 
 
-#COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.7 -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation -framework AVFoundation -framework CoreMedia "
-COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk -mmacosx-version-min=10.8 -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation -framework AVFoundation -framework CoreMedia "
+COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$OSX_VERSION.sdk -mmacosx-version-min=$OSX_VERSION -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation -framework AVFoundation -framework CoreMedia "
+#COCOA="-isysroot /Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk -mmacosx-version-min=10.8 -framework Cocoa -framework QuartzCore -framework OpenGL -framework AppKit -framework Foundation -framework AVFoundation -framework CoreMedia "
 
 OPTIONS="-O3 -Wreturn-type -Wformat -Wmissing-braces -Wparentheses -Wswitch -Wunused-variable -Wsign-compare -Wno-unknown-pragmas -Woverloaded-virtual"
 
