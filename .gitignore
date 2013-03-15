@@ -31,5 +31,9 @@ DerivedData
 *.a
 
 # vi swps
-.*.sw*
+.*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
 
