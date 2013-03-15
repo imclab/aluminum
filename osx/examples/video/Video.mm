@@ -59,8 +59,8 @@ class Video : public RendererOSX {
       texture = [vp createVideoTexture:moviefile useAudio:false autoPlay:true autoLoop:true];
       //[vp prepareVideo:"resources/test.mov" texture:texture];
 
-      loadProgram(program, "resources/pixelate");
-      //loadProgram(program, "resources/texture");
+      //loadProgram(program, "resources/pixelate");
+      loadProgram(program, "resources/texture");
       
       //loadTexture(texture, "resources/hubble.jpg");
 

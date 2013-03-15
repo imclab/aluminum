@@ -351,7 +351,7 @@ FBO& FBO::attach(Texture t) {
 void FBO::checkStatus() {
   /* assumes that the FBO is bound */  
 
-  printFramebufferInfo();
+  //printFramebufferInfo();
 
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
       printf("in FBO : ERROR!!!!: Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));

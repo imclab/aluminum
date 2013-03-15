@@ -116,7 +116,8 @@ autoLoop:(bool) autoLoop {
   //currTime = prevTime;
 
   NSTimer *t = [[NSTimer alloc] initWithFireDate: [NSDate dateWithTimeIntervalSinceReferenceDate:fireDate]
-    interval: 1.0/videoTrack.nominalFrameRate
+    //interval: 1.0/videoTrack.nominalFrameRate
+    interval: 0.5
     target: self
     selector:@selector(onTick:)
     userInfo:nil repeats:YES];
