@@ -11,29 +11,27 @@
 
 #include <string> 
 #import "VideoPlayer.h"
-
+#include "Metrics.h"
 
 using namespace aluminum;
 using std::string;
 
 class SMC : public RendererOSX {
-  
+
   public:
 
-    int PIXELW = 500;
-    int PIXELH = 500;
-    float SLIDE = 0.05;
-    
+    int PIXELW = 30;
+    int PIXELH = 30;
+    int TOTAL_FRAMES = 250;
+    float SLIDE = 1.0;
+
 
     mat4 model, view, proj;
 
-    Program textureProgram, processProgram, bicubicProgram;
 
     GLint posLoc=0;
     GLint texCoordLoc=1;
 
-    Texture videoFrameTexture, processTextureA, processTextureB;
-    Texture inputTex; 
 
     MeshBuffer mb1;
     MeshBuffer mb2;
@@ -41,21 +39,43 @@ class SMC : public RendererOSX {
 
     VideoPlayer* vp;
 
+
+    Texture videoFrameTexture;
+    Program textureProgram, bicubicProgram;
     FBO fboPixelate;
+
+    //process video 
+    Program processProgram;
+    Texture processTextureA, processTextureB, inputTex; 
     FBO fboProcess;
- 
-    
+
+    //get metrics on video
+    Program metricProgram, averageProgram, peakProgram;
+    Texture metricTextureA, metricTextureB, metricInputTexture;
+    FBO fboMetric;
+
+    Metrics metrics = Metrics(PIXELW, PIXELH, TOTAL_FRAMES);
+
+
 
 
     void setUpFBOPixelate(FBO &f) {
       f.create(PIXELW, PIXELH); 
     }
-    
+
+
     void setUpFBOProcess(FBO &f) {
 
       f.create(); //empty FBO
       processTextureA = Texture(PIXELW, PIXELH, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
       processTextureB = Texture(PIXELW, PIXELH, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+    }
+
+    void setUpFBOMetric(FBO &f) {
+
+      f.create(); //empty FBO
+      metricTextureA = Texture(PIXELW, PIXELH, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+      metricTextureB = Texture(PIXELW, PIXELH, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
     }
 
     void loadTexture(Texture& t, const std::string& name) {
@@ -77,10 +97,10 @@ class SMC : public RendererOSX {
 
     void setUpRect(MeshData &r, vec2 v, float b) {
 
- 
-	//r->reset();
-	r.texCoords().push_back( vec3(1+b,2+b,3+b));
-	r.texCoords().push_back( vec3(5+b,6+b,7+b));
+
+      //r->reset();
+      r.texCoords().push_back( vec3(1+b,2+b,3+b));
+      r.texCoords().push_back( vec3(5+b,6+b,7+b));
 
     }
 
@@ -92,49 +112,20 @@ class SMC : public RendererOSX {
 
       setUpFBOPixelate(fboPixelate);
       setUpFBOProcess(fboProcess);
+      setUpFBOMetric(fboMetric);
 
 
       string moviefile = "resources/test3.mov";
       videoFrameTexture = *[vp createVideoTexture:moviefile useAudio:false autoPlay:true autoLoop:true];
 
-      //Texture ttt = *[vp createVideoTexture:moviefile useAudio:false autoPlay:true autoLoop:true];
-
-
       loadProgram(textureProgram, "resources/texture");
       loadProgram(bicubicProgram, "resources/bicubic");
       loadProgram(processProgram, "resources/slide");
-
-/*
-    MeshData rect2;
-    MeshData rect3;
-   
-      cout << "hi again! " << endl;
-
-      //MeshUtils::makeRectangle3(rect2, vec2(-1,-1), vec2(1,1), vec2(0,0), vec2(2,2));
-      //MeshUtils::makeRectangle3(rect3, vec2(-1,-1), vec2(1,1), vec2(0,1), vec2(3,0));
-      rect2 = MeshUtils::makeRectangle( vec2(-1,-1), vec2(1,1), vec2(0,0), vec2(2,2));
-      rect3 = MeshUtils::makeRectangle( vec2(-1,-1), vec2(1,1), vec2(0,1), vec2(3,0));
-
-    //  printf("r2 %p\n", rect2);
-    //  printf("r3 %p\n", rect3);
-  
-      mb1.init( rect2, posLoc, -1, texCoordLoc, -1); 
-      mb2.init( rect3, posLoc, -1, texCoordLoc, -1); 
+      loadProgram(metricProgram, "resources/average");
 
 
-    for (unsigned i=0; i < rect2.texCoords().size(); i++) {
-      cout << "r2 " << glm::to_string(rect2.texCoords().at(i)) << endl;
-    }
-    for (unsigned i=0; i < rect3.texCoords().size(); i++) {
-      cout << "r3 " << glm::to_string(rect3.texCoords().at(i)) << endl;
-    }
-
-*/
-    
-//      printf("wtf rect1=%p rect2=%p, rect3=%p\n", (void*)rect1, (void*)rect2, (void*)rect3);
-
-    mb1.init(MeshUtils::makeClipRectangle(false, false), posLoc, -1, texCoordLoc, -1); 
-    mb2.init(MeshUtils::makeClipRectangle(true, true), posLoc, -1, texCoordLoc, -1); 
+      mb1.init(MeshUtils::makeClipRectangle(true, true), posLoc, -1, texCoordLoc, -1); 
+      mb2.init(MeshUtils::makeClipRectangle(), posLoc, -1, texCoordLoc, -1); 
 
       view = glm::mat4();
       proj = glm::mat4();
@@ -146,79 +137,95 @@ class SMC : public RendererOSX {
     }
 
     int frameNum = 0;
+    int videoFrameNum = 0;
 
 
-    void calculateMetrics(FBO& f, int frameNum) {
+
+    void printTexture(FBO& f, int frameNum) {
       f.bind(); {
-        calculateMetrics(f.texture, frameNum);
+	printTexture(f.texture, frameNum);
       } f.unbind();
 
     }
 
-    void calculateMetrics(Texture& rt, int frameNum) {
+    void printTexture(Texture& rt, int frameNum) {
 
-        bool PRINT = false;
-        rt.bind(); {
+      bool PRINT = false;
+      rt.bind(); {
 
-          GLubyte *data = (GLubyte*)malloc(4 * rt.width * rt.height);
-          glReadPixels(0, 0, rt.width, rt.height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	GLubyte *data = (GLubyte*)malloc(4 * rt.width * rt.height);
+	glReadPixels(0, 0, rt.width, rt.height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-          int idx = 0;
-          if (PRINT) printf("\n\n***Reading Frame %d\n", frameNum);
-          for (int i = 0; i < rt.height; i++) {
-            for (int j = 0; j < rt.width; j++) {
-              if (PRINT) printf("pixel (%d,%d) = RGB:  ", j, i);
-              for (int v = 0; v < 4; v++) {
-                if (PRINT) printf(" %d ", data[idx++]);
-              }
-              if (PRINT) printf("}\n");
-            }
-          }
+	int idx = 0;
+	if (PRINT) printf("\n\n***Reading Frame %d\n", frameNum);
+	for (int j = 0; j < rt.height; j++) {
+	  for (int i = 0; i < rt.width; i++) {
+	    if (PRINT) printf("pixel (%d,%d) = RGB:  ", i, j);
+	    for (int v = 0; v < 4; v++) {
+	      if (PRINT) printf(" %d ", data[idx++]);
+	    }
+	    if (PRINT) printf("}\n");
+	  }
+	}
 
-        } rt.unbind();
+      } rt.unbind();
     }
 
     void pingPong(int frameNum, FBO &fbo, Texture &inputTex, Texture &pA, Texture &pB) {
 
       if (frameNum % 2 == 0) {
-        fbo.attach(pB); //we will write into texB
-        inputTex = pA;
+	fbo.attach(pB); //we will write into texB
+	inputTex = pA;
       } else {
-        fbo.attach(pA); //we will write into texA
-        inputTex = pB;
+	fbo.attach(pA); //we will write into texA
+	inputTex = pB;
       }
     }
 
 
     void onFrame(){
 
-      [vp nextFrame];
+      bool newFrame = [vp nextFrame];
 
       //pixelate the video texture
 
       fboPixelate.bind(); {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        textureProgram.bind(); {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	textureProgram.bind(); {
 
-          glUniformMatrix4fv(textureProgram.uniform("model"), 1, 0, ptr(model));
-          glUniformMatrix4fv(textureProgram.uniform("view"), 1, 0, ptr(view));
-          glUniformMatrix4fv(textureProgram.uniform("proj"), 1, 0, ptr(proj));
+	  glUniformMatrix4fv(textureProgram.uniform("model"), 1, 0, ptr(model));
+	  glUniformMatrix4fv(textureProgram.uniform("view"), 1, 0, ptr(view));
+	  glUniformMatrix4fv(textureProgram.uniform("proj"), 1, 0, ptr(proj));
 
-          glUniform1i(textureProgram.uniform("tex0"), 0);
+	  glUniform1i(textureProgram.uniform("tex0"), 0);
 
-          videoFrameTexture.bind(GL_TEXTURE0); {
-            mb1.draw();	
-          } videoFrameTexture.unbind(GL_TEXTURE0);
+	  videoFrameTexture.bind(GL_TEXTURE0); {
+	    mb1.draw();	
+	  } videoFrameTexture.unbind(GL_TEXTURE0);
 
-        } textureProgram.unbind();
+	} textureProgram.unbind();
       } fboPixelate.unbind();
 
 
-      //calculateMetrics(fboPixelate, frameNum);
-      //calculateMetrics(videoFrameTexture, frameNum);
+      //printTexture(fboPixelate, frameNum);
+      //printTexture(videoFrameTexture, frameNum);
 
+      if (newFrame == true) {
+	printf("videoFrameNum = %d\n", videoFrameNum);
+	metrics.calculatePeaks(fboPixelate, videoFrameNum);
+	metrics.calculateNeighborDistance(fboPixelate, videoFrameNum);
+	metrics.calculateGlobalPeaks(fboPixelate, videoFrameNum);
 
+      }
 
+      if (videoFrameNum == TOTAL_FRAMES) {
+	metrics.printFinalMetrics();
+	exit(0);
+      }
+
+      if (newFrame == true) {
+	videoFrameNum++;
+      }
       //now fbo.texture should be the pixelated video
 
       //process - slide      
@@ -227,30 +234,60 @@ class SMC : public RendererOSX {
       //printf("B inputTex = %i and fboProcess attach = %i\n", inputTex.id(), fboProcess.texture.id()); 
 
       fboProcess.bind(); {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        processProgram.bind(); {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	processProgram.bind(); {
 
-          glUniformMatrix4fv(processProgram.uniform("model"), 1, 0, ptr(model));
-          glUniformMatrix4fv(processProgram.uniform("view"), 1, 0, ptr(view));
-          glUniformMatrix4fv(processProgram.uniform("proj"), 1, 0, ptr(proj));
+	  glUniformMatrix4fv(processProgram.uniform("model"), 1, 0, ptr(model));
+	  glUniformMatrix4fv(processProgram.uniform("view"), 1, 0, ptr(view));
+	  glUniformMatrix4fv(processProgram.uniform("proj"), 1, 0, ptr(proj));
 
-          glUniform1i(processProgram.uniform("curTex"), 0);
-          glUniform1i(processProgram.uniform("prevTex"), 1);
-          glUniform1f(processProgram.uniform("slideFactor"), SLIDE);
+	  glUniform1i(processProgram.uniform("curTex"), 0);
+	  glUniform1i(processProgram.uniform("prevTex"), 1);
+	  glUniform1f(processProgram.uniform("slideFactor"), SLIDE);
 
-          fboPixelate.texture.bind(GL_TEXTURE0);
-          inputTex.bind(GL_TEXTURE1);
+	  fboPixelate.texture.bind(GL_TEXTURE0);
+	  inputTex.bind(GL_TEXTURE1);
 
-          mb1.draw();	
-          fboPixelate.texture.unbind(GL_TEXTURE0);
-            inputTex.unbind(GL_TEXTURE1);
+	  mb2.draw();	
+	  fboPixelate.texture.unbind(GL_TEXTURE0);
+	  inputTex.unbind(GL_TEXTURE1);
 
-          } processProgram.unbind();
+	} processProgram.unbind();
       } fboProcess.unbind();
 
-      //calculateMetrics(fboProcess, frameNum);
-  
-      
+      //metrics      
+
+      Program metricProgram = averageProgram;
+
+      pingPong(frameNum, fboMetric, metricInputTexture, metricTextureA, metricTextureB);
+
+      fboMetric.bind(); {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	metricProgram.bind(); {
+
+	  glUniformMatrix4fv(processProgram.uniform("model"), 1, 0, ptr(model));
+	  glUniformMatrix4fv(processProgram.uniform("view"), 1, 0, ptr(view));
+	  glUniformMatrix4fv(processProgram.uniform("proj"), 1, 0, ptr(proj));
+
+	  glUniform1i(processProgram.uniform("curTex"), 0);
+	  glUniform1i(processProgram.uniform("prevTex"), 1);
+	  glUniform1i(processProgram.uniform("frameNum"), frameNum);
+
+	  fboProcess.texture.bind(GL_TEXTURE0); //cur
+	  metricInputTexture.bind(GL_TEXTURE1); //prev metrics
+	  mb2.draw();	
+	  fboProcess.texture.unbind(GL_TEXTURE0);
+	  metricInputTexture.unbind(GL_TEXTURE1); 
+
+	} metricProgram.unbind();
+      } fboMetric.unbind();
+
+      //printTexture(fboProcess, frameNum);
+      printTexture(fboMetric, frameNum);
+
+
+
+
       //draw output to screen - using a bicubic filter?
 
       glViewport(0, 0, width, height);
@@ -258,7 +295,7 @@ class SMC : public RendererOSX {
 
       Program outputProgram = textureProgram;
       //Program outputProgram = bicubicProgram;
-      
+
 
       outputProgram.bind(); {
 
@@ -274,28 +311,28 @@ class SMC : public RendererOSX {
 	glUniform1i(outputProgram.uniform("tWidth"), fboPixelate.texture.width);
 	glUniform1i(outputProgram.uniform("tHeight"), fboPixelate.texture.height);
 
-     
-/*
-	fboPixelate.texture.bind(GL_TEXTURE0); {
-              mb2.draw();	
-        } fboPixelate.texture.unbind(GL_TEXTURE0);
-     
 
-	videoFrameTexture.bind(GL_TEXTURE0); {
-              mb2.draw();	
-        } videoFrameTexture.unbind(GL_TEXTURE0);
-  */   
-	
-        fboProcess.texture.bind(GL_TEXTURE0); {
-              mb2.draw();	
-        } fboProcess.texture.unbind(GL_TEXTURE0);
-	
+	/*
+	   fboPixelate.texture.bind(GL_TEXTURE0); {
+	   mb2.draw();	
+	   } fboPixelate.texture.unbind(GL_TEXTURE0);
+
+
+	   videoFrameTexture.bind(GL_TEXTURE0); {
+	   mb2.draw();	
+	   } videoFrameTexture.unbind(GL_TEXTURE0);
+	 */   
+
+	fboProcess.texture.bind(GL_TEXTURE0); {
+	  mb2.draw();	
+	} fboProcess.texture.unbind(GL_TEXTURE0);
+
 
       } outputProgram.unbind();
-    
-    
+
+
       frameNum++;
-    
+
     }
 
     void onReshape() {

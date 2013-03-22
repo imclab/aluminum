@@ -116,8 +116,8 @@ autoLoop:(bool) autoLoop {
   //currTime = prevTime;
 
   NSTimer *t = [[NSTimer alloc] initWithFireDate: [NSDate dateWithTimeIntervalSinceReferenceDate:fireDate]
-    //interval: 1.0/videoTrack.nominalFrameRate
-    interval: 0.1
+    interval: 1.0/videoTrack.nominalFrameRate
+    //interval: 0.1
     target: self
     selector:@selector(onTick:)
     userInfo:nil repeats:YES];
@@ -151,14 +151,14 @@ autoLoop:(bool) autoLoop {
 }
 
 
-
-- (void) nextFrame {
+//return true if the frame was updated, false if the next frame wasn't ready to be updated yet
+- (bool) nextFrame {
 
   if ([videoAssetReader status]==AVAssetReaderStatusReading) { 
 
     if (frameReady == false) {
       //printf("frame not ready\n");
-      return;
+      return false;
     }
     //printf("frame ready\n");
     isLocked = true;
@@ -192,6 +192,8 @@ autoLoop:(bool) autoLoop {
     [videoAssetReader cancelReading];
     frameReady = false;
   }
+
+  return true;
   
 }
 

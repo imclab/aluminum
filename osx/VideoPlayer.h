@@ -50,7 +50,7 @@ class aluminum::Texture;
 
 - (Texture*) createVideoTexture:(const string)fname useAudio:(bool) useAudio autoPlay:(bool)autoPlay autoLoop:(bool)autoLoop;
 
-- (void) nextFrame;
+- (bool) nextFrame;
 
 - (id) init;
 

@@ -87,6 +87,34 @@ namespace aluminum {
   }
   */
 
+  // Just loads in data to a byte array. 
+  void Texture::loadTextureData(GLubyte* &data, int &w, int &h, std::string file) {
+
+    const char *filename = file.c_str();
+    FREE_IMAGE_FORMAT format;
+    FIBITMAP *dib(0);
+    BYTE *bits(0);
+    int width(0), height(0);
+
+    format = FreeImage_GetFileType(filename);
+    dib = FreeImage_Load(format, filename);
+
+    dib = FreeImage_ConvertTo32Bits(dib);
+    bits = FreeImage_GetBits(dib);
+   
+    width = FreeImage_GetWidth(dib);
+    height = FreeImage_GetHeight(dib);
+
+    w = width;
+    h = height;
+    data = bits;
+
+    // for (int i = 0; i < w*h*4; i++) {
+    //   printf("%d,", data[i]);
+    // } printf("\n");
+
+  }
+
   Texture& Texture::loadTexture(Texture& texture, std::string file) {
 
     const char *filename = file.c_str();
@@ -104,39 +132,39 @@ namespace aluminum {
     switch ( type )
     {
       case FIC_MINISBLACK:
-	//right now this is a special case for different types of FONT textures...
-	//converting single channel to rgba so shaders are the same...
-	//prob should be in its own font loader class, not a general texture loading method
-	printf("FIC_MINISBLACK\n");
-	pixFormat = GL_RED;
-	//dib = FreeImage_ConvertTo32Bits(dib);
-	//pixFormat = GL_RGBA;
+        //right now this is a special case for different types of FONT textures...
+        //converting single channel to rgba so shaders are the same...
+        //prob should be in its own font loader class, not a general texture loading method
+        printf("FIC_MINISBLACK\n");
+        pixFormat = GL_RED;
+        //dib = FreeImage_ConvertTo32Bits(dib);
+        //pixFormat = GL_RGBA;
 
-	break;
+        break;
       case FIC_MINISWHITE:
-	printf("FIC_MINISWHITE\n");
-	break;
+        printf("FIC_MINISWHITE\n");
+        break;
       case FIC_PALETTE:
-	printf("FIC_PALETTE\n");
-	break;
+        printf("FIC_PALETTE\n");
+        break;
       case FIC_CMYK:
-	printf("FIC_CMYK\n");
-	break;
+        printf("FIC_CMYK\n");
+        break;
 
       case FIC_RGB:
-	printf("FIC_RGB\n");
-	// dib = FreeImage_ConvertTo32Bits(dib);
-	// type = FreeImage_GetColorType(dib);
-	pixFormat = GL_RGB;
-	break;
+        printf("FIC_RGB\n");
+        dib = FreeImage_ConvertTo32Bits(dib);
+        type = FreeImage_GetColorType(dib);
+        pixFormat = GL_RGBA;
+        break;
       case FIC_RGBALPHA:
-	printf("FIC_RGBA\n");
-	pixFormat = GL_RGBA;
-	break;
+        printf("FIC_RGBA\n");
+        pixFormat = GL_RGBA;
+        break;
       default:
 
-	printf("format %d not handled!\n", type);
-	break;
+        printf("format %d not handled!\n", type);
+        break;
     }
 
 
@@ -162,7 +190,7 @@ namespace aluminum {
        if (cnt > 8) break;
        }
        */
-
+    printf("AAA\n");
     texture.kind(GL_TEXTURE_2D);
 
     texture.data = new GLubyte[width * height * 4];
@@ -177,8 +205,10 @@ namespace aluminum {
     texture.mWrapMode = GL_REPEAT; //(GL_REPEAT);
     texture.mMinFilter = GL_NEAREST; //(GL_LINEAR);
     texture.mMaxFilter= GL_NEAREST; //(GL_LINEAR);
+    printf("BBB\n");
 
     texture.create2D(); 
+printf("CCC\n");
     // FreeImage_Unload(dib);
     return texture;
   }

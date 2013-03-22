@@ -16,6 +16,7 @@ namespace aluminum {
       Texture() {}
 
       //static Texture& loadTexture(std::string file);
+      static void loadTextureData(GLubyte *& data, int &w, int &h, std::string file);
   
       static Texture& loadTexture(Texture &texture, std::string file);
 
@@ -52,7 +53,7 @@ namespace aluminum {
       int height;
       int depth; //only for GL_TEXTURE_3D
 
-      const GLubyte* data;
+      const GLubyte* data; //does this need to be const?
 
     protected:
 
