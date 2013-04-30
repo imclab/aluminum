@@ -1,71 +1,41 @@
 #include "Includes.hpp"
-
-#include "RendererOSX.h"
-#include "MeshBuffer.hpp"
-#include "MeshData.hpp"
-#include "MeshUtils.hpp"
-#include "Program.hpp"
-#include "Shapes.hpp"
 #include "Texture.hpp"
-#include "FBO.hpp"
+#include "Metrics.h"
 
 #include <string> 
-//#import "VideoPlayer.h"
-#include "Metrics.h"
 #include "dirent.h"
 
 using namespace aluminum;
 using std::string;
 
-class AnalyzeFramesInFolder : public RendererOSX {
+class AnalyzeFramesInFolder {
 
   public:
 
-    int PIXELW = 4;
-    int PIXELH = 4;
-    int TOTAL_FRAMES = 44;
+    //string path = "resources/files/MOV1/";
+    
+    int PIXELW = 8;
+    int PIXELH = 8;
+    int TOTAL_FRAMES = 440;
 
     Texture texture;
+   
 
-    Metrics metrics = Metrics(PIXELW, PIXELH, TOTAL_FRAMES);
-
-
-    
-    void printTexture(Texture& rt, int frameNum) {
-
-      bool PRINT = true;
-      rt.bind(); {
-
-	int idx = 0;
-	if (PRINT) printf("\n\n***Reading Frame %d\n", frameNum);
-	for (int j = 0; j < rt.height; j++) {
-	  for (int i = 0; i < rt.width; i++) {
-	    if (PRINT) printf("pixel (%d,%d) = RGB:  ", i, j);
-	    for (int v = 0; v < 4; v++) {
-	      if (PRINT) printf(" %d ", rt.data[idx++]);
-	    }
-	    if (PRINT) printf("}\n");
-	  }
-	}
-
-      } rt.unbind();
-    }
-
-  void printTexture(GLubyte* &data, int w, int h, int frameNum) {
+    void printTexture(GLubyte* &data, int w, int h, int frameNum) {
 
       bool PRINT = true;
 
-	int idx = 0;
-	if (PRINT) printf("\n\n***Reading Data for Frame %d\n", frameNum);
-	for (int j = 0; j < h; j++) {
-	  for (int i = 0; i < w; i++) {
-	    if (PRINT) printf("pixel (%d,%d) = RGB:  ", i, j);
-	    for (int v = 0; v < 4; v++) {
-	      if (PRINT) printf(" %d ", data[idx++]);
-	    }
-	    if (PRINT) printf("}\n");
+      int idx = 0;
+      if (PRINT) printf("\n\n***Reading Data for Frame %d\n", frameNum);
+      for (int j = 0; j < h; j++) {
+	for (int i = 0; i < w; i++) {
+	  if (PRINT) printf("pixel (%d,%d) = RGB:  ", i, j);
+	  for (int v = 0; v < 4; v++) {
+	    if (PRINT) printf(" %d ", data[idx++]);
 	  }
+	  if (PRINT) printf("}\n");
 	}
+      }
 
     }
 
@@ -74,12 +44,15 @@ class AnalyzeFramesInFolder : public RendererOSX {
     } 
 
 
-    void onCreate() {
-      printf("starting!\n");
+    //void onCreate() {
+    void analyze(string path, int range) {
+      //printf("starting!\n");
+
+Metrics metrics = Metrics(PIXELW, PIXELH, TOTAL_FRAMES, range);
 
       DIR *dir;
       struct dirent *ent;
-      if ((dir = opendir ("resources/files/MOV1/")) != NULL) {
+      if ((dir = opendir (path.c_str())) != NULL) {
 	/* print all the files and directories within directory */
 
 	int frameNum = 0;
@@ -88,22 +61,22 @@ class AnalyzeFramesInFolder : public RendererOSX {
 	  string str = ent->d_name;
 	  string str2 = "png";
 	  unsigned found = str.find(str2);
-	  
-	  if (found >= 0 && found < str.length()) { //better way?
-	    string path = "resources/files/MOV1/" + str;
 
-	    cout << "path = " << path << "\n";
+	  if (found < str.length()) { //better way?
+	    string filepath = path + "/" + str;
 
-            int w;
-            int h;
-            GLubyte* data;
-            Texture::loadTextureData(data, w, h, path);
+	    //cout << "path = " << filepath << "\n";
 
-            // for (int i = 0; i < w*h*4; i++) {
-            //   printf("%d ", data[i]);
-            // } printf("\n");
+	    int w;
+	    int h;
+	    GLubyte* data;
+	    Texture::loadTextureData(data, w, h, filepath);
 
-            printTexture(data, w, h, frameNum);
+	    // for (int i = 0; i < w*h*4; i++) {
+	    //   printf("%d ", data[i]);
+	    // } printf("\n");
+
+	    // printTexture(data, w, h, frameNum);
 
 	    metrics.calculatePeaks(data,frameNum);
 	    metrics.calculateNeighborDistance(data, frameNum);
@@ -114,16 +87,16 @@ class AnalyzeFramesInFolder : public RendererOSX {
 	}
 	closedir (dir);
 
-        metrics.printFinalMetrics();
-        exit(0);
-	
+	metrics.printFinalMetrics(path);
+	exit(0);
+
       } else {
 	/* could not open directory */
 	perror ("");
 	exit(0);
       }
 
-      
+
     }
 
 
@@ -132,8 +105,19 @@ class AnalyzeFramesInFolder : public RendererOSX {
 };
 
 
-int main() {
-  AnalyzeFramesInFolder().start(); 
+int main(int argc, char* argv[]) {
+ 
+  if (argc != 3) {
+    printf("usage: ./AnalyzeFramesInFolder path_to_folder contrastRange\n");
+    exit(0);
+  } 
+ 
+  string path = argv[1];
+  int range = std::stoi(argv[2]);
+  //cout << "path = " << path << "\n";
+  //cout << "range = " << range << "\n";
+  AnalyzeFramesInFolder a;
+  a.analyze(path, range);
 
-  return 0;
+  return 1;
 }

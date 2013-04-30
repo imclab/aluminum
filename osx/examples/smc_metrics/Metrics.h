@@ -1,31 +1,24 @@
 
 
 #include "Includes.hpp"
-
-#include "RendererOSX.h"
-#include "MeshBuffer.hpp"
-#include "MeshData.hpp"
-#include "MeshUtils.hpp"
-#include "Program.hpp"
-#include "Shapes.hpp"
-#include "Texture.hpp"
-#include "FBO.hpp"
-
 #include <string> 
-#import "VideoPlayer.h"
 
 
 using namespace aluminum;
 using std::string;
+using std::cout;
 
 class Metrics {
   
   public:
 
 
-    int NEIGHBOR_SPIKE = 256/8;
-    int PEAK_SPIKE = 256/8;
-    int GLOBAL_PEAK_SPIKE = 256/128;
+    //int NEIGHBOR_SPIKE = 256/8;
+    //int PEAK_SPIKE = 256/8;
+    //int GLOBAL_PEAK_SPIKE = 256/128;
+    float NEIGHBOR_SPIKE;
+    float PEAK_SPIKE;
+    float GLOBAL_PEAK_SPIKE;
 
     int PIXELW;
     int PIXELH;
@@ -53,11 +46,17 @@ class Metrics {
     float prevContrast;
 
 
-    Metrics(int pw, int ph, int totalFrames) {
+    Metrics(int pw, int ph, int totalFrames, int range) {
       PIXELW = pw;
       PIXELH = ph;
       TOTAL_FRAMES = totalFrames;
-    
+   
+    NEIGHBOR_SPIKE = range/8.0;
+    PEAK_SPIKE = range/32.0;
+    GLOBAL_PEAK_SPIKE = range/128.0;
+
+//printf("NS, PS, GPS = %f %f %f\n", NEIGHBOR_SPIKE, PEAK_SPIKE, GLOBAL_PEAK_SPIKE);
+
       prevVals = (GLubyte*)malloc(PIXELW * PIXELH * 4);
       basePeaks = (GLubyte*)malloc(PIXELW * PIXELH * 4);
       peakDir = (int*)malloc(PIXELW * PIXELH * 4 * sizeof(int)); //-1 or 1
@@ -66,15 +65,13 @@ class Metrics {
       numberSpikes = (int*)malloc(PIXELW * PIXELH * 4 * sizeof(int));
       maxNeighborDistance = (int*)malloc(PIXELW * PIXELH * 4 * sizeof(int)); 
       numNeighborSpikes = (int*)malloc(PIXELW * PIXELH * 4 * sizeof(int)); 
-
-      
     }
 
 
-    void printFinalMetrics() {
+    void printFinalMetrics(string path) {
 
       int numFrames = TOTAL_FRAMES;
-      bool ASSUME_GRAYSCALE = true;
+      //bool ASSUME_GRAYSCALE = true;
 
       // *** Flickr Metrics
 
@@ -107,8 +104,8 @@ class Metrics {
         videoContrastiness += numNeighborSpikes[i];
       }
 
-      printf(" check videoSpikiness = %f \n", videoSpikiness);
-      printf(" check videoContrastiness = %f \n", videoContrastiness);
+      //printf(" check videoSpikiness = %f \n", videoSpikiness);
+      //printf(" check videoContrastiness = %f \n", videoContrastiness);
 
       videoSpikiness = videoSpikiness / (float)dim / (float)numFrames;
       //videoAvgPeakDistance = videoAvgPeakDistance / (float)dim / (float)numFrames;
@@ -127,15 +124,63 @@ class Metrics {
 
       // *** REPORT
 
-      printf("videoSpikiness = %f\n", videoSpikiness);
-      printf("videoAvgPeakDistance = %f\n", videoAvgPeakDistance);
-      printf("videoPeakiness = %f\n", videoPeakiness);
-      printf("videoAvgMaxNeighborDistance = %f\n", videoAvgNeighborDistance);
-      printf("videoContrastiness = %f\n", videoContrastiness);
-      printf("globalSpikiness = %f\n", globalSpikiness);
-      printf("globalAvgPeakDistance = %f\n", globalAvgPeakDistance);
-      printf("globalPeakiness = %f\n", globalPeakiness);
+/* 
+ * FLICKR * - captures small changes
+  video choppiness = 
+  number of large jumps (+ or - 1/8*(max-min)) in contrast per-pixel 
+ 
+  video peakiness per pixel= 
+  average frequency
+
+  video avg peak distance per pixel =
+  average amplitude
+
+  ***
+
+ * VARIANCE *
+  video avg max neighbor distance per pixel =
+  average roughness
+
+  video contrastiness/edginess = 
+  number of large jumps (+ or - 1/8*(max-min)) with neighbors
+
+
+  *** 
+ * FLUTTER * - captures global changes
+  overall contrast of entire image
+  video choppiness = 
+  number of large jumps (+ or - 1/2*(max-min)) in contrast per-pixel 
+ 
+  video peakiness overall = 
+  average frequency
+
+  video avg peak distance overall =
+  average amplitude
+
+
+
+
+*/
+cout << "Video: " << path << "\n";
+cout << "\nFLICKER: \n";
+
+      printf("local_chopiness:%f\n", videoSpikiness);
+      printf("local_amplitude:%f\n", videoAvgPeakDistance);
+      printf("local_frequency:%f\n", videoPeakiness);
+
+      cout << "\nFLUTTER: \n";
+
+      printf("global_chopiness:%f\n", globalSpikiness);
+      printf("global_amplitude:%f\n", globalAvgPeakDistance);
+      printf("global_frequency:%f\n", globalPeakiness);
     
+      cout << "\nVARIATION: \n";
+
+      printf("roughness:%f\n", videoAvgNeighborDistance);
+      printf("edginess:%f\n", videoContrastiness);
+
+      cout << "\n\n\n";
+          
     }
 
 
@@ -184,7 +229,7 @@ class Metrics {
                 basePeaks[idx] = data[idx];	
 
                 if (v == 0) { //test red channel only 
-                  printf(" peak at %d! totalPeakVal = %d ; numberPeaks = %d ; numberSpikes = %d\n ", v, totalPeakVals[idx], numberPeaks[idx], numberSpikes[idx]);
+                  //printf(" peak at %d! totalPeakVal = %d ; numberPeaks = %d ; numberSpikes = %d\n ", v, totalPeakVals[idx], numberPeaks[idx], numberSpikes[idx]);
                 }
               }	      
               }
@@ -201,6 +246,7 @@ class Metrics {
 
     }
 
+    /*
     void calculatePeaks(FBO& f, int frameNum) {
       f.bind(); {
         calculatePeaks(f.texture, frameNum);
@@ -221,10 +267,10 @@ class Metrics {
      
       } rt.unbind();
     }
-
+    */
 
      void calculateGlobalPeaks(GLubyte* &data, int frameNum) {
-   bool PRINT = false;
+   
    	int height = PIXELH;
 	int width = PIXELW;
 
@@ -247,10 +293,12 @@ class Metrics {
 
         else {
 
-          float diff = abs(frameContrast - prevContrast);
-          printf("frame diff = %f\n", diff);
-          if (diff > GLOBAL_PEAK_SPIKE) {
+          float diff = fabs(frameContrast - prevContrast);
+         // printf("frame diff = %f\n", diff);
+         //  printf("frame: %d , contrast = %f, numFrameSpikes = %d\n", frameNum, frameContrast, numberFrameSpikes);
+           if (diff > GLOBAL_PEAK_SPIKE) {
             numberFrameSpikes++;
+           
           }
 
 
@@ -263,7 +311,7 @@ class Metrics {
 
             //add to totals
             numberFramePeaks++;
-            float jump = abs(frameContrast - baseFramePeak);
+            float jump = fabs(frameContrast - baseFramePeak);
             totalFramePeakVals += jump;
 
             //reset base
@@ -276,6 +324,8 @@ class Metrics {
 
    
      }
+
+     /*
     void calculateGlobalPeaks(FBO& f, int frameNum) {
       f.bind(); {
         calculateGlobalPeaks(f.texture, frameNum);
@@ -292,7 +342,7 @@ class Metrics {
      
       } rt.unbind();
     }
-
+    */
 
      void calculateNeighborDistance(GLubyte* &data, int frameNum) {
    
@@ -416,26 +466,8 @@ class Metrics {
 
      }
 
-    void calculateNeighborDistance(FBO& f, int frameNum) {
-      f.bind(); {
-        calculateNeighborDistance(f.texture, frameNum);
-      } f.unbind();
-    }
-
     int getIdxForXY(int x, int y, int rowSize) { 
       return (y * rowSize * 4) + (x * 4);
-    }
-
-    void calculateNeighborDistance(Texture& rt, int frameNum) {
-
-    
-      rt.bind(); {
-
-	//calculateNeighborDistance(rt.texture, frameNum);
-
-      } rt.unbind();
-
-	
     }
 
 
