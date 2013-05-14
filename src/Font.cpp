@@ -451,10 +451,16 @@ namespace aluminum {
     font = _f;
     m_text = _text;
 
-    initDefaultVals();
+    posLoc=0;
+    texCoordLoc=1;
+  
     if (!defaultShadersInstalled) {
       initDefaultShaders(_useSignedDistance);
     }
+    
+    initDefaultVals();
+
+
     //TEMP for testing 2D w.o. FBOs
     /*
     fbo.create(1,1); //textureW, textureH);
@@ -544,7 +550,11 @@ namespace aluminum {
   }
 
   void Text::initDefaultShaders(bool _useSD) {
- 
+
+    //glBindVertexArray( 1 ); //hack - should be able to retrieve default or current vao
+
+
+    //printf("in initDefaultShaders: A1\n");
     //draw fbo texture to screen
     tp.create();
     tp.attach(VSH_singleTexture, GL_VERTEX_SHADER);
@@ -552,6 +562,8 @@ namespace aluminum {
     glBindAttribLocation(tp.id(), texCoordLoc, "vertexTexCoord");
     tp.attach(FSH_singleTexture, GL_FRAGMENT_SHADER);
     tp.link();
+
+    //printf("in initDefaultShaders: A2\n");
 
     //draw background to fbo
     bp.create();
@@ -649,8 +661,8 @@ namespace aluminum {
     txtColor = vec4(1.0,1.0,1.0,0.7);
     bgColor = vec4(0.3,0.3,0.3,0.5);
 
-    posLoc=0;
-    texCoordLoc=1;
+  //  posLoc=0;
+  //  texCoordLoc=1;
 
     /*
     //the dimensons of the mesh buffer, in model coords, updated by all the "mesh" functions

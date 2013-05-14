@@ -26,7 +26,7 @@ namespace aluminum {
 
   float Utils::random() {
     //return glm::compRand1(0,1);
-    return glm::linearRand(0,1);
+    return glm::linearRand(0.0,1.0);
   }
 
   
@@ -41,7 +41,7 @@ namespace aluminum {
     }
 
     //return (long) glm::compRand1(min, max);
-    return (long) glm::linearRand(min, max);
+    return (long) glm::linearRand((double)min, (double)max);
     // return min + int( ((max-min)+1) * random() ); 
   }
 
@@ -55,7 +55,7 @@ namespace aluminum {
       max = max+1;
     }
 
-    return (int) glm::linearRand(min, max);
+    return (int) glm::linearRand((double)min, (double)max);
     //return (int) glm::compRand1(min, max);
     // return min + int( ((max-min)+1) * random() ); 
   }

@@ -39,7 +39,7 @@
 #include <iostream>
 #include <chrono>
 #include <sstream> 
-*/
+ */
 
 using namespace aluminum;
 
@@ -56,12 +56,12 @@ class Holder {
     Behavior b;
 };
 
-int NUM_TEXTS = 10;
+int NUM_TEXTS = 10; //10
 
 class TextExample : public RendererOSX {
   public:
 
-GLuint vao;
+    GLuint vao;
     ivec4 VP;
     stringstream s;
     int num = 0;
@@ -71,28 +71,30 @@ GLuint vao;
     void loadFont(Font& font, const std::string& name) {
       Texture fontTex;
       Texture::loadTexture(fontTex, name + ".png");
+      fontTex.minFilter(GL_LINEAR);
+      fontTex.maxFilter(GL_LINEAR);
       Font::loadFont(font, fontTex, name);
     }
 
     void onCreate() {
-// Create a vertex array object
-      glGenVertexArrays( 1, &vao );
-      glBindVertexArray( vao );
 
-   
       VP = ivec4(0, 0, width, height);
-   
+
       Font font;
       loadFont(font, "resources/checkSD"); //signed distance font
+      //loadFont(font, "resources/Univers36"); //signed distance font
 
       for (int i = 0; i < NUM_TEXTS; i++) {
-	
-	Holder* h = new Holder();
-	h->t = font.signedDistanceText2D("abc").justify(0,0);
+
+        Holder* h = new Holder();
+
+        h->t = font.signedDistanceText2D("abc").justify(0,0);
+
         h->b = Behavior(now()).delay(500).length(Utils::randomLong(1000,5000)).range(1.0).repeats(-1).sine(Easing::IN).reversing(true);
-	
-	texts.push_back(h);
+
+        texts.push_back(h);
       }
+
 
       vec4 bc = vec4(0.0,1.0,0.0,0.8);
       vec4 fc = vec4(0.3);
@@ -102,7 +104,6 @@ GLuint vao;
       bl = font.signedDistanceText2D("bottom left").background(bc).color(fc);
       br = font.signedDistanceText2D("bottom right").background(bc).color(fc);
 
- 
     }
 
     void onReshape() {
@@ -111,51 +112,49 @@ GLuint vao;
 
     void onFrame() {
 
-     glBindVertexArray( vao );
-
 
       glViewport(0, 0, width, height);
       glClearColor(0.0, 0.0, 0.0, 1);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-      
+
       for (int i = 0; i < NUM_TEXTS; i++) {
 
-	Holder* h = texts[i];
-	float total = h->b.tick(now()).total();
-	s.str("");
-	//s << (int) (h->t.penX * width);
-	s << (int) (total * width);
+        Holder* h = texts[i];
+        float total = h->b.tick(now()).total();
+        s.str("");
+        //s << (int) (h->t.penX * width);
+        s << (int) (total * width);
 
-	h->t.pen(total, 0.5).height(0.25).screen(width, height).background(vec4(total, 0.0, 1.0-total, 0.3)).color(vec4(1.0-total, 0.5, total, 0.3)).text(s.str()).draw();
+        h->t.pen(total, 0.5).height(0.25).screen(width, height).background(vec4(total, 0.0, 1.0-total, 0.3)).color(vec4(1.0-total, 0.5, total, 0.3)).text(s.str()).draw();
 
       }
-      
+
 
       /*
-      tl.pixel(0,0).height(30).screen(width,height).justify(-1,1).draw();
-      bl.pixel(0,height).height(30).screen(width,height).justify(-1,-1).draw();
-      tr.pixel(width,0).height(30).screen(width,height).justify(1,1).draw();
-      */
+         tl.pixel(0,0).height(30).screen(width,height).justify(-1,1).draw();
+         bl.pixel(0,height).height(30).screen(width,height).justify(-1,-1).draw();
+         tr.pixel(width,0).height(30).screen(width,height).justify(1,1).draw();
+       */
 
-     //br.pixel(width,height).size(width,height).screen(VP).justify(1,-1);
+      //br.pixel(width,height).size(width,height).screen(VP).justify(1,-1);
       //br.pixel(width,height).width(width).screen(VP).justify(1,-1);
       //br.pixel(width,height).height(height).screen(VP).justify(1,-1);
-      
+
       //br.pen(0.0,0.0).width(0.5).screen(VP).justify(-1,-1);
       //br.pen(0.0,0.0).height(0.5).screen(VP).justify(-1,-1);
       //br.pen(0.0,0.0).size(0.5, 0.5).screen(VP).justify(-1,-1);
-  br.height(0.5);    
-  ivec2 pix = br.pixels();
+      br.height(0.5);    
+      ivec2 pix = br.pixels();
 
       //br.draw();
-     br.draw(VP);
-      
-      printf(" pixs = %d/%d\n", pix.x, pix.y);
+      br.draw(VP);
+
+      //printf(" pixs = %d/%d\n", pix.x, pix.y);
 
 
-      //br.height(30).fbo(myFBO); --> will draw into the FBO texture with proper size
+      //br.height(30).fbo(myFBO); //--> will draw into the FBO texture with proper size
     }
 };
 
