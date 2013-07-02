@@ -1,6 +1,5 @@
 #include "Texture.hpp"
 
-
 namespace aluminum {
 
   /*
@@ -168,7 +167,6 @@ namespace aluminum {
     }
 
 
-
     bits = FreeImage_GetBits(dib);
     width = FreeImage_GetWidth(dib);
     height = FreeImage_GetHeight(dib);
@@ -190,7 +188,6 @@ namespace aluminum {
        if (cnt > 8) break;
        }
        */
-    printf("AAA\n");
     texture.kind(GL_TEXTURE_2D);
 
     texture.data = new GLubyte[width * height * 4];
@@ -204,11 +201,9 @@ namespace aluminum {
     //texture.wrapMode(GL_CLAMP_TO_EDGE);
     texture.mWrapMode = GL_REPEAT; //(GL_REPEAT);
     texture.mMinFilter = GL_NEAREST; //(GL_LINEAR);
-    texture.mMaxFilter= GL_NEAREST; //(GL_LINEAR);
-    printf("BBB\n");
+    texture.mMaxFilter = GL_NEAREST; //(GL_LINEAR);
 
     texture.create2D(); 
-printf("CCC\n");
     // FreeImage_Unload(dib);
     return texture;
   }
@@ -266,6 +261,26 @@ printf("CCC\n");
     create2D();
   }
 
+    
+    Texture::Texture(GLubyte* _data, int _w, int _h, int _d, GLint _internalFormat, GLenum _pixelFormat, GLenum _type) {
+        
+        data = _data;
+        width = _w;
+        height = _h;
+        depth = _d;
+        internalFormat = _internalFormat; //GL_RGBA, GL_RED, etc  (the format of the openGL pixel buffer)
+        pixelFormat = _pixelFormat; //GL_RGB, GL_RGBA, GL_LUMINANCE, etc  (the format of the image data)
+        type = _type; //GL_UNSIGNED_BYTE, GL_FLOAT, etc
+        kind(GL_TEXTURE_3D);
+        
+        mWrapMode = GL_CLAMP_TO_EDGE; //(GL_REPEAT);
+        mMinFilter = GL_NEAREST; //(GL_LINEAR);
+        mMaxFilter= GL_NEAREST; //(GL_LINEAR);
+        
+        create3D();
+    }
+    
+    
 
   void Texture::flipBufferX(unsigned char* buffer, int _w, int _h) {
  
@@ -320,7 +335,37 @@ printf("CCC\n");
     //need to destroy entire object, local memory cache as well, call destructor
   }
 
-  Texture& Texture::create2D() {
+    
+    
+    Texture& Texture::create2D() {
+        
+        printf("hihi!");
+        glEnable(kind());
+        glGenTextures(1, &texID);
+        
+        glBindTexture(kind(), texID); {
+            
+            glTexParameteri(kind(), GL_TEXTURE_MIN_FILTER, minFilter());
+            glTexParameteri(kind(), GL_TEXTURE_MAG_FILTER, maxFilter());
+            
+            glTexParameteri(kind(), GL_TEXTURE_WRAP_S, wrapMode());
+            glTexParameteri(kind(), GL_TEXTURE_WRAP_T, wrapMode());
+            
+            //for (int i = 0; i < width*height; i++) {
+            //	if (data[i] != 0) {	printf("%d \n", data[i]); }
+            //}
+            
+            glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, &data[0]);
+            
+        } glBindTexture(kind(), 0);
+        
+        dump();
+        
+        return *this;
+    }
+    
+  Texture& Texture::create3D() {
+      
     glEnable(kind());
     glGenTextures(1, &texID);
 
@@ -331,12 +376,13 @@ printf("CCC\n");
 
       glTexParameteri(kind(), GL_TEXTURE_WRAP_S, wrapMode());
       glTexParameteri(kind(), GL_TEXTURE_WRAP_T, wrapMode());
+      glTexParameteri(kind(), GL_TEXTURE_WRAP_R, wrapMode());
 
       //for (int i = 0; i < width*height; i++) {
       //	if (data[i] != 0) {	printf("%d \n", data[i]); }
       //}
-
-      glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, &data[0]);
+  
+      glTexImage3D(kind(), 0, internalFormat, width, height, depth, 0, pixelFormat, type, &data[0]);
 
     } glBindTexture(kind(), 0);
 

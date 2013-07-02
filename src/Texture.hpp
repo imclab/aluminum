@@ -23,6 +23,11 @@ namespace aluminum {
       Texture(int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
       Texture(GLubyte* data, int w, int h, GLint _internalFormat, GLenum _format, GLenum _type);
       Texture& create2D();
+     
+      
+      Texture(GLubyte* data, int w, int h, int d, GLint _internalFormat, GLenum _format, GLenum _type);
+      Texture& create3D();
+          
       Texture& updateData() ;
       Texture& updateParameters() ;
 

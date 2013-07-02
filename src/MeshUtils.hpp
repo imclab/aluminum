@@ -71,6 +71,8 @@ using glm::mat4;
 
      static MeshData makeRectangle(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
 
+      static MeshData makeRectangle(vec2 vLL, vec2 vUR, vec3 tcLL, vec3 tcUR);
+          
 
       static MeshData makeRectangle(vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR);
       static MeshData makeRectangle(float _w, float _h);
