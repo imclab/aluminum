@@ -36,6 +36,7 @@
 		B5E3854A1782569B00E8C57D /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384F91780CC7E00E8C57D /* Shapes.cpp */; };
 		B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FB1780CC7E00E8C57D /* Texture.cpp */; };
 		B5E3854C178256A100E8C57D /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FD1780CC7E00E8C57D /* Utils.cpp */; };
+		B5E3854E1783564100E8C57D /* Slices.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854D1783564100E8C57D /* Slices.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -108,6 +109,9 @@
 		B5E3853F1782486000E8C57D /* texture.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = texture.vsh; sourceTree = "<group>"; };
 		B5E3854017824CB900E8C57D /* texture3D.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = texture3D.fsh; sourceTree = "<group>"; };
 		B5E3854117824CB900E8C57D /* texture3D.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = texture3D.vsh; sourceTree = "<group>"; };
+		B5E3854D1783564100E8C57D /* Slices.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Slices.mm; sourceTree = "<group>"; };
+		B5E3854F178364A000E8C57D /* textureSlices.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = textureSlices.fsh; sourceTree = "<group>"; };
+		B5E38550178364A000E8C57D /* textureSlices.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = textureSlices.vsh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +159,7 @@
 			children = (
 				B5E385261780D4B100E8C57D /* resources */,
 				B5E384DD1780C9B400E8C57D /* Basic.mm */,
+				B5E3854D1783564100E8C57D /* Slices.mm */,
 				B5E384DF1780C9B400E8C57D /* niftiViewer.1 */,
 			);
 			path = niftiViewer;
@@ -206,6 +211,8 @@
 		B5E385261780D4B100E8C57D /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				B5E3854F178364A000E8C57D /* textureSlices.fsh */,
+				B5E38550178364A000E8C57D /* textureSlices.vsh */,
 				B5E3854017824CB900E8C57D /* texture3D.fsh */,
 				B5E3854117824CB900E8C57D /* texture3D.vsh */,
 				B5E3853E1782486000E8C57D /* texture.fsh */,
@@ -314,6 +321,7 @@
 				B5E3854A1782569B00E8C57D /* Shapes.cpp in Sources */,
 				B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */,
 				B5E3854C178256A100E8C57D /* Utils.cpp in Sources */,
+				B5E3854E1783564100E8C57D /* Slices.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

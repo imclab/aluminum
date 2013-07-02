@@ -8,6 +8,7 @@
 #include "Program.hpp"
 #include "Shapes.hpp"
 #include "Texture.hpp"
+#include "Camera.hpp"
 
 //NIFTI stuff...
 #include "nifti1.h"
@@ -24,18 +25,23 @@ typedef signed short MY_DATATYPE;
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
-//#define RESOURCES_DIR "/Users/angus.forbes/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/"
 #define RESOURCES_DIR "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/"
 
 
 
 using namespace aluminum;
 
-class NiftiViewer : public RendererOSX {
+class NiftiViewer_Slices : public RendererOSX {
 public:
-
+    
     char* HOME = (char *) [NSHomeDirectory() UTF8String];
-
+    
+    Camera camera;
+   
+    int numSlices = 10;
+    MeshBuffer mbs[10];
+    
+    
     mat4 model, view, proj;
     
     Program program;
@@ -47,6 +53,8 @@ public:
     MeshBuffer mb1;
     
     float bloomAmt = 0.1;
+    float orbitRadius = 2.0;
+    
     
     void loadTexture(Texture& t, const std::string& name) {
         t.loadTexture(t, name);
@@ -64,6 +72,7 @@ public:
         
         p.link();
     }
+    
     int read_nifti_file(const char* data_file) {
         nifti_1_header hdr;
         FILE *fp;
@@ -150,30 +159,6 @@ public:
         fprintf(stderr, "\nMean of volume 1 in %s is %.3f\n",data_file,total);
         
         
-        /*** 2D texture ***/
-        /*
-         int numBytesPerSlice = hdr.dim[1]*hdr.dim[2];
-         GLubyte *oneslice = (GLubyte *) malloc(sizeof(GLubyte) * (numBytesPerSlice) );
-         
-         int slice = 20; //hdr.dim[3]/2;
-         int offset = numBytesPerSlice * slice ;
-         
-         
-         int idx = 0;
-         for (i=0; i < numBytesPerSlice; i++) {
-         oneslice[idx++] = (GLubyte) (( (float)data[offset + i]/(float)max ) * 255 );
-         }
-         
-         glPixelStorei(GL_PACK_ALIGNMENT, 1);
-         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-         
-         texture = Texture(oneslice, 91, 109, GL_RGBA, GL_RED, GL_UNSIGNED_BYTE);
-         
-         texture.minFilter(GL_LINEAR);
-         texture.maxFilter(GL_LINEAR);
-         //now we have one slice ... make sure we can render this in 2D... then try a 3D texture...
-         */
-        
         
         
         /** save to 3D Texture **/
@@ -197,8 +182,6 @@ public:
     }
     
     
-        
-    
     
     
     void onCreate() {
@@ -207,18 +190,35 @@ public:
       printf("nii file = %s\n", nii);
         read_nifti_file(nii);
        
-        loadProgram(program, HOME + std::string(RESOURCES_DIR) + "texture3D");
+        loadProgram(program, HOME + std::string(RESOURCES_DIR) + "textureSlices");
         
         
-        MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, 0.0), vec3(0.5, 0.5, 0.0), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
+        camera = Camera(60.0, width/(height*0.5), 0.01, 100.0);
+        camera.translateZ(-orbitRadius);
+        
+        /*
+        MeshData md = MeshUtils::makeRectangle(vec2(-0.5, -0.5), vec2(0.5, 0.5), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
         mb1.init(md, posLoc, -1, texCoordLoc, -1);
+        */
+        
+        
+        float zSt = 0.0;
+        float zInc = orbitRadius / (float)numSlices;
+        
+        for (int i = 0; i < numSlices; i++) {
+            
+            MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zInc * i), vec3(0.5, 0.5, zInc * i), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
+            mbs[i].init(md, posLoc, -1, texCoordLoc, -1);
+            
+            
+        }
         
         //mb1.init(MeshUtils::makeRectangle(), posLoc, -1, texCoordLoc, -1);
         
-        proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-        view = glm::lookAt(vec3(0.0,0.0,-2), vec3(0,0,0), vec3(0,1,0) );
+       // proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+       // view = glm::lookAt(vec3(0.0,0.0,-2), vec3(0,0,0), vec3(0,1,0) );
         model = glm::mat4();
-        model = glm::translate(model, vec3(0.0,0.0,0.0));
+       // model = glm::translate(model, vec3(0.0,0.0,0.0));
         
         
         glEnable(GL_DEPTH_TEST);
@@ -227,30 +227,50 @@ public:
     }
     
     void onFrame(){
+
+        if (camera.isTransformed) {
+            camera.transform();
+        }
+
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        
         program.bind(); {
+        
+        for (int i = 0; i < numSlices; i++) {
+        
+        
             
+            glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(camera.projection));
+            glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(camera.view));
             glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
-            glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
-            glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
             
             glUniform1i(program.uniform("tex0"), 0);
             
             texture.bind(GL_TEXTURE0); {
-                mb1.draw();
+                //mb1.draw();
+                mbs[i].draw();
             } texture.unbind(GL_TEXTURE0);
+            
+        }
             
         } program.unbind();
     }
     
     void onReshape() {
-        glViewport(0, 0, width, height);
+        camera.perspective(60.0, width/(height*0.5), 0.01, 100.0);
+        
+  //      glViewport(0, 0, width, height);
     }
     
     void mouseMoved(int px, int py) {
        // bloomAmt = ((float)px/(float)width) * 0.02; //bloom between 0.00 -> 0.02
+       
+      
+        
+        
+       
     }
 
     void mouseDragged(int px, int py) {
@@ -265,6 +285,106 @@ public:
         printf("in Basic: mouseUp %d/%d\n", px, py);
     }
     
+    virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
+        
+        switch(key) {
+            case kVK_Space :
+                camera.resetVectors();
+                break;
+           
+            case kVK_ANSI_A :
+                
+                std::cout<<glm::to_string(camera.posVec)<<std::endl;
+                break;
+                
+            case kVK_ANSI_Q :
+            {
+             //   std::cout<<"0:"<<glm::to_string(camera.posVec)<<std::endl;
+                
+                camera.translateZ(orbitRadius);
+                camera.transform();
+                camera.rotateY(2);
+                camera.transform();
+                camera.translateZ(-orbitRadius);
+                camera.transform();
+           //     std::cout<<"3:"<<glm::to_string(camera.posVec)<<std::endl;
+            }
+                break;
+                
+            case kVK_ANSI_Z :
+                camera.translateZ(orbitRadius);
+                camera.transform();
+                camera.rotateY(-2);
+                camera.transform();
+                camera.translateZ(-orbitRadius);
+                camera.transform();
+                
+                break;
+                
+            case kVK_ANSI_W :
+                camera.translateZ(orbitRadius);
+                camera.transform();
+                camera.rotateX(2);
+                camera.transform();
+                camera.translateZ(-orbitRadius);
+                camera.transform();
+                
+             //   camera.rotateX(2);
+                break;
+                
+            case kVK_ANSI_X :
+               
+                camera.translateZ(orbitRadius);
+                camera.transform();
+                camera.rotateX(-2);
+                camera.transform();
+                camera.translateZ(-orbitRadius);
+                camera.transform();
+                
+             //   camera.rotateX(-2);
+                break;
+                
+            case kVK_ANSI_E :
+                camera.rotateZ(2);
+                break;
+                
+            case kVK_ANSI_C :
+                camera.rotateZ(-2);
+                break;
+                
+            case kVK_ANSI_T : 
+                
+               // orbitRadius -= 0.5;
+               // camera.translateZ(0.5);
+               // camera.transform();
+                break;
+                
+            case kVK_ANSI_B : 
+               // orbitRadius = 0.5;
+               // camera.translateZ(-0.5);
+               //  camera.transform();
+                break;
+                
+            case kVK_ANSI_Y : 
+                camera.translateX(0.5);
+                break;
+                
+            case kVK_ANSI_N : 
+                camera.translateX(-0.5);
+                break;
+                
+            case kVK_ANSI_U : 
+                camera.translateY(0.5);
+                break;
+                
+            case kVK_ANSI_M : 
+                camera.translateY(-0.5);
+                break;
+        }
+    }
+};
+
+/*
     void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
         printf("in Basic: key = %c, shift=%d, control=%d, command=%d, option=%d, function=%d\n", key, shift, control, command, option, function);
         switch(key) {
@@ -301,9 +421,12 @@ public:
                 
         }
     }
+    
 };
+*/
 
+/*
 int main(){ 
-    return NiftiViewer().start("aluminum::NiftiViewer", 100, 100, 400, 300);
+    return NiftiViewer_Slices().start("aluminum::NiftiViewer", 100, 100, 400, 300);
 }
-
+*/

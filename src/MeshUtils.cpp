@@ -406,12 +406,12 @@ namespace aluminum {
   
 
     
-    MeshData MeshUtils::makeRectangle(vec2 vLL, vec2 vUR, vec3 tcLL, vec3 tcUR) {
+    MeshData MeshUtils::makeRectangle(vec3 vLL, vec3 vUR, vec3 tcLL, vec3 tcUR) {
         
-        vec3 v0 = vec3(vLL.x, vLL.y,0);
-        vec3 v1 = vec3(vLL.x,vUR.y,0);
-        vec3 v2 = vec3(vUR.x,vLL.y,0);
-        vec3 v3 = vec3(vUR.x,vUR.y,0);
+        vec3 v0 = vec3(vLL.x, vLL.y, vLL.z);
+        vec3 v1 = vec3(vLL.x,vUR.y, vLL.z);
+        vec3 v2 = vec3(vUR.x,vLL.y, vUR.z);
+        vec3 v3 = vec3(vUR.x,vUR.y,vUR.z);
         
         vec3 t0 = vec3(tcLL.x,tcLL.y,tcLL.z);
         vec3 t1 = vec3(tcLL.x,tcUR.y,tcLL.z);

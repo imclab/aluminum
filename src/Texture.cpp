@@ -273,7 +273,7 @@ namespace aluminum {
         type = _type; //GL_UNSIGNED_BYTE, GL_FLOAT, etc
         kind(GL_TEXTURE_3D);
         
-        mWrapMode = GL_CLAMP_TO_EDGE; //(GL_REPEAT);
+        mWrapMode = GL_CLAMP_TO_BORDER; //(GL_REPEAT);
         mMinFilter = GL_NEAREST; //(GL_LINEAR);
         mMaxFilter= GL_NEAREST; //(GL_LINEAR);
         
