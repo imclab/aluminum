@@ -24,7 +24,11 @@ typedef signed short MY_DATATYPE;
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
-#define RESOURCES_DIR "/Users/angus.forbes/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/"
+//#define RESOURCES_DIR "/Users/angus.forbes/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/"
+#define RESOURCES_DIR "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/"
+
+char* HOME = (char *) [NSHomeDirectory() UTF8String];
+
 
 using namespace aluminum;
 
@@ -205,10 +209,10 @@ public:
     
     void onCreate() {
   
-        char* nii = (char *)(std::string(RESOURCES_DIR) + "MNI152_T1_2mm.nii").c_str();
+              char* nii = (char *)(HOME + std::string(RESOURCES_DIR) + "MNI152_T1_2mm.nii").c_str();
         read_nifti_file(nii, nii);
        
-        loadProgram(program, std::string(RESOURCES_DIR) + "texture3D");
+        loadProgram(program, HOME + std::string(RESOURCES_DIR) + "texture3D");
         
         
         MeshData md = MeshUtils::makeRectangle(vec2(-0.5, -0.5), vec2(0.5, 0.5), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
