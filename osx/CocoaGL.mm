@@ -54,6 +54,8 @@
     //exit(0);
   }
 
+    ((RendererOSX*)renderer)->keyDown(key);
+    /*
   bool shift = false;
   bool control = false;
   bool command = false;
@@ -80,6 +82,7 @@
   ((RendererOSX*)renderer)->keyDown(key, shift, control, command, option, function);
 
   //keyIsPressed = YES;
+    */
 }
 
 
@@ -92,6 +95,9 @@
         //exit(0);
     }
     
+    ((RendererOSX*)renderer)->keyUp(key);
+    
+    /*
     bool shift = false;
     bool control = false;
     bool command = false;
@@ -115,10 +121,43 @@
     }
     // printf("command/shift/option/control/func = %d/%d/%d/%d/%d\n", command, shift, option, control, function);
     
-    ((RendererOSX*)renderer)->keyUp(key, shift, control, command, option, function);
+    ((RendererOSX*)renderer)->keyUp(key);
+    //, shift, control, command, option, function);
     
     //keyIsPressed = YES;
+     */
 }
+
+- (void)flagsChanged:(NSEvent *)flagsEvent {
+    
+   // NSLog(@"in flagsChanged, event = %@\n", flagsEvent);
+    
+     char key = [flagsEvent keyCode];
+    
+    unsigned long flag = [flagsEvent modifierFlags];
+   // printf("flag = %lu\n", flag);
+    
+    
+    
+    if (flag == 256) {
+        ((RendererOSX*)renderer)->keyUp(key);
+    } else {
+        ((RendererOSX*)renderer)->keyDown(key);
+    }
+    
+    
+   
+/*
+    kVK_Command                   = 0x37,
+    kVK_Shift                     = 0x38,
+    kVK_CapsLock                  = 0x39,
+    kVK_Option                    = 0x3A,
+    kVK_Control                   = 0x3B,
+*/
+    
+    
+}
+
 
 
 

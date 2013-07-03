@@ -233,21 +233,13 @@ public:
     
     void onFrame(){
 
+        handleKeys();
+        
         if (camera.isTransformed) {
             camera.transform();
         }
 
-        
-        model = glm::translate(model, vec3(0.5,0.5,0.5));
-        if (rotateTextureX_plus) {
-            model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));
-        }
-        
-        if (rotateTextureX_minus) {
-            model = glm::rotate(model, -1.0f, vec3(1.0,0.0,0.0));
-        }
-        model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-        
+            
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
@@ -287,11 +279,6 @@ public:
     
     void mouseMoved(int px, int py) {
        // bloomAmt = ((float)px/(float)width) * 0.02; //bloom between 0.00 -> 0.02
-       
-      
-        
-        
-       
     }
 
     void mouseDragged(int px, int py) {
@@ -306,109 +293,96 @@ public:
         printf("in Basic: mouseUp %d/%d\n", px, py);
     }
     
-    virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
-        printf("keyDown!\n");
-        
-        
-        switch(key) {
-            case kVK_Space :
-                camera.resetVectors();
-                break;
-           
-            case kVK_ANSI_1 :
-                rotateTextureX_plus = true;
-                break;
-            case kVK_ANSI_2 :
-                rotateTextureX_minus = true;
-                break;
-            case kVK_ANSI_3 :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, 1.0f, vec3(0.0,1.0,0.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_4 :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, -1.0f, vec3(0.0,1.0,0.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_5 :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, 1.0f, vec3(0.0,0.0,1.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_6 :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, -1.0f, vec3(0.0,0.0,1.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_7 :
-                opacity += 0.001;
-                break;
-            case kVK_ANSI_8 :
-                opacity -= 0.001;
-                break;
+    void handleKeys() {
 
-                
-            case kVK_ANSI_A :
-                
-                std::cout<<glm::to_string(camera.posVec)<<std::endl;
-                break;
-                
-            case kVK_ANSI_Q :
-            {
-             //   std::cout<<"0:"<<glm::to_string(camera.posVec)<<std::endl;
-                
-                camera.translateZ(cameraZ);
-                camera.transform();
-                camera.rotateY(2);
-                camera.transform();
-                camera.translateZ(-cameraZ);
-                camera.transform();
-           //     std::cout<<"3:"<<glm::to_string(camera.posVec)<<std::endl;
-            }
-                break;
-                
-            case kVK_ANSI_Z :
-                camera.translateZ(cameraZ);
-                camera.transform();
-                camera.rotateY(-2);
-                camera.transform();
-                camera.translateZ(-cameraZ);
-                camera.transform();
-                
-                break;
-                
-            case kVK_ANSI_W :
-                camera.translateZ(cameraZ);
-                camera.transform();
-                camera.rotateX(2);
-                camera.transform();
-                camera.translateZ(-cameraZ);
-                camera.transform();
-                
-             //   camera.rotateX(2);
-                break;
-                
-            case kVK_ANSI_X :
-               
-                camera.translateZ(cameraZ);
-                camera.transform();
-                camera.rotateX(-2);
-                camera.transform();
-                camera.translateZ(-cameraZ);
-                camera.transform();
-                
-             //   camera.rotateX(-2);
-                break;
-                
-            case kVK_ANSI_E :
-                camera.rotateZ(2);
-                break;
-                
-            case kVK_ANSI_C :
-                camera.rotateZ(-2);
-                break;
-                
+        bool shiftDown = keysDown[kVK_Shift];
+        bool commandDown = keysDown[kVK_Command];
+        bool optionDown = keysDown[kVK_Option];
+        bool controlDown = keysDown[kVK_Control];
+        
+        if (keysDown[kVK_ANSI_1]) {
+            model = glm::translate(model, vec3(0.5,0.5,0.5));
+            model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));
+            model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+        }
+        
+        if (keysDown[kVK_ANSI_2]) {
+            model = glm::translate(model, vec3(0.5,0.5,0.5));
+            model = glm::rotate(model, -1.0f, vec3(1.0,0.0,0.0));
+            model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+        }
+        
+        if (keysDown[kVK_ANSI_3]) {
+            model = glm::translate(model, vec3(0.5,0.5,0.5));
+            model = glm::rotate(model, 1.0f, vec3(0.0,1.0,0.0));
+            model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+        }
+        
+        if (keysDown[kVK_ANSI_4]) {
+            model = glm::translate(model, vec3(0.5,0.5,0.5));
+            model = glm::rotate(model, -1.0f, vec3(0.0,1.0,0.0));
+            model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+        }
+        
+        if (keysDown[kVK_ANSI_5]) {
+            model = glm::translate(model, vec3(0.5,0.5,0.5));
+            model = glm::rotate(model, 1.0f, vec3(0.0,0.0,1.0));
+            model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+        }
+        
+        if (keysDown[kVK_ANSI_6]) {
+            model = glm::translate(model, vec3(0.5,0.5,0.5));
+            model = glm::rotate(model, -1.0f, vec3(0.0,0.0,1.0));
+            model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+
+        }
+        
+        if (keysDown[kVK_ANSI_7]) {
+            opacity += 0.001;
+        }
+        
+        if (keysDown[kVK_ANSI_8]) {
+            opacity -= 0.001;
+        }
+        
+        if (keysDown[kVK_ANSI_Q]) {
+            camera.translateZ(cameraZ);
+            camera.rotateY(2);
+            camera.translateZ(-cameraZ);
+        }
+        
+        if (keysDown[kVK_ANSI_Z]) {
+            camera.translateZ(cameraZ);
+            camera.rotateY(-2);
+            camera.translateZ(-cameraZ);
+        }
+        
+        if (keysDown[kVK_ANSI_W]) {
+            camera.translateZ(cameraZ);
+            camera.rotateX(2);
+            camera.translateZ(-cameraZ);
+        }
+        
+        if (keysDown[kVK_ANSI_X]) {
+            camera.translateZ(cameraZ);
+            camera.rotateX(-2);
+            camera.translateZ(-cameraZ);
+        }
+     
+        if (keysDown[kVK_ANSI_E]) {
+            camera.translateZ(cameraZ);
+            camera.rotateZ(2);
+            camera.translateZ(-cameraZ);
+        }
+        
+        if (keysDown[kVK_ANSI_C]) {
+            camera.translateZ(cameraZ);
+            camera.rotateZ(-2);
+            camera.translateZ(-cameraZ);
+        }
+        
+        
+        /*
             case kVK_ANSI_T : 
                 
                // orbitRadius -= 0.5;
@@ -438,56 +412,12 @@ public:
                 camera.translateY(-0.5);
                 break;
         }
+         
+         */
     }
     
-    void keyUp(char key, bool shift, bool control, bool command, bool option, bool function) {
-        printf("keyUp!\n");
-        rotateTextureX_plus = false;
-        rotateTextureX_minus = false;
-    }
-    
+     
 };
-
-/*
-    void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
-        printf("in Basic: key = %c, shift=%d, control=%d, command=%d, option=%d, function=%d\n", key, shift, control, command, option, function);
-        switch(key) {
-            case kVK_ANSI_A : 
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_Z :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, -1.0f, vec3(1.0,0.0,0.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_S :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, 1.0f, vec3(0.0,1.0,0.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_X :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, -1.0f, vec3(0.0,1.0,0.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_D :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, 1.0f, vec3(0.0,0.0,1.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-            case kVK_ANSI_C :
-                model = glm::translate(model, vec3(0.5,0.5,0.5));
-                model = glm::rotate(model, -1.0f, vec3(0.0,0.0,1.0));
-                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
-                break;
-                
-        }
-    }
-    
-};
-*/
 
 
 int main(){ 

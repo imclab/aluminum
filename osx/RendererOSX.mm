@@ -34,7 +34,20 @@ int RendererOSX::start(std::string _name, int x, int y, int w, int h) {
     h: h
     ];
 
+
+   initializeKeyArrays();
+    
+  
+    
   return 0;
+}
+
+void RendererOSX::initializeKeyArrays() {
+    for (int i = 0; i < 256; i++ ) {
+        keysDown[i] = false;
+        keysUp[i] = false;
+    }
+    
 }
 
 
@@ -122,4 +135,21 @@ void RendererOSX::keyDown(char key, bool shift, bool control, bool command, bool
 void RendererOSX::keyUp(char key, bool shift, bool control, bool command, bool option, bool function) {
     //printf("keyDown not handled\n");
 }
+
+
+void RendererOSX::keyDown(char key) {
+    
+    keysUp[key] = false;
+    keysDown[key] = true;
+}
+
+void RendererOSX::keyUp(char key) {
+    
+    keysUp[key] = true;
+    keysDown[key] = false;
+
+}
+
+
+
 
