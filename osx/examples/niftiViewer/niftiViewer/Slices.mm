@@ -28,7 +28,6 @@ typedef signed short MY_DATATYPE;
 #define RESOURCES_DIR "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/"
 
 
-
 using namespace aluminum;
 
 class NiftiViewer_Slices : public RendererOSX {
@@ -38,8 +37,9 @@ public:
     
     Camera camera;
    
-    int numSlices = 500;
-    MeshBuffer mbs[500];
+    int numSlices;
+    vector<MeshBuffer> mbs;
+    
     
     mat4 model, view, proj;
     
@@ -48,7 +48,11 @@ public:
     GLint posLoc=0;
     GLint texCoordLoc=1;
     
-    Texture texture;
+    Texture brain;
+    Texture time1;
+    Texture time2;
+    Texture time3;
+    
     MeshBuffer mb1;
     
     float bloomAmt = 0.1;
@@ -78,7 +82,7 @@ public:
         p.link();
     }
     
-    int read_nifti_file(const char* data_file) {
+    int read_nifti_file(string data_file, Texture& t) {
         nifti_1_header hdr;
         FILE *fp;
         unsigned long ret;
@@ -88,16 +92,16 @@ public:
         
         
         /********** open and read header */
-        fp = fopen(data_file,"r");
+        fp = fopen(data_file.c_str(),"r");
         if (fp == NULL) {
-            perror(data_file);
-            fprintf(stderr, "\nError opening header file %s\n",data_file);
+            perror(data_file.c_str());
+            fprintf(stderr, "\nError opening header file %s\n",data_file.c_str());
             exit(1);
         }
         ret = fread(&hdr, MIN_HEADER_SIZE, 1, fp);
         if (ret != 1) {
-            perror(data_file);
-            fprintf(stderr, "\nError reading header file %s\n",data_file);
+            perror(data_file.c_str());
+            fprintf(stderr, "\nError reading header file %s\n",data_file.c_str());
             exit(1);
         }
         
@@ -119,8 +123,8 @@ public:
         
         ret = fseek(fp, (long)(hdr.vox_offset), SEEK_SET);
         if (ret != 0) {
-            perror(data_file);
-            fprintf(stderr, "\nError doing fseek() to %ld in data file %s\n",(long)(hdr.vox_offset), data_file);
+            perror(data_file.c_str());
+            fprintf(stderr, "\nError doing fseek() to %ld in data file %s\n",(long)(hdr.vox_offset), data_file.c_str());
             exit(1);
         }
         
@@ -128,13 +132,13 @@ public:
         /********** allocate buffer and read first 3D volume from data file */
         data = (MY_DATATYPE *) malloc(sizeof(MY_DATATYPE) * hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
         if (data == NULL) {
-            fprintf(stderr, "\nError allocating data buffer for %s\n",data_file);
+            fprintf(stderr, "\nError allocating data buffer for %s\n",data_file.c_str());
             exit(1);
         }
         ret = fread(data, sizeof(MY_DATATYPE), hdr.dim[1]*hdr.dim[2]*hdr.dim[3], fp);
         printf("ret = %ld,  size = %d\n", ret, (hdr.dim[1]*hdr.dim[2]*hdr.dim[3]));
         if (ret != hdr.dim[1]*hdr.dim[2]*hdr.dim[3]) {
-            fprintf(stderr, "\nError reading volume 1 from %s (%ld)\n",data_file,ret);
+            fprintf(stderr, "\nError reading volume 1 from %s (%ld)\n",data_file.c_str(),ret);
             exit(1);
         }
         fclose(fp);
@@ -161,7 +165,7 @@ public:
             }
         }
         total /= (hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
-        fprintf(stderr, "\nMean of volume 1 in %s is %.3f\n",data_file,total);
+        fprintf(stderr, "\nMean of volume 1 in %s is %.3f\n",data_file.c_str(),total);
         
         
         
@@ -178,10 +182,10 @@ public:
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
-        texture = Texture(oneslice, 91, 109, 91, GL_RGBA, GL_RED, GL_UNSIGNED_BYTE);
+        t = Texture(oneslice, 91, 109, 91, GL_RGBA, GL_RED, GL_UNSIGNED_BYTE);
         
-        texture.minFilter(GL_LINEAR);
-        texture.maxFilter(GL_LINEAR);
+        t.minFilter(GL_LINEAR);
+        t.maxFilter(GL_LINEAR);
         
         return(0);
     }
@@ -191,10 +195,20 @@ public:
     
     void onCreate() {
   
-      const char* nii = (const char * )(HOME + std::string(RESOURCES_DIR) + "MNI152_T1_2mm.nii").c_str();
-      printf("nii file = %s\n", nii);
-        read_nifti_file(nii);
-       
+        string nii_brain = (HOME + std::string(RESOURCES_DIR) + "MNI152_T1_2mm.nii").c_str();
+        string nii_t1 = (HOME + std::string(RESOURCES_DIR) + "all_s1_IC25.nii").c_str();
+        string nii_t2 = (HOME + std::string(RESOURCES_DIR) + "all_s2_IC25.nii").c_str();
+        string nii_t3 = (HOME + std::string(RESOURCES_DIR) + "all_s3_IC25.nii").c_str();
+        
+        // printf("nii file = %s\n", nii);
+        
+        read_nifti_file(nii_brain, brain);
+        read_nifti_file(nii_t1, time1);
+        read_nifti_file(nii_t2, time2);
+        read_nifti_file(nii_t3, time3);
+        
+        
+        
         loadProgram(program, HOME + std::string(RESOURCES_DIR) + "textureSlices");
         
         
@@ -207,15 +221,12 @@ public:
         */
         
         
-        float zSt = -orbitRadius/2.0;
-        float zInc = (orbitRadius) / ((float)numSlices - 1);
+        createSlices(2000);
         
-        float tczInc = 1.0 / ((float)numSlices - 1);
-        
-        for (int i = 0; i < numSlices; i++) {
-            MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zSt + (zInc * i)), vec3(0.5, 0.5, zSt + (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
-            mbs[i].init(md, posLoc, -1, texCoordLoc, -1);
-        }
+        //for (int i = 0; i < numSlices; i++) {
+        //    MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zSt + (zInc * i)), vec3(0.5, 0.5, zSt + (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
+        //    mbs[i].init(md, posLoc, -1, texCoordLoc, -1);
+       // }
         
         //mb1.init(MeshUtils::makeRectangle(), posLoc, -1, texCoordLoc, -1);
         
@@ -229,6 +240,28 @@ public:
         glViewport(0, 0, width, height);
         glClearColor(0.3,0.3,0.3,1.0);
     }
+    
+    void createSlices(int num) {
+      
+        
+        numSlices = num;
+        mbs.clear();
+        mbs.resize(num);
+        
+        float zSt = -orbitRadius/2.0;
+        float zInc = (orbitRadius) / ((float)numSlices - 1);
+        
+        float tczInc = 1.0 / ((float)numSlices - 1);
+        
+        
+        for (int i = 0; i < numSlices; i++) {
+            MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zSt + (zInc * i)), vec3(0.5, 0.5, zSt + (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
+            
+            mbs[i].init(md, posLoc, -1, texCoordLoc, -1);
+        }
+        
+    }
+    
     
     void onFrame(){
 
@@ -257,12 +290,23 @@ public:
             glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
             
             glUniform1f(program.uniform("opacity"), opacity);
-            glUniform1i(program.uniform("tex0"), 0);
+            glUniform1i(program.uniform("brain"), 0);
+            glUniform1i(program.uniform("time1"), 1);
+            glUniform1i(program.uniform("time2"), 2);
+            glUniform1i(program.uniform("time3"), 3);
             
-            texture.bind(GL_TEXTURE0); {
+            brain.bind(GL_TEXTURE0);
+            time1.bind(GL_TEXTURE1);
+            time2.bind(GL_TEXTURE2);
+            time3.bind(GL_TEXTURE3);
+            
                 //mb1.draw();
                 mbs[i].draw();
-            } texture.unbind(GL_TEXTURE0);
+            
+            brain.unbind(GL_TEXTURE0);
+            time1.unbind(GL_TEXTURE1);
+            time2.unbind(GL_TEXTURE2);
+            time3.unbind(GL_TEXTURE3);
             
         }
             
@@ -276,25 +320,40 @@ public:
     }
     
     void handleMouse() {
+       
+        bool movingLeft = false;
+        bool movingRight = false;
+        bool movingUp = false;
+        bool movingDown = false;;
+        
+        if (abs(mouseX - previousMouseX) > abs(mouseY - previousMouseY) ) {
+            if (mouseX < previousMouseX) {
+                movingLeft = true;
+            } else {
+                movingRight = true;
+            }
+        } else {
+            if (mouseY < previousMouseY) {
+                movingUp = true;
+            } else {
+                movingDown = true;
+            }
+        }
         
         if(isDragging) {
           
             model = glm::translate(model, vec3(0.5,0.5,0.5));
             
-            if (abs(mouseX - previousMouseX) > abs(mouseY - previousMouseY) ) {
-                
-                if (mouseX < previousMouseX) {
-                    model = glm::rotate(model, -1.0f, vec3(0.0,1.0,0.0));
-                } else {
-                    model = glm::rotate(model, 1.0f, vec3(0.0,1.0,0.0));
-                }
+            if (movingLeft) {
+                model = glm::rotate(model, -1.0f, vec3(0.0,1.0,0.0));
+            } else if (movingRight) {
+                model = glm::rotate(model, 1.0f, vec3(0.0,1.0,0.0));
+            } else if (movingUp) {
+                model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));
             } else {
-                if (mouseY < previousMouseY) {
-                    model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));
-                } else {
-                    model = glm::rotate(model, -1.0f, vec3(1.0,0.0,0.0));
-                }
+                model = glm::rotate(model, -1.0f, vec3(1.0,0.0,0.0));
             }
+            
             
             model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
         }
@@ -302,6 +361,10 @@ public:
         
         if (isMoving) {
             opacity = ((float)mouseX / (float)width ) * 0.1;
+            
+            if (mouseY > 5 && mouseY < 1000) {
+            //createSlices(mouseY);
+            }
         }
     }
     

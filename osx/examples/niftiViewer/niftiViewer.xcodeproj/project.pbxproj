@@ -36,6 +36,8 @@
 		B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FB1780CC7E00E8C57D /* Texture.cpp */; };
 		B5E3854C178256A100E8C57D /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FD1780CC7E00E8C57D /* Utils.cpp */; };
 		B5E3854E1783564100E8C57D /* Slices.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854D1783564100E8C57D /* Slices.mm */; };
+		B5E385521784DFA300E8C57D /* textureSlices.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B5E38550178364A000E8C57D /* textureSlices.vsh */; };
+		B5E385531784DFB400E8C57D /* textureSlices.fsh in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854F178364A000E8C57D /* textureSlices.fsh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -93,8 +95,8 @@
 		B5E385161780CEE000E8C57D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		B5E385181780CFA600E8C57D /* libassimp.3.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.3.0.0.dylib; path = /opt/local/lib/libassimp.3.0.0.dylib; sourceTree = "<absolute>"; };
 		B5E3851A1780CFE600E8C57D /* libfreeimage.3.15.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.15.3.dylib; path = /opt/local/lib/libfreeimage.3.15.3.dylib; sourceTree = "<absolute>"; };
-		B5E385271780D4B100E8C57D /* basic.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.fsh; sourceTree = "<group>"; };
-		B5E385281780D4B100E8C57D /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.vsh; sourceTree = "<group>"; };
+		B5E385271780D4B100E8C57D /* basic.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = basic.fsh; sourceTree = "<group>"; };
+		B5E385281780D4B100E8C57D /* basic.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = basic.vsh; sourceTree = "<group>"; };
 		B5E385301780DA7400E8C57D /* nifti1_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nifti1_io.h; path = niftiViewer/niftilib/nifti1_io.h; sourceTree = "<group>"; };
 		B5E385311780DA7400E8C57D /* nifti1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nifti1.h; path = niftiViewer/niftilib/nifti1.h; sourceTree = "<group>"; };
 		B5E385321780DB7900E8C57D /* znzlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = znzlib.h; path = niftiViewer/niftilib/znzlib.h; sourceTree = "<group>"; };
@@ -102,13 +104,13 @@
 		B5E385361780EC9100E8C57D /* znzlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = znzlib.c; path = niftiViewer/niftilib/znzlib.c; sourceTree = "<group>"; };
 		B5E385371780EC9100E8C57D /* znzlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = znzlib.h; path = niftiViewer/niftilib/znzlib.h; sourceTree = "<group>"; };
 		B5E385391780ED1000E8C57D /* nifti1_io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nifti1_io.c; path = niftiViewer/niftilib/nifti1_io.c; sourceTree = "<group>"; };
-		B5E3853E1782486000E8C57D /* texture.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = texture.fsh; sourceTree = "<group>"; };
-		B5E3853F1782486000E8C57D /* texture.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = texture.vsh; sourceTree = "<group>"; };
-		B5E3854017824CB900E8C57D /* texture3D.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = texture3D.fsh; sourceTree = "<group>"; };
-		B5E3854117824CB900E8C57D /* texture3D.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = texture3D.vsh; sourceTree = "<group>"; };
+		B5E3853E1782486000E8C57D /* texture.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = texture.fsh; sourceTree = "<group>"; };
+		B5E3853F1782486000E8C57D /* texture.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = texture.vsh; sourceTree = "<group>"; };
+		B5E3854017824CB900E8C57D /* texture3D.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = texture3D.fsh; sourceTree = "<group>"; };
+		B5E3854117824CB900E8C57D /* texture3D.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = texture3D.vsh; sourceTree = "<group>"; };
 		B5E3854D1783564100E8C57D /* Slices.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Slices.mm; sourceTree = "<group>"; };
-		B5E3854F178364A000E8C57D /* textureSlices.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = textureSlices.fsh; sourceTree = "<group>"; };
-		B5E38550178364A000E8C57D /* textureSlices.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = textureSlices.vsh; sourceTree = "<group>"; };
+		B5E3854F178364A000E8C57D /* textureSlices.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = textureSlices.fsh; sourceTree = "<group>"; };
+		B5E38550178364A000E8C57D /* textureSlices.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = textureSlices.vsh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +320,8 @@
 				B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */,
 				B5E3854C178256A100E8C57D /* Utils.cpp in Sources */,
 				B5E3854E1783564100E8C57D /* Slices.mm in Sources */,
+				B5E385521784DFA300E8C57D /* textureSlices.vsh in Sources */,
+				B5E385531784DFB400E8C57D /* textureSlices.fsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
