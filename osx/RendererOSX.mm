@@ -36,18 +36,10 @@ int RendererOSX::start(std::string _name, int x, int y, int w, int h) {
 
 
    initializeKeyArrays();
-    
+    initializeMouseInfo();
   
     
   return 0;
-}
-
-void RendererOSX::initializeKeyArrays() {
-    for (int i = 0; i < 256; i++ ) {
-        keysDown[i] = false;
-        keysUp[i] = false;
-    }
-    
 }
 
 
@@ -95,14 +87,6 @@ void RendererOSX::onFrame() { }
 void RendererOSX::onCreate() { }
 void RendererOSX::onReshape() { }
 
-/*
-void RendererOSX::tryVideoStuff() {
-  //printf("hi!\n");
-  VideoPlayer* vp = [[VideoPlayer alloc] init];      
-  [vp test]; 
-
-}
-*/
 
 CocoaGL* RendererOSX::getView() {
   return view;
@@ -113,21 +97,50 @@ void RendererOSX::toggleFullScreen() {
 }
 
 void RendererOSX::mouseDragged(int px, int py) {
-  //printf("mouseDragged not handled...\n");
+    //printf("dragging...\n");
+    
+    if (px != mouseX || py != mouseY) {
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
+    mouseX = px;
+    mouseY = py;
+    }
+    isDragging = true;
+    isPressing = false;
 }
 
 void RendererOSX::mouseDown(int px, int py) {
-  //printf("mouseDown not handled...\n");
+    //printf("down...\n");
+    
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
+    mouseX = px;
+    mouseY = py;
+    isPressing = true;
+    isReleasing = false;
 }
 
 void RendererOSX::mouseUp(int px, int py) {
-  //printf("mouseUp not handled...\n");
+    //printf("up...\n");
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
+    mouseX = px;
+    mouseY = py;
+    isReleasing = true;
+    isDragging = false;
+    isPressing = false;
 }
 
 void RendererOSX::mouseMoved(int px, int py) {
-  //printf("mouseMoved not handled...\n");
+    //printf("moving...\n");
+    previousMouseX = mouseX;
+    previousMouseY = mouseY;
+    mouseX = px;
+    mouseY = py;
+    isMoving = true;
 }
 
+/*
 void RendererOSX::keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
   //printf("keyDown not handled\n");
 }
@@ -135,21 +148,46 @@ void RendererOSX::keyDown(char key, bool shift, bool control, bool command, bool
 void RendererOSX::keyUp(char key, bool shift, bool control, bool command, bool option, bool function) {
     //printf("keyDown not handled\n");
 }
+*/
 
+void RendererOSX::handleMouse() { }
+void RendererOSX::handleKeys() {
+    /*
+     //you can get the modifiers like so:
+     bool shiftDown = keysDown[kVK_Shift];
+     bool commandDown = keysDown[kVK_Command];
+     bool optionDown = keysDown[kVK_Option];
+     bool controlDown = keysDown[kVK_Control];
+     */
+}
 
 void RendererOSX::keyDown(char key) {
-    
     keysUp[key] = false;
     keysDown[key] = true;
 }
 
 void RendererOSX::keyUp(char key) {
-    
     keysUp[key] = true;
     keysDown[key] = false;
 
 }
 
+void RendererOSX::initializeKeyArrays() {
+    for (int i = 0; i < 256; i++ ) {
+        keysDown[i] = false;
+        keysUp[i] = false;
+    }
+}
+
+void RendererOSX::initializeMouseInfo() {
+    isPressing = false;
+    isDragging = false;
+    isReleasing = false;
+    mouseX = 0;
+    mouseY = 0;
+    previousMouseX = 0;
+    previousMouseY = 0;
+}
 
 
 

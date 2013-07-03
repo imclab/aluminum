@@ -21,144 +21,44 @@
   -(BOOL)becomeFirstResponder { return YES; }
   -(BOOL)resignFirstResponder { return YES; }
 
-  -(void)mouseDragged:(NSEvent*)mouseEvent {
+-(void)mouseDragged:(NSEvent*)mouseEvent {
     NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
-
     ((RendererOSX*)renderer)->mouseDragged(currmouse.x, currmouse.y);
-  }
-
+}
 
 - (void)mouseMoved:(NSEvent *)mouseEvent {
-
-  NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
-  ((RendererOSX*)renderer)->mouseMoved(currmouse.x, currmouse.y);
+    NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
+    ((RendererOSX*)renderer)->mouseMoved(currmouse.x, currmouse.y);
 }
 
 - (void)mouseDown:(NSEvent*)mouseEvent {
-  NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
-  ((RendererOSX*)renderer)->mouseDown(currmouse.x, currmouse.y);
+    NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
+    ((RendererOSX*)renderer)->mouseDown(currmouse.x, currmouse.y);
 }
 
 - (void)mouseUp:(NSEvent*)mouseEvent {
-  NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
-  ((RendererOSX*)renderer)->mouseUp(currmouse.x, currmouse.y);
+    NSPoint currmouse = [self convertPoint:[mouseEvent locationInWindow] fromView:nil];
+    ((RendererOSX*)renderer)->mouseUp(currmouse.x, currmouse.y);
 }
 
-
 - (void)keyDown:(NSEvent*)keyDownEvent {
-
-  char key = [keyDownEvent keyCode];
-
-  if (key == kVK_Escape) {
-    //printf("quitting...");
-    //exit(0);
-  }
-
-    ((RendererOSX*)renderer)->keyDown(key);
-    /*
-  bool shift = false;
-  bool control = false;
-  bool command = false;
-  bool option = false;
-  bool function = false;
-
-  if ([keyDownEvent modifierFlags] & NSShiftKeyMask) {
-    shift = true;
-  }
-  if ([keyDownEvent modifierFlags] & NSControlKeyMask) {
-    control = true;
-  }
-  if ([keyDownEvent modifierFlags] & NSAlternateKeyMask) {
-    option = true;
-  }
-  if ([keyDownEvent modifierFlags] & NSCommandKeyMask) {
-    command = true;
-  }
-  if ([keyDownEvent modifierFlags] & NSFunctionKeyMask) {
-    function = true;
-  }
-  // printf("command/shift/option/control/func = %d/%d/%d/%d/%d\n", command, shift, option, control, function);
-
-  ((RendererOSX*)renderer)->keyDown(key, shift, control, command, option, function);
-
-  //keyIsPressed = YES;
-    */
+    ((RendererOSX*)renderer)->keyDown([keyDownEvent keyCode]);
 }
 
 
 - (void)keyUp:(NSEvent*)keyDownEvent {
-    
-    char key = [keyDownEvent keyCode];
-    
-    if (key == kVK_Escape) {
-        //printf("quitting...");
-        //exit(0);
-    }
-    
-    ((RendererOSX*)renderer)->keyUp(key);
-    
-    /*
-    bool shift = false;
-    bool control = false;
-    bool command = false;
-    bool option = false;
-    bool function = false;
-    
-    if ([keyDownEvent modifierFlags] & NSShiftKeyMask) {
-        shift = true;
-    }
-    if ([keyDownEvent modifierFlags] & NSControlKeyMask) {
-        control = true;
-    }
-    if ([keyDownEvent modifierFlags] & NSAlternateKeyMask) {
-        option = true;
-    }
-    if ([keyDownEvent modifierFlags] & NSCommandKeyMask) {
-        command = true;
-    }
-    if ([keyDownEvent modifierFlags] & NSFunctionKeyMask) {
-        function = true;
-    }
-    // printf("command/shift/option/control/func = %d/%d/%d/%d/%d\n", command, shift, option, control, function);
-    
-    ((RendererOSX*)renderer)->keyUp(key);
-    //, shift, control, command, option, function);
-    
-    //keyIsPressed = YES;
-     */
+    ((RendererOSX*)renderer)->keyUp([keyDownEvent keyCode]);
 }
 
-- (void)flagsChanged:(NSEvent *)flagsEvent {
+- (void)flagsChanged:(NSEvent *)flagsEvent {    
     
-   // NSLog(@"in flagsChanged, event = %@\n", flagsEvent);
-    
-     char key = [flagsEvent keyCode];
-    
-    unsigned long flag = [flagsEvent modifierFlags];
-   // printf("flag = %lu\n", flag);
-    
-    
-    
-    if (flag == 256) {
-        ((RendererOSX*)renderer)->keyUp(key);
+    if ([flagsEvent modifierFlags] == 256) {
+        ((RendererOSX*)renderer)->keyUp([flagsEvent keyCode]);
     } else {
-        ((RendererOSX*)renderer)->keyDown(key);
+        ((RendererOSX*)renderer)->keyDown([flagsEvent keyCode]);
     }
-    
-    
-   
-/*
-    kVK_Command                   = 0x37,
-    kVK_Shift                     = 0x38,
-    kVK_CapsLock                  = 0x39,
-    kVK_Option                    = 0x3A,
-    kVK_Control                   = 0x3B,
-*/
-    
-    
+
 }
-
-
 
 
 - (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime

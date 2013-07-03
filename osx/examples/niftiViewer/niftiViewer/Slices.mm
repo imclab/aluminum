@@ -38,9 +38,8 @@ public:
     
     Camera camera;
    
-    int numSlices = 100;
-    MeshBuffer mbs[100];
-    
+    int numSlices = 500;
+    MeshBuffer mbs[500];
     
     mat4 model, view, proj;
     
@@ -234,13 +233,12 @@ public:
     void onFrame(){
 
         handleKeys();
+        handleMouse();
         
         if (camera.isTransformed) {
             camera.transform();
         }
 
-            
-        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glDisable (GL_DEPTH_TEST);
@@ -277,29 +275,40 @@ public:
         
     }
     
-    void mouseMoved(int px, int py) {
-       // bloomAmt = ((float)px/(float)width) * 0.02; //bloom between 0.00 -> 0.02
-    }
-
-    void mouseDragged(int px, int py) {
-        printf("in Basic: mouseDragged %d/%d\n", px, py);
+    void handleMouse() {
+        
+        if(isDragging) {
+          
+            model = glm::translate(model, vec3(0.5,0.5,0.5));
+            
+            if (abs(mouseX - previousMouseX) > abs(mouseY - previousMouseY) ) {
+                
+                if (mouseX < previousMouseX) {
+                    model = glm::rotate(model, -1.0f, vec3(0.0,1.0,0.0));
+                } else {
+                    model = glm::rotate(model, 1.0f, vec3(0.0,1.0,0.0));
+                }
+            } else {
+                if (mouseY < previousMouseY) {
+                    model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));
+                } else {
+                    model = glm::rotate(model, -1.0f, vec3(1.0,0.0,0.0));
+                }
+            }
+            
+            model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+        }
+        
+        
+        if (isMoving) {
+            opacity = ((float)mouseX / (float)width ) * 0.1;
+        }
     }
     
-    void mouseDown(int px, int py) {
-        printf("in Basic: mouseDown %d/%d\n", px, py);
-    }
-    
-    void mouseUp(int px, int py) {
-        printf("in Basic: mouseUp %d/%d\n", px, py);
-    }
-    
+      
     void handleKeys() {
 
-        bool shiftDown = keysDown[kVK_Shift];
-        bool commandDown = keysDown[kVK_Command];
-        bool optionDown = keysDown[kVK_Option];
-        bool controlDown = keysDown[kVK_Control];
-        
+               
         if (keysDown[kVK_ANSI_1]) {
             model = glm::translate(model, vec3(0.5,0.5,0.5));
             model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));

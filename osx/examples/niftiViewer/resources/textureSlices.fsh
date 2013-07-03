@@ -26,7 +26,7 @@ else {
  outColor = texture(tex0, texCoord);
 
 
- if (outColor.r < 0.1) {
+ if (outColor.r < 0.09) {
  outputFrag = vec4(outColor.rrr, 0.0);
 
 } else {
