@@ -40,7 +40,8 @@ public:
   virtual void mouseDown(int px, int py);
   virtual void mouseUp(int px, int py);
   virtual void mouseMoved(int px, int py);
-  virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function);
+    virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function);
+    virtual void keyUp(char key, bool shift, bool control, bool command, bool option, bool function);
 
   CocoaGL* getView();
   CocoaGL* view;

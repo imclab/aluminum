@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B5E384DE1780C9B400E8C57D /* Basic.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E384DD1780C9B400E8C57D /* Basic.mm */; };
-		B5E384E01780C9B400E8C57D /* niftiViewer.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5E384DF1780C9B400E8C57D /* niftiViewer.1 */; };
 		B5E385071780CCB000E8C57D /* CocoaGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E385011780CCB000E8C57D /* CocoaGL.mm */; };
 		B5E385081780CCB000E8C57D /* RendererOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E385041780CCB000E8C57D /* RendererOSX.mm */; };
 		B5E385091780CCB000E8C57D /* VideoPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E385061780CCB000E8C57D /* VideoPlayer.mm */; };
@@ -48,7 +47,6 @@
 			files = (
 				B5E3852B1780D65D00E8C57D /* basic.fsh in CopyFiles */,
 				B5E3852C1780D65D00E8C57D /* basic.vsh in CopyFiles */,
-				B5E384E01780C9B400E8C57D /* niftiViewer.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -57,7 +55,6 @@
 /* Begin PBXFileReference section */
 		B5E384DA1780C9B400E8C57D /* niftiViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = niftiViewer; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5E384DD1780C9B400E8C57D /* Basic.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Basic.mm; sourceTree = "<group>"; };
-		B5E384DF1780C9B400E8C57D /* niftiViewer.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = niftiViewer.1; sourceTree = "<group>"; };
 		B5E384E91780CC7E00E8C57D /* Behavior.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = Behavior.cpp; path = ../../../src/Behavior.cpp; sourceTree = "<group>"; };
 		B5E384EA1780CC7E00E8C57D /* Behavior.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Behavior.hpp; path = ../../../src/Behavior.hpp; sourceTree = "<group>"; };
 		B5E384EB1780CC7E00E8C57D /* Camera.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = Camera.cpp; path = ../../../src/Camera.cpp; sourceTree = "<group>"; };
@@ -160,7 +157,6 @@
 				B5E385261780D4B100E8C57D /* resources */,
 				B5E384DD1780C9B400E8C57D /* Basic.mm */,
 				B5E3854D1783564100E8C57D /* Slices.mm */,
-				B5E384DF1780C9B400E8C57D /* niftiViewer.1 */,
 			);
 			path = niftiViewer;
 			sourceTree = "<group>";

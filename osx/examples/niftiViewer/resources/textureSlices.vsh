@@ -12,9 +12,10 @@ in vec4 vertexTexCoord;
 out vec3 texCoord;
 
 void main() {  
-  texCoord = vertexTexCoord.xyz;
-  gl_Position = proj * view * model * vertexPosition;
-  //gl_Position = proj * view * vertexPosition; 
+texCoord = (model * vertexTexCoord).xyz;
+ // texCoord = vertexTexCoord.xyz;
+  //gl_Position = proj * view * model * vertexPosition;
+  gl_Position = proj * view * vertexPosition;
 
 }
 

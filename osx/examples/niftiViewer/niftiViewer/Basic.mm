@@ -303,7 +303,9 @@ public:
     }
 };
 
+/*
 int main(){ 
     return NiftiViewer().start("aluminum::NiftiViewer", 100, 100, 400, 300);
 }
+*/
 

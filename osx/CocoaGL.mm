@@ -83,6 +83,45 @@
 }
 
 
+- (void)keyUp:(NSEvent*)keyDownEvent {
+    
+    char key = [keyDownEvent keyCode];
+    
+    if (key == kVK_Escape) {
+        //printf("quitting...");
+        //exit(0);
+    }
+    
+    bool shift = false;
+    bool control = false;
+    bool command = false;
+    bool option = false;
+    bool function = false;
+    
+    if ([keyDownEvent modifierFlags] & NSShiftKeyMask) {
+        shift = true;
+    }
+    if ([keyDownEvent modifierFlags] & NSControlKeyMask) {
+        control = true;
+    }
+    if ([keyDownEvent modifierFlags] & NSAlternateKeyMask) {
+        option = true;
+    }
+    if ([keyDownEvent modifierFlags] & NSCommandKeyMask) {
+        command = true;
+    }
+    if ([keyDownEvent modifierFlags] & NSFunctionKeyMask) {
+        function = true;
+    }
+    // printf("command/shift/option/control/func = %d/%d/%d/%d/%d\n", command, shift, option, control, function);
+    
+    ((RendererOSX*)renderer)->keyUp(key, shift, control, command, option, function);
+    
+    //keyIsPressed = YES;
+}
+
+
+
 - (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime
 {
   // There is no autorelease pool when this method is called 

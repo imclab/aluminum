@@ -119,3 +119,7 @@ void RendererOSX::keyDown(char key, bool shift, bool control, bool command, bool
   //printf("keyDown not handled\n");
 }
 
+void RendererOSX::keyUp(char key, bool shift, bool control, bool command, bool option, bool function) {
+    //printf("keyDown not handled\n");
+}
+

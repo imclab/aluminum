@@ -38,8 +38,8 @@ public:
     
     Camera camera;
    
-    int numSlices = 10;
-    MeshBuffer mbs[10];
+    int numSlices = 100;
+    MeshBuffer mbs[100];
     
     
     mat4 model, view, proj;
@@ -53,7 +53,13 @@ public:
     MeshBuffer mb1;
     
     float bloomAmt = 0.1;
-    float orbitRadius = 2.0;
+    float orbitRadius = 1.0;
+    float opacity = 0.1;
+    float cameraZ = 1.5;
+    
+    bool rotateTextureX_plus = false;
+    bool rotateTextureX_minus = false;
+    
     
     
     void loadTexture(Texture& t, const std::string& name) {
@@ -173,7 +179,7 @@ public:
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
-        texture = Texture(oneslice, 91, 109, 91, GL_RED, GL_RED, GL_UNSIGNED_BYTE);
+        texture = Texture(oneslice, 91, 109, 91, GL_RGBA, GL_RED, GL_UNSIGNED_BYTE);
         
         texture.minFilter(GL_LINEAR);
         texture.maxFilter(GL_LINEAR);
@@ -193,8 +199,8 @@ public:
         loadProgram(program, HOME + std::string(RESOURCES_DIR) + "textureSlices");
         
         
-        camera = Camera(60.0, width/(height*0.5), 0.01, 100.0);
-        camera.translateZ(-orbitRadius);
+        camera = Camera(60.0, width/(height*0.5), 0.001, 100.0);
+        camera.translateZ(-cameraZ);
         
         /*
         MeshData md = MeshUtils::makeRectangle(vec2(-0.5, -0.5), vec2(0.5, 0.5), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
@@ -202,15 +208,14 @@ public:
         */
         
         
-        float zSt = 0.0;
-        float zInc = orbitRadius / (float)numSlices;
+        float zSt = -orbitRadius/2.0;
+        float zInc = (orbitRadius) / ((float)numSlices - 1);
+        
+        float tczInc = 1.0 / ((float)numSlices - 1);
         
         for (int i = 0; i < numSlices; i++) {
-            
-            MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zInc * i), vec3(0.5, 0.5, zInc * i), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
+            MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zSt + (zInc * i)), vec3(0.5, 0.5, zSt + (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
             mbs[i].init(md, posLoc, -1, texCoordLoc, -1);
-            
-            
         }
         
         //mb1.init(MeshUtils::makeRectangle(), posLoc, -1, texCoordLoc, -1);
@@ -233,8 +238,23 @@ public:
         }
 
         
+        model = glm::translate(model, vec3(0.5,0.5,0.5));
+        if (rotateTextureX_plus) {
+            model = glm::rotate(model, 1.0f, vec3(1.0,0.0,0.0));
+        }
+        
+        if (rotateTextureX_minus) {
+            model = glm::rotate(model, -1.0f, vec3(1.0,0.0,0.0));
+        }
+        model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+        
+        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        glDisable (GL_DEPTH_TEST);
+        glEnable (GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glBlendFunc (GL_ONE, GL_ONE);
         
         program.bind(); {
         
@@ -246,6 +266,7 @@ public:
             glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(camera.view));
             glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
             
+            glUniform1f(program.uniform("opacity"), opacity);
             glUniform1i(program.uniform("tex0"), 0);
             
             texture.bind(GL_TEXTURE0); {
@@ -259,9 +280,9 @@ public:
     }
     
     void onReshape() {
-        camera.perspective(60.0, width/(height*0.5), 0.01, 100.0);
+        glViewport(0, 0, width, height);
+        camera.perspective(60.0, width/(height*0.5), 0.001, 100.0);
         
-  //      glViewport(0, 0, width, height);
     }
     
     void mouseMoved(int px, int py) {
@@ -286,12 +307,48 @@ public:
     }
     
     virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
+        printf("keyDown!\n");
+        
         
         switch(key) {
             case kVK_Space :
                 camera.resetVectors();
                 break;
            
+            case kVK_ANSI_1 :
+                rotateTextureX_plus = true;
+                break;
+            case kVK_ANSI_2 :
+                rotateTextureX_minus = true;
+                break;
+            case kVK_ANSI_3 :
+                model = glm::translate(model, vec3(0.5,0.5,0.5));
+                model = glm::rotate(model, 1.0f, vec3(0.0,1.0,0.0));
+                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+                break;
+            case kVK_ANSI_4 :
+                model = glm::translate(model, vec3(0.5,0.5,0.5));
+                model = glm::rotate(model, -1.0f, vec3(0.0,1.0,0.0));
+                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+                break;
+            case kVK_ANSI_5 :
+                model = glm::translate(model, vec3(0.5,0.5,0.5));
+                model = glm::rotate(model, 1.0f, vec3(0.0,0.0,1.0));
+                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+                break;
+            case kVK_ANSI_6 :
+                model = glm::translate(model, vec3(0.5,0.5,0.5));
+                model = glm::rotate(model, -1.0f, vec3(0.0,0.0,1.0));
+                model = glm::translate(model, vec3(-0.5,-0.5,-0.5));
+                break;
+            case kVK_ANSI_7 :
+                opacity += 0.001;
+                break;
+            case kVK_ANSI_8 :
+                opacity -= 0.001;
+                break;
+
+                
             case kVK_ANSI_A :
                 
                 std::cout<<glm::to_string(camera.posVec)<<std::endl;
@@ -301,32 +358,32 @@ public:
             {
              //   std::cout<<"0:"<<glm::to_string(camera.posVec)<<std::endl;
                 
-                camera.translateZ(orbitRadius);
+                camera.translateZ(cameraZ);
                 camera.transform();
                 camera.rotateY(2);
                 camera.transform();
-                camera.translateZ(-orbitRadius);
+                camera.translateZ(-cameraZ);
                 camera.transform();
            //     std::cout<<"3:"<<glm::to_string(camera.posVec)<<std::endl;
             }
                 break;
                 
             case kVK_ANSI_Z :
-                camera.translateZ(orbitRadius);
+                camera.translateZ(cameraZ);
                 camera.transform();
                 camera.rotateY(-2);
                 camera.transform();
-                camera.translateZ(-orbitRadius);
+                camera.translateZ(-cameraZ);
                 camera.transform();
                 
                 break;
                 
             case kVK_ANSI_W :
-                camera.translateZ(orbitRadius);
+                camera.translateZ(cameraZ);
                 camera.transform();
                 camera.rotateX(2);
                 camera.transform();
-                camera.translateZ(-orbitRadius);
+                camera.translateZ(-cameraZ);
                 camera.transform();
                 
              //   camera.rotateX(2);
@@ -334,11 +391,11 @@ public:
                 
             case kVK_ANSI_X :
                
-                camera.translateZ(orbitRadius);
+                camera.translateZ(cameraZ);
                 camera.transform();
                 camera.rotateX(-2);
                 camera.transform();
-                camera.translateZ(-orbitRadius);
+                camera.translateZ(-cameraZ);
                 camera.transform();
                 
              //   camera.rotateX(-2);
@@ -382,6 +439,13 @@ public:
                 break;
         }
     }
+    
+    void keyUp(char key, bool shift, bool control, bool command, bool option, bool function) {
+        printf("keyUp!\n");
+        rotateTextureX_plus = false;
+        rotateTextureX_minus = false;
+    }
+    
 };
 
 /*
@@ -425,8 +489,8 @@ public:
 };
 */
 
-/*
+
 int main(){ 
     return NiftiViewer_Slices().start("aluminum::NiftiViewer", 100, 100, 400, 300);
 }
-*/
+
