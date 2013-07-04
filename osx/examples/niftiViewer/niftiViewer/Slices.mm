@@ -22,7 +22,7 @@
 #define NII_HEADER_SIZE 352
 //END NIFTI stuff...
 
-#define NUM_SLICES 500
+#define NUM_SLICES 50
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
@@ -59,7 +59,7 @@ public:
     float bloomAmt = 0.1;
     float orbitRadius = 1.0;
     float opacity = 0.1;
-    float cameraZ = 1.5;
+    float cameraZ = 0.95;
     
     bool rotateTextureX_plus = false;
     bool rotateTextureX_minus = false;
