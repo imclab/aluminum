@@ -16,12 +16,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-typedef signed short MY_DATATYPE;
+//typedef signed short MY_DATATYPE;
 //typedef unsigned char MY_DATATYPE;
 #define MIN_HEADER_SIZE 348
 #define NII_HEADER_SIZE 352
 //END NIFTI stuff...
 
+#define NUM_SLICES 500
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
@@ -52,7 +53,7 @@ public:
     Texture time1;
     Texture time2;
     Texture time3;
-    
+  
     MeshBuffer mb1;
     
     float bloomAmt = 0.1;
@@ -82,15 +83,16 @@ public:
         p.link();
     }
     
-    int read_nifti_file(string data_file, Texture& t) {
+    int read_nifti_file(string data_file, Texture& t, int dataType) {
         nifti_1_header hdr;
         FILE *fp;
         unsigned long ret;
         int i;
         double total;
-        MY_DATATYPE *data=NULL;
-        
-        
+        //MY_DATATYPE *data=NULL;
+       signed short *data=NULL;
+       float *floatdata=NULL;
+      
         /********** open and read header */
         fp = fopen(data_file.c_str(),"r");
         if (fp == NULL) {
@@ -111,14 +113,14 @@ public:
         
         
         /********** print a little header information */
-        /*
-         fprintf(stderr, "\n%s header information:",hdr_file);
+        
+         fprintf(stderr, "\n%s header information:",data_file.c_str());
          fprintf(stderr, "\nXYZT dimensions: %d %d %d %d",hdr.dim[1],hdr.dim[2],hdr.dim[3],hdr.dim[4]);
          fprintf(stderr, "\nDatatype code and bits/pixel: %d %d",hdr.datatype,hdr.bitpix);
          fprintf(stderr, "\nScaling slope and intercept: %.6f %.6f",hdr.scl_slope,hdr.scl_inter);
          fprintf(stderr, "\nByte offset to data in datafile: %ld",(long)(hdr.vox_offset));
          fprintf(stderr, "\n");
-         */
+         
         
         
         ret = fseek(fp, (long)(hdr.vox_offset), SEEK_SET);
@@ -128,14 +130,34 @@ public:
             exit(1);
         }
         
-        
+      
+    
         /********** allocate buffer and read first 3D volume from data file */
-        data = (MY_DATATYPE *) malloc(sizeof(MY_DATATYPE) * hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
+        //data = (MY_DATATYPE *) malloc(sizeof(MY_DATATYPE) * hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
+      if (dataType == 16) {
+      data = (signed short *) malloc(sizeof(signed short) * hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
+      
         if (data == NULL) {
-            fprintf(stderr, "\nError allocating data buffer for %s\n",data_file.c_str());
-            exit(1);
+          fprintf(stderr, "\nError allocating data buffer for %s\n",data_file.c_str());
+          exit(1);
         }
-        ret = fread(data, sizeof(MY_DATATYPE), hdr.dim[1]*hdr.dim[2]*hdr.dim[3], fp);
+
+      } else if (dataType == 32) {
+        floatdata = (float *) malloc(sizeof(float) * hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
+        if (floatdata == NULL) {
+          fprintf(stderr, "\nError allocating data buffer for %s\n",data_file.c_str());
+          exit(1);
+        }
+        
+      }
+      
+      if (dataType == 16) {
+        
+      ret = fread(data, sizeof(signed short), hdr.dim[1]*hdr.dim[2]*hdr.dim[3], fp);
+      } else if (dataType == 32) {
+        ret = fread(floatdata, sizeof(float), hdr.dim[1]*hdr.dim[2]*hdr.dim[3], fp);
+        
+      }
         printf("ret = %ld,  size = %d\n", ret, (hdr.dim[1]*hdr.dim[2]*hdr.dim[3]));
         if (ret != hdr.dim[1]*hdr.dim[2]*hdr.dim[3]) {
             fprintf(stderr, "\nError reading volume 1 from %s (%ld)\n",data_file.c_str(),ret);
@@ -145,12 +167,13 @@ public:
         
         
         /********** scale the data buffer  */
-        
+      
+       /*
         if (hdr.scl_slope != 0) {
             for (i=0; i<hdr.dim[1]*hdr.dim[2]*hdr.dim[3]; i++)
                 data[i] = (data[i] * hdr.scl_slope) + hdr.scl_inter;
         }
-        
+        */
         
         /********** print mean of data */
         
@@ -158,11 +181,21 @@ public:
         int max = 0;
         
         for (i=0; i<hdr.dim[1]*hdr.dim[2]*hdr.dim[3]; i++) {
+          
+          if (dataType == 16) {
             total += data[i];
             if (data[i] > max){
                 //printf("%d\n", data[i]);
                 max = data[i];
             }
+          } else if (dataType == 32) {
+            total += floatdata[i];
+            if (floatdata[i] > max){
+              //printf("%d\n", data[i]);
+              max = floatdata[i];
+            }
+          
+          }
         }
         total /= (hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
         fprintf(stderr, "\nMean of volume 1 in %s is %.3f\n",data_file.c_str(),total);
@@ -176,7 +209,11 @@ public:
         
         int idx = 0;
         for (i=0; i < numBytes; i++) {
-            oneslice[idx++] = (GLubyte) (( (float)data[i]/(float)max ) * 255 );
+          if (dataType == 16) {
+          oneslice[idx++] = (GLubyte) (( (float)data[i]/(float)max ) * 255 );
+          } else if (dataType == 32) {
+          oneslice[idx++] = (GLubyte) (( (float)floatdata[i]/(float)max ) * 255 );
+          }
         }
         
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -195,17 +232,17 @@ public:
     
     void onCreate() {
   
-        string nii_brain = (HOME + std::string(RESOURCES_DIR) + "MNI152_T1_2mm.nii").c_str();
+        string nii_brain = (HOME + std::string(RESOURCES_DIR) + "MNI152_T1_2mm_brain.nii").c_str();
         string nii_t1 = (HOME + std::string(RESOURCES_DIR) + "all_s1_IC25.nii").c_str();
         string nii_t2 = (HOME + std::string(RESOURCES_DIR) + "all_s2_IC25.nii").c_str();
         string nii_t3 = (HOME + std::string(RESOURCES_DIR) + "all_s3_IC25.nii").c_str();
         
         // printf("nii file = %s\n", nii);
         
-        read_nifti_file(nii_brain, brain);
-        read_nifti_file(nii_t1, time1);
-        read_nifti_file(nii_t2, time2);
-        read_nifti_file(nii_t3, time3);
+        read_nifti_file(nii_brain, brain, 16);
+        read_nifti_file(nii_t1, time1, 32);
+        read_nifti_file(nii_t2, time2, 32);
+        read_nifti_file(nii_t3, time3, 32);
         
         
         
@@ -221,7 +258,7 @@ public:
         */
         
         
-        createSlices(2000);
+        createSlices(NUM_SLICES);
         
         //for (int i = 0; i < numSlices; i++) {
         //    MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zSt + (zInc * i)), vec3(0.5, 0.5, zSt + (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
