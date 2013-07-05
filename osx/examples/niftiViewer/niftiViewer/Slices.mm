@@ -22,7 +22,7 @@
 #define NII_HEADER_SIZE 352
 //END NIFTI stuff...
 
-#define NUM_SLICES 50
+#define NUM_SLICES 30
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
@@ -59,6 +59,7 @@ public:
     float bloomAmt = 0.1;
     float orbitRadius = 1.0;
     float opacity = 0.1;
+    float percent = 0.0;
     float cameraZ = 0.95;
     
     bool rotateTextureX_plus = false;
@@ -325,7 +326,9 @@ public:
             glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(camera.projection));
             glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(camera.view));
             glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
-            
+          
+           glUniform1f(program.uniform("percent"), percent);
+          
             glUniform1f(program.uniform("opacity"), opacity);
             glUniform1i(program.uniform("brain"), 0);
             glUniform1i(program.uniform("time1"), 1);
@@ -397,11 +400,13 @@ public:
         
         
         if (isMoving) {
-            opacity = ((float)mouseX / (float)width ) * 0.1;
-            
-            if (mouseY > 5 && mouseY < 1000) {
+            opacity = ((float)mouseX / (float)width ) ; //* 0.1;
+            percent = ((float)mouseY / (float)height );
+          
+          printf("percent = %f\n", percent);
+            //if (mouseY > 5 && mouseY < 1000) {
             //createSlices(mouseY);
-            }
+            //}
         }
     }
     
