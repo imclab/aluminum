@@ -15,7 +15,9 @@ using std::chrono::high_resolution_clock;
 
 
 RendererOSX::RendererOSX() { 
+  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
   printf("in RendererNativeOSX constructor\n");
+  [pool release];
 }
 
 int RendererOSX::start() {
@@ -24,9 +26,7 @@ int RendererOSX::start() {
 
 int RendererOSX::start(std::string _name, int x, int y, int w, int h) {
 
-  [NSAutoreleasePool new];
-
-  [CocoaGL start:this 
+  view = [CocoaGL start:this
     name: [NSString stringWithUTF8String:_name.c_str()]
     x: x
     y: y
@@ -35,11 +35,26 @@ int RendererOSX::start(std::string _name, int x, int y, int w, int h) {
     ];
 
 
-   initializeKeyArrays();
-    initializeMouseInfo();
+  initializeKeyArrays();
+  initializeMouseInfo();
   
-    
   return 0;
+}
+
+
+CocoaGL* RendererOSX::makeGLView(int w, int h) {
+  
+  view = [CocoaGL createGLView:this
+                      w: w
+                      h: h
+   ];
+
+  
+  
+  initializeKeyArrays();
+  initializeMouseInfo();
+  
+  return view;
 }
 
 

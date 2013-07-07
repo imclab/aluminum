@@ -4,16 +4,22 @@
 #import <QuartzCore/CVDisplayLink.h>
 //#include "RendererOSX.h"
 
+//static NSView* parentView;
+//static NSOpenGLView* glView;
+
+
 @interface CocoaGL : NSOpenGLView {
   CVDisplayLinkRef displayLink;
   void* renderer;
-  BOOL isDragging;
-  NSWindow* window;
-
+  //BOOL isDragging;
+  //NSWindow* window;
+  
   BOOL cursorOn;
   BOOL stereoOn;
+
 }
 
+//this one creates the window, makes the glView take up the entire window, adds menu bar, and starts the app as well
 +(CocoaGL* )start:(void*) _renderer 
 	     name:(NSString*)_name 
 		x:(int)_xpos
@@ -21,7 +27,20 @@
 		w:(int)_width
 		h:(int)_height;
 
--(id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format renderer:(void*) _renderer;
+//this one just creates a GLView, expects you to make the window, etc (in case you want to add in other views)
++(CocoaGL*) createGLView:(void*) _renderer
+                       w:(int)_width
+                       h:(int)_height;
+
++ (id) setUpAppWindow:(NSString*)appName
+                    x:(int)_xpos
+                    y:(int)_ypos
+                    w:(int)_width
+                    h:(int)_height;
+
++(void) setUpMenuBar:(CocoaGL*)glView name:(NSString*)appName;
+
+-(id) initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format renderer:(void*) _renderer;
 -(void) printView;
 -(void) toggleFullScreen;
 

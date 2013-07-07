@@ -230,7 +230,7 @@ public:
     bool movingLeft = false;
     bool movingRight = false;
     bool movingUp = false;
-    bool movingDown = false;;
+    bool movingDown = false;
     
     if (abs(mouseX - previousMouseX) > abs(mouseY - previousMouseY) ) {
       if (mouseX < previousMouseX) {
@@ -267,12 +267,13 @@ public:
     if (isMoving) {
       opacity = ((float)mouseX / (float)width ) ; //* 0.1;
       percent = ((float)mouseY / (float)height );
-      
+      printf("isMoving = true...\n");
       printf("percent = %f, ", percent);
       printf("opacity = %f\n", opacity);
       //if (mouseY > 5 && mouseY < 1000) {
       //createSlices(mouseY);
       //}
+      isMoving = false; //isn't a listener that can hear when a mouse *stops*?
     }
   }
   
@@ -401,7 +402,69 @@ public:
 
 
 int main(){
-  return NiftiViewer_Slices().start("aluminum::NiftiViewer", 100, 100, 400, 300);
+  ///// the normal way to create a full screen app
+  //return NiftiViewer_Slices().start("aluminum::NiftiViewer", 100, 100, 400, 300);
+  
+  ///// to get just the GL view, so you can add it yourself to a more complicated view hierarchy
+  NSView* glv = NiftiViewer_Slices().makeGLView(400, 300);
+  
+  [NSApplication sharedApplication];
+  [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+  
+  id appName = @"testcustom";
+  
+  
+  // Set up the window to hold the CocoaGL view
+  id window = [CocoaGL setUpAppWindow:appName
+                                    x: 100
+                                    y: 100
+                                    w: 400
+                                    h: 300];
+
+  [CocoaGL setUpMenuBar:(CocoaGL*)glv name:appName];
+  
+  
+  NSSplitView* parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
+  [parentView setVertical:YES];
+  [window setContentView:parentView];
+  
+  NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 200, 300)];
+  NSRect frame = NSMakeRect(10, 40, 90, 40);
+  NSButton* pushButton = [[NSButton alloc] initWithFrame: frame]; pushButton.bezelStyle = NSRoundedBezelStyle;
+  [view addSubview:pushButton];
+  
+  [[window contentView] addSubview:view];
+  [[window contentView] addSubview:glv];
+  
+  [NSApp activateIgnoringOtherApps:YES]; //brings application to front on startup
+  [NSApp run];
+  
+  //parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, _width, _height)];
+  //[((NSSplitView*)parentView) setVertical:YES];
+  //[window setContentView:parentView];
+  
+  //NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, _width/2, _height)];
+  //[view setWantsLayer:YES];
+  
+  //[view setTranslatesAutoresizingMaskIntoConstraints:NO];
+  
+  //[[window contentView] addSubview:view];
+  
+  //[glView setTranslatesAutoresizingMaskIntoConstraints:NO];
+  
+  //[[window contentView] addSubview:glView];
+  
+  //[parentView setAutoresizingMask: (NSViewWidthSizable | NSViewHeightSizable)];
+  /*
+   NSRect frame = NSMakeRect(10, 40, 90, 40);
+   NSButton* pushButton = [[NSButton alloc] initWithFrame: frame]; pushButton.bezelStyle = NSRoundedBezelStyle;
+   
+   [view addSubview:pushButton];
+   */
+  
+
+  
+  
 }
 
 
