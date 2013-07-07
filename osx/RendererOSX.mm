@@ -125,7 +125,7 @@ void RendererOSX::mouseDragged(int px, int py) {
 }
 
 void RendererOSX::mouseDown(int px, int py) {
-    printf("down...\n");
+    //printf("down...\n");
     
     previousMouseX = mouseX;
     previousMouseY = mouseY;
@@ -136,7 +136,7 @@ void RendererOSX::mouseDown(int px, int py) {
 }
 
 void RendererOSX::mouseUp(int px, int py) {
-    printf("up...\n");
+    //printf("up...\n");
     previousMouseX = mouseX;
     previousMouseY = mouseY;
     mouseX = px;
@@ -147,7 +147,7 @@ void RendererOSX::mouseUp(int px, int py) {
 }
 
 void RendererOSX::mouseMoved(int px, int py) {
-    printf("moving...\n");
+    //printf("moving...\n");
     previousMouseX = mouseX;
     previousMouseY = mouseY;
     mouseX = px;

@@ -19,17 +19,14 @@
   return self;
 }
 
--(void) buttonAction: (id)sender {
-  ((Slices*)target)->PrintHi();
-  //((Slices*)[target pointerValue])->PrintHi();
+-(void) toggleClusters: (id)sender {
+  ((Slices*)[target pointerValue])->toggleClusters();
 }
 
 
 -(void) buttonAction2: (id)sender {
   
-  ((NiftiViewer*)target)->SayHello();
-  
-  //((Slices*)[target pointerValue])->PrintHi();
+  ((NiftiViewer*)[target pointerValue])->SayHello();
   
 }
 

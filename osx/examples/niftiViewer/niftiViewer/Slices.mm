@@ -62,6 +62,9 @@ public:
   Texture brain;
   Texture cluster1_time1, cluster1_time2, cluster1_time3;
   Texture cluster2_time1, cluster2_time2, cluster2_time3;
+  Texture cluster3_time1, cluster3_time2, cluster3_time3;
+  Texture cluster4_time1, cluster4_time2, cluster4_time3;
+  Texture cluster5_time1, cluster5_time2, cluster5_time3;
   
   MeshBuffer mb1;
   
@@ -74,11 +77,23 @@ public:
   bool rotateTextureX_plus = false;
   bool rotateTextureX_minus = false;
   
-  
-  
-  
-  void PrintHi() {
-    printf("HI!\n");
+  int useCluster1 = 1;
+  int useCluster2 = 1;
+  int whichClusters = 0;
+  void toggleClusters() {
+    whichClusters = (whichClusters+1) % 3;
+    if (whichClusters == 0) {
+      useCluster1 = 1;
+      useCluster2 = 1;
+    } else if (whichClusters == 1) {
+      useCluster1 = 1;
+      useCluster2 = 0;
+    } else {
+      useCluster1 = 0;
+      useCluster2 = 1;
+    }
+    
+    printf("in toggleClusters... u1 = %d, u2 = %d\n", useCluster1, useCluster2);
   }
   
   void loadTexture(Texture& t, const std::string& name) {
@@ -119,6 +134,15 @@ public:
     NiftiUtils::read_nifti_file(nii_c2t2, cluster2_time2, 32);
     NiftiUtils::read_nifti_file(nii_c2t3, cluster2_time1, 32);
     
+    NiftiUtils::read_nifti_file(nii_c2t1, cluster3_time3, 32);
+    NiftiUtils::read_nifti_file(nii_c2t2, cluster3_time2, 32);
+    NiftiUtils::read_nifti_file(nii_c2t3, cluster3_time1, 32);
+    NiftiUtils::read_nifti_file(nii_c2t1, cluster4_time3, 32);
+    NiftiUtils::read_nifti_file(nii_c2t2, cluster4_time2, 32);
+    NiftiUtils::read_nifti_file(nii_c2t3, cluster4_time1, 32);
+    NiftiUtils::read_nifti_file(nii_c2t1, cluster5_time3, 32);
+    NiftiUtils::read_nifti_file(nii_c2t2, cluster5_time2, 32);
+    NiftiUtils::read_nifti_file(nii_c2t3, cluster5_time1, 32);
     
     
     loadProgram(program, HOME + std::string(RESOURCES_DIR) + "textureSlices");
@@ -201,6 +225,9 @@ public:
       glUniform1f(program.uniform("percent"), percent);
       glUniform1f(program.uniform("opacity"), opacity);
       
+      glUniform1i(program.uniform("useCluster1"), useCluster1);
+      glUniform1i(program.uniform("useCluster2"), useCluster2);
+      
       glUniform1i(program.uniform("brain"), 0);
       glUniform1i(program.uniform("cluster1_time1"), 1);
       glUniform1i(program.uniform("cluster1_time2"), 2);
@@ -209,6 +236,18 @@ public:
       glUniform1i(program.uniform("cluster2_time1"), 4);
       glUniform1i(program.uniform("cluster2_time2"), 5);
       glUniform1i(program.uniform("cluster2_time3"), 6);
+    
+      glUniform1i(program.uniform("cluster3_time1"), 7);
+      glUniform1i(program.uniform("cluster3_time2"), 8);
+      glUniform1i(program.uniform("cluster3_time3"), 9);
+    
+      glUniform1i(program.uniform("cluster4_time1"), 10);
+      glUniform1i(program.uniform("cluster4_time2"), 11);
+      glUniform1i(program.uniform("cluster4_time3"), 12);
+    
+      glUniform1i(program.uniform("cluster5_time1"), 13);
+      glUniform1i(program.uniform("cluster5_time2"), 14);
+      glUniform1i(program.uniform("cluster5_time3"), 15);
       
       brain.bind(GL_TEXTURE0);
       cluster1_time1.bind(GL_TEXTURE1);
@@ -217,6 +256,15 @@ public:
       cluster2_time1.bind(GL_TEXTURE4);
       cluster2_time2.bind(GL_TEXTURE5);
       cluster2_time3.bind(GL_TEXTURE6);
+      cluster3_time1.bind(GL_TEXTURE7);
+      cluster3_time2.bind(GL_TEXTURE8);
+      cluster3_time3.bind(GL_TEXTURE9);
+      cluster4_time1.bind(GL_TEXTURE10);
+      cluster4_time2.bind(GL_TEXTURE11);
+      cluster4_time3.bind(GL_TEXTURE12);
+      cluster5_time1.bind(GL_TEXTURE13);
+      cluster5_time2.bind(GL_TEXTURE14);
+      cluster5_time3.bind(GL_TEXTURE15);
       
       for (int i = 0; i < numSlices; i++) {
         mbs[i].draw();
@@ -229,6 +277,15 @@ public:
       cluster2_time1.unbind(GL_TEXTURE4);
       cluster2_time2.unbind(GL_TEXTURE5);
       cluster2_time3.unbind(GL_TEXTURE6);
+      cluster3_time1.unbind(GL_TEXTURE7);
+      cluster3_time2.unbind(GL_TEXTURE8);
+      cluster3_time3.unbind(GL_TEXTURE9);
+      cluster4_time1.unbind(GL_TEXTURE10);
+      cluster4_time2.unbind(GL_TEXTURE11);
+      cluster4_time3.unbind(GL_TEXTURE12);
+      cluster5_time1.unbind(GL_TEXTURE13);
+      cluster5_time2.unbind(GL_TEXTURE14);
+      cluster5_time3.unbind(GL_TEXTURE15);
       
     } program.unbind();
   }
@@ -280,9 +337,10 @@ public:
     if (isMoving) {
       opacity = ((float)mouseX / (float)width ) ; //* 0.1;
       percent = ((float)mouseY / (float)height );
-      printf("isMoving = true...\n");
-      printf("percent = %f, ", percent);
-      printf("opacity = %f\n", opacity);
+      //printf("isMoving = true...\n");
+      //printf("percent = %f, ", percent);
+      //printf("opacity = %f\n", opacity);
+      
       //if (mouseY > 5 && mouseY < 1000) {
       //createSlices(mouseY);
       //}
@@ -418,7 +476,7 @@ public:
     [NSApplication sharedApplication];
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     
-    id appName = @"testcustom";
+    id appName = @"ICA Time Series";
     
     
     // Set up the window to hold the CocoaGL view
@@ -430,6 +488,8 @@ public:
     
     [CocoaGL setUpMenuBar:(CocoaGL*)glv name:appName];
     
+    ActionProxy* proxy = [[ActionProxy alloc] init:[NSValue valueWithPointer:this]];
+    
     NSSplitView* parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
     [parentView setVertical:YES];
     [window setContentView:parentView];
@@ -440,11 +500,9 @@ public:
     pushButton.bezelStyle = NSRoundedBezelStyle;
     
     
-    ActionProxy* p = [[ActionProxy alloc] init:[NSValue valueWithPointer:this]];
-    //[p setTheTarget:[NSValue valueWithPointer:this]];
     
-    [pushButton setTarget:p];
-    [pushButton setAction:@selector(buttonAction:)];
+    [pushButton setTarget:proxy];
+    [pushButton setAction:@selector(toggleClusters:)];
     
     
     

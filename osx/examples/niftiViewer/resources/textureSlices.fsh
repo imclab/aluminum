@@ -11,8 +11,23 @@ uniform sampler3D cluster2_time1;
 uniform sampler3D cluster2_time2;
 uniform sampler3D cluster2_time3;
 
+uniform sampler3D cluster3_time1;
+uniform sampler3D cluster3_time2;
+uniform sampler3D cluster3_time3;
+
+uniform sampler3D cluster4_time1;
+uniform sampler3D cluster4_time2;
+uniform sampler3D cluster4_time3;
+
+uniform sampler3D cluster5_time1;
+uniform sampler3D cluster5_time2;
+uniform sampler3D cluster5_time3;
+
 uniform float percent; //val between 0.0 and 1.0, used to interpolate between times...
 uniform float opacity;
+
+uniform int useCluster1;
+uniform int useCluster2;
 
 in vec3 texCoord;
 out vec4 outputFrag;
@@ -83,7 +98,7 @@ void main() {
   vec4 clusterColorB;
   
   
-  vec3 cluster1_color = vec3(0.0,0.0,1.0);
+  vec3 cluster1_color = vec3(1.0,0.0,0.0);
   vec3 cluster2_color = vec3(0.0,1.0,0.0);
   
   
@@ -105,22 +120,56 @@ void main() {
   vec4 c2_t1, c2_t2, c2_t3;
   lookUpVoxels(cluster2_time1, cluster2_time2, cluster2_time3, texCoord, c2_t1, c2_t2, c2_t3);
   
+  vec4 c3_t1, c3_t2, c3_t3;
+  lookUpVoxels(cluster3_time1, cluster3_time2, cluster3_time3, texCoord, c3_t1, c3_t2, c3_t3);
   
-
-  float c1_o = 0.0;
-  float c2_o = 0.0;
-  float c3_o = 0.0;
+  vec4 c4_t1, c4_t2, c4_t3;
+  lookUpVoxels(cluster4_time1, cluster4_time2, cluster4_time3, texCoord, c4_t1, c4_t2, c4_t3);
   
+  vec4 c5_t1, c5_t2, c5_t3;
+  lookUpVoxels(cluster5_time1, cluster5_time2, cluster5_time3, texCoord, c5_t1, c5_t2, c5_t3);
+ 
+//  float c1_o = 0.0;
+//  float c2_o = 0.0;
+//  float c3_o = 0.0;
+//  
   
   bool useCluster = false;
-  
-  
-  if (setColor(percent, c1_t1, c1_t2, c1_t3, cluster1_color, clusterColorA) ||
-      setColor(percent, c2_t1, c2_t2, c2_t3, cluster2_color, clusterColorB) ) {
-  
-    clusterColor = mix(clusterColorA, clusterColorB, 0.5);
-    useCluster = true; //temp
+ /*
+  if (useCluster1 == 1) {
+  if (    setColor(percent, c2_t1, c2_t2, c2_t3, cluster2_color, clusterColorB)) {
+    clusterColor = clusterColorB;
+    useCluster = true;
   }
+  } else if (useCluster2 == 1) {
+  if (setColor(percent, c1_t1, c1_t2, c1_t3, cluster1_color, clusterColorA)) {
+    clusterColor = clusterColorA;
+    useCluster = true;
+  }
+  }
+  */
+ 
+  if (useCluster1 == 1 && useCluster2 == 1) {
+    if (setColor(percent, c1_t1, c1_t2, c1_t3, cluster1_color, clusterColorA) ||
+        setColor(percent, c2_t1, c2_t2, c2_t3, cluster2_color, clusterColorB) ) {
+      
+      clusterColor = clusterColorA + clusterColorB;
+      
+      //clusterColor = mix(clusterColorA, clusterColorB, 0.5);
+      useCluster = true;
+    }
+  } else if (useCluster1 == 1) {
+    if (setColor(percent, c1_t1, c1_t2, c1_t3, cluster1_color, clusterColorA)) {
+      clusterColor = clusterColorA;
+      useCluster = true;
+    }
+  } else if (useCluster2 == 1) {
+    if (    setColor(percent, c2_t1, c2_t2, c2_t3, cluster2_color, clusterColorB)) {
+      clusterColor = clusterColorB;
+      useCluster = true;
+    }
+  }
+  
   
   
   if (brainColor.r < 0.09) {
