@@ -3,6 +3,7 @@
 #ifndef ALLOCORE_RENDERER_OSX
 #define ALLOCORE_RENDERER_OSX
 
+#import "Includes.hpp"
 #import "CocoaGL.h"
 //#import <string>
 //class CocoaGL;

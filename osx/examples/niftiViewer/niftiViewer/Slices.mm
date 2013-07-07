@@ -1,23 +1,29 @@
 
-#include "Includes.hpp"
+//#ifndef INCLUDE_SLICES
+//#define INCLUDE_SLICES
 
-#include "RendererOSX.h"
-#include "MeshBuffer.hpp"
-#include "MeshData.hpp"
-#include "MeshUtils.hpp"
-#include "Program.hpp"
-#include "Shapes.hpp"
-#include "Texture.hpp"
-#include "Camera.hpp"
 
-#include "NiftiUtils.h"
+#import "Includes.hpp"
+
+#import "RendererOSX.h"
+#import "MeshBuffer.hpp"
+#import "MeshData.hpp"
+#import "MeshUtils.hpp"
+#import "Program.hpp"
+#import "Shapes.hpp"
+#import "Texture.hpp"
+#import "Camera.hpp"
+
+#import "NiftiUtils.h"
+#import "ActionProxy.h"
 
 //NIFTI stuff...
-#include "nifti1.h"
-#include "nifti1_io.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#import "nifti1.h"
+#import "nifti1_io.h"
+#import <stdio.h>
+#import <stdlib.h>
+#import <string.h>
+
 //typedef signed short MY_DATATYPE;
 //typedef unsigned char MY_DATATYPE;
 #define MIN_HEADER_SIZE 348
@@ -33,16 +39,18 @@
 
 using namespace aluminum;
 
-class NiftiViewer_Slices : public RendererOSX {
+
+class Slices : public RendererOSX {
+  
 public:
   
   char* HOME = (char *) [NSHomeDirectory() UTF8String];
   
   Camera camera;
   
+  //int NUM_SLICES;
   int numSlices;
   vector<MeshBuffer> mbs;
-  
   
   mat4 textureRotation, view, proj;
   
@@ -68,6 +76,11 @@ public:
   
   
   
+  
+  void PrintHi() {
+    printf("HI!\n");
+  }
+  
   void loadTexture(Texture& t, const std::string& name) {
     t.loadTexture(t, name);
   }
@@ -85,7 +98,7 @@ public:
     p.link();
   }
   
-    
+  
   
   
   void onCreate() {
@@ -139,7 +152,7 @@ public:
     glDepthFunc(GL_LEQUAL);
     glEnable (GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    
     glViewport(0, 0, width, height);
     glClearColor(0.3,0.3,0.3,1.0);
   }
@@ -177,7 +190,7 @@ public:
     }
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+    
     
     program.bind(); {
       
@@ -204,11 +217,11 @@ public:
       cluster2_time1.bind(GL_TEXTURE4);
       cluster2_time2.bind(GL_TEXTURE5);
       cluster2_time3.bind(GL_TEXTURE6);
-
+      
       for (int i = 0; i < numSlices; i++) {
         mbs[i].draw();
       }
-   
+      
       brain.unbind(GL_TEXTURE0);
       cluster1_time1.unbind(GL_TEXTURE1);
       cluster1_time2.unbind(GL_TEXTURE2);
@@ -216,7 +229,7 @@ public:
       cluster2_time1.unbind(GL_TEXTURE4);
       cluster2_time2.unbind(GL_TEXTURE5);
       cluster2_time3.unbind(GL_TEXTURE6);
-
+      
     } program.unbind();
   }
   
@@ -397,74 +410,66 @@ public:
      */
   }
   
+  void initializeViews() {
+    
+    
+    NSView* glv = makeGLView(400, 300);
+    
+    [NSApplication sharedApplication];
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+    
+    id appName = @"testcustom";
+    
+    
+    // Set up the window to hold the CocoaGL view
+    id window = [CocoaGL setUpAppWindow:appName
+                                      x: 100
+                                      y: 100
+                                      w: 400
+                                      h: 300];
+    
+    [CocoaGL setUpMenuBar:(CocoaGL*)glv name:appName];
+    
+    NSSplitView* parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
+    [parentView setVertical:YES];
+    [window setContentView:parentView];
+    
+    NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 200, 300)];
+    NSRect frame = NSMakeRect(10, 40, 90, 40);
+    NSButton* pushButton = [[NSButton alloc] initWithFrame: frame];
+    pushButton.bezelStyle = NSRoundedBezelStyle;
+    
+    
+    ActionProxy* p = [[ActionProxy alloc] init:[NSValue valueWithPointer:this]];
+    //[p setTheTarget:[NSValue valueWithPointer:this]];
+    
+    [pushButton setTarget:p];
+    [pushButton setAction:@selector(buttonAction:)];
+    
+    
+    
+    
+    [view addSubview:pushButton];
+    
+    [[window contentView] addSubview:view];
+    [[window contentView] addSubview:glv];
+    
+    [NSApp activateIgnoringOtherApps:YES]; //brings application to front on startup
+    [NSApp run];
+    
+  }
   
 };
 
 
-int main(){
-  ///// the normal way to create a full screen app
-  //return NiftiViewer_Slices().start("aluminum::NiftiViewer", 100, 100, 400, 300);
-  
-  ///// to get just the GL view, so you can add it yourself to a more complicated view hierarchy
-  NSView* glv = NiftiViewer_Slices().makeGLView(400, 300);
-  
-  [NSApplication sharedApplication];
-  [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-  
-  id appName = @"testcustom";
-  
-  
-  // Set up the window to hold the CocoaGL view
-  id window = [CocoaGL setUpAppWindow:appName
-                                    x: 100
-                                    y: 100
-                                    w: 400
-                                    h: 300];
 
-  [CocoaGL setUpMenuBar:(CocoaGL*)glv name:appName];
-  
-  
-  NSSplitView* parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
-  [parentView setVertical:YES];
-  [window setContentView:parentView];
-  
-  NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 200, 300)];
-  NSRect frame = NSMakeRect(10, 40, 90, 40);
-  NSButton* pushButton = [[NSButton alloc] initWithFrame: frame]; pushButton.bezelStyle = NSRoundedBezelStyle;
-  [view addSubview:pushButton];
-  
-  [[window contentView] addSubview:view];
-  [[window contentView] addSubview:glv];
-  
-  [NSApp activateIgnoringOtherApps:YES]; //brings application to front on startup
-  [NSApp run];
-  
-  //parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, _width, _height)];
-  //[((NSSplitView*)parentView) setVertical:YES];
-  //[window setContentView:parentView];
-  
-  //NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, _width/2, _height)];
-  //[view setWantsLayer:YES];
-  
-  //[view setTranslatesAutoresizingMaskIntoConstraints:NO];
-  
-  //[[window contentView] addSubview:view];
-  
-  //[glView setTranslatesAutoresizingMaskIntoConstraints:NO];
-  
-  //[[window contentView] addSubview:glView];
-  
-  //[parentView setAutoresizingMask: (NSViewWidthSizable | NSViewHeightSizable)];
-  /*
-   NSRect frame = NSMakeRect(10, 40, 90, 40);
-   NSButton* pushButton = [[NSButton alloc] initWithFrame: frame]; pushButton.bezelStyle = NSRoundedBezelStyle;
-   
-   [view addSubview:pushButton];
-   */
-  
+/*
+ 
+ 
+ 
+ 
+ }
+ */
 
-  
-  
-}
-
+//#endif
 

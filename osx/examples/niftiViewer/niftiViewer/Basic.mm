@@ -9,6 +9,9 @@
 #include "Shapes.hpp"
 #include "Texture.hpp"
 
+#include "ActionProxy.h"
+
+
 //NIFTI stuff...
 #include "nifti1.h"
 #include "nifti1_io.h"
@@ -301,11 +304,11 @@ public:
                 
         }
     }
+  
+  void SayHello() {
+    printf("HELLLLLLOO\n");
+  }
+
 };
 
-/*
-int main(){ 
-    return NiftiViewer().start("aluminum::NiftiViewer", 100, 100, 400, 300);
-}
-*/
 

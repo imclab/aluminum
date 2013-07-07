@@ -2,8 +2,8 @@
 // Utility to write NIFTI data to a OpenGL texture
 // read_nifti_file(std::string data_file, Texture& t, int dataType) is the only public function
 
-#include "Includes.hpp"
-#include "Texture.hpp"
+#import "Includes.hpp"
+#import "Texture.hpp"
 
 //NIFTI stuff...
 #include "nifti1.h"
