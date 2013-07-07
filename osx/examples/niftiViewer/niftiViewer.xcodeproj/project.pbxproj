@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		924CCB6E1788F66F008566EC /* NiftiUtils.h in Sources */ = {isa = PBXBuildFile; fileRef = 924CCB6C1788F66F008566EC /* NiftiUtils.h */; };
 		B5E384DE1780C9B400E8C57D /* Basic.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E384DD1780C9B400E8C57D /* Basic.mm */; };
 		B5E385071780CCB000E8C57D /* CocoaGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E385011780CCB000E8C57D /* CocoaGL.mm */; };
 		B5E385081780CCB000E8C57D /* RendererOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E385041780CCB000E8C57D /* RendererOSX.mm */; };
@@ -55,6 +56,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		924CCB6C1788F66F008566EC /* NiftiUtils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = NiftiUtils.h; sourceTree = "<group>"; };
 		B5E384DA1780C9B400E8C57D /* niftiViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = niftiViewer; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5E384DD1780C9B400E8C57D /* Basic.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Basic.mm; sourceTree = "<group>"; };
 		B5E384E91780CC7E00E8C57D /* Behavior.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = Behavior.cpp; path = ../../../src/Behavior.cpp; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				B5E385261780D4B100E8C57D /* resources */,
 				B5E384DD1780C9B400E8C57D /* Basic.mm */,
 				B5E3854D1783564100E8C57D /* Slices.mm */,
+				924CCB6C1788F66F008566EC /* NiftiUtils.h */,
 			);
 			path = niftiViewer;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 				B5E3854E1783564100E8C57D /* Slices.mm in Sources */,
 				B5E385521784DFA300E8C57D /* textureSlices.vsh in Sources */,
 				B5E385531784DFB400E8C57D /* textureSlices.fsh in Sources */,
+				924CCB6E1788F66F008566EC /* NiftiUtils.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

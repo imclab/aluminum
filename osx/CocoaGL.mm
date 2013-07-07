@@ -312,6 +312,7 @@ bool firstTime = true;
 
   CGLUnlockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
 }
+
 - (void) drawView
 {	 
   [[self openGLContext] makeCurrentContext];
