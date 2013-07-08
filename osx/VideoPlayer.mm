@@ -27,7 +27,6 @@ using std::string;
   return self;
 }
 
-
 - (Texture*) createVideoTexture:(const string) filename 
 useAudio:(bool) useAudio 
 autoPlay:(bool) autoPlay 

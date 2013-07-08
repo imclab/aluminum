@@ -49,10 +49,11 @@ public:
     float orbitRadius = 1.0;
     float opacity = 0.1;
     float percent = 0.0;
-    float cameraZ = 0.95;
+    float cameraZ = 10.0; //0.95;
     
     bool rotateTextureX_plus = false;
     bool rotateTextureX_minus = false;
+    
     
     int useCluster1 = 1;
     int useCluster2 = 1;
@@ -134,7 +135,7 @@ public:
         
         loadProgram(program, RESOURCES + "textureSlices");
         
-        camera = Camera(60.0, width/(height*0.5), 0.001, 100.0).translateZ(-cameraZ).convergence(40.0).eyeSep(0.5);
+        camera = Camera(60.0, width/(height*0.5), 0.001, 100.0).translateZ(-cameraZ).convergence(10.0).eyeSep(1.0/30.0 * 10.0);
         
         
         createSlices(numSlices);
@@ -160,11 +161,13 @@ public:
         float zSt = orbitRadius/2.0;
         float zInc = (orbitRadius) / ((float)numSlices - 1);
         
+        float sz = 4.0; //0.5;
+        
         float tczInc = 1.0 / ((float)numSlices - 1);
         
         
         for (int i = 0; i < numSlices; i++) {
-            MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zSt - (zInc * i)), vec3(0.5, 0.5, zSt - (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
+            MeshData md = MeshUtils::makeRectangle(vec3(-sz, -sz, zSt - (zInc * i)), vec3(sz, sz, zSt - (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
             
             mbs[i].init(md, posLoc, -1, texCoordLoc, -1);
         }
@@ -292,7 +295,8 @@ public:
     }
     
     void onReshape() {
-        camera.perspective(60.0, width/(height*0.5), 0.001, 100.0).stereo(false);
+        
+        camera.perspective(60.0, width/(height*0.5), 0.001, 100.0).stereo(USE_STEREO);
     }
     
     void handleMouse() {
@@ -396,16 +400,33 @@ public:
             opacity -= 0.001;
         }
         
+        if (keysDown[kVK_ANSI_0]) {
+            
+        cout << "000 posVec = " << glm::to_string(camera.posVec) << "\n";
+        }
+        
         if (keysDown[kVK_ANSI_Q]) {
-            camera.translateZ(cameraZ);
+            vec3 pv = vec3(camera.posVec);
+            cout << "posVec a = " << glm::to_string(camera.posVec) << "\n";
+            camera.translate(pv);
+            cout << "posVec a1 = " << glm::to_string(camera.posVec) << "\n";
             camera.rotateY(2);
-            camera.translateZ(-cameraZ);
+            cout << "posVec b = " << glm::to_string(camera.posVec) << "\n";
+            
+            camera.translate(-pv);
+            cout << "posVec c = " << glm::to_string(camera.posVec) << "\n";
+            
+            keysDown[kVK_ANSI_Q] = false;
         }
         
         if (keysDown[kVK_ANSI_Z]) {
-            camera.translateZ(cameraZ);
+            cout << "posVec = " << glm::to_string(camera.posVec) << "\n";
+        //    camera.translate(-camera.posVec);
+       //     camera.translateZ(cameraZ);
             camera.rotateY(-2);
-            camera.translateZ(-cameraZ);
+         //   camera.translate(camera.posVec);
+        //    camera.translateZ(-cameraZ);
+         keysDown[kVK_ANSI_Z] = false;
         }
         
         if (keysDown[kVK_ANSI_W]) {
@@ -432,6 +453,15 @@ public:
             camera.translateZ(-cameraZ);
         }
         
+        if (keysDown[kVK_ANSI_T]) {
+            printf("pressed T\n");
+            camera.translateZ(0.05);
+        }
+        
+        if (keysDown[kVK_ANSI_B]) {
+            printf("pressed B\n");
+            camera.translateZ(-0.05);
+        }
         
         /*
          case kVK_ANSI_T :
@@ -465,6 +495,7 @@ public:
          }
          
          */
+        camera.transform();
     }
     
     void initializeViews() {
@@ -487,7 +518,10 @@ public:
         
         [CocoaGL setUpMenuBar:(CocoaGL*)glv name:appName];
         
+        
         ActionProxy* proxy = [[ActionProxy alloc] init:[NSValue valueWithPointer:this]];
+        
+        
         
         NSSplitView* parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
         [parentView setVertical:YES];

@@ -42,6 +42,7 @@
 		B5E3854E1783564100E8C57D /* Slices.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854D1783564100E8C57D /* Slices.mm */; };
 		B5E385521784DFA300E8C57D /* textureSlices.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B5E38550178364A000E8C57D /* textureSlices.vsh */; };
 		B5E385531784DFB400E8C57D /* textureSlices.fsh in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854F178364A000E8C57D /* textureSlices.fsh */; };
+		B5E38555178B726B00E8C57D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5E38554178B726B00E8C57D /* Carbon.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -119,6 +120,7 @@
 		B5E3854D1783564100E8C57D /* Slices.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = Slices.mm; sourceTree = "<group>"; };
 		B5E3854F178364A000E8C57D /* textureSlices.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = textureSlices.fsh; sourceTree = "<group>"; };
 		B5E38550178364A000E8C57D /* textureSlices.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = textureSlices.vsh; sourceTree = "<group>"; };
+		B5E38554178B726B00E8C57D /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 				B5E3851B1780CFE600E8C57D /* libfreeimage.3.15.3.dylib in Frameworks */,
 				B5E385191780CFA600E8C57D /* libassimp.3.0.0.dylib in Frameworks */,
 				B5E385171780CEE000E8C57D /* CoreMedia.framework in Frameworks */,
+				B5E38555178B726B00E8C57D /* Carbon.framework in Frameworks */,
 				B5E385151780CED700E8C57D /* AVFoundation.framework in Frameworks */,
 				B5E385131780CE7C00E8C57D /* Foundation.framework in Frameworks */,
 				B5E385111780CE7400E8C57D /* AppKit.framework in Frameworks */,
@@ -252,6 +255,7 @@
 			children = (
 				B5E3851A1780CFE600E8C57D /* libfreeimage.3.15.3.dylib */,
 				B5E385181780CFA600E8C57D /* libassimp.3.0.0.dylib */,
+				B5E38554178B726B00E8C57D /* Carbon.framework */,
 				B5E385161780CEE000E8C57D /* CoreMedia.framework */,
 				B5E385141780CED700E8C57D /* AVFoundation.framework */,
 				B5E385121780CE7C00E8C57D /* Foundation.framework */,

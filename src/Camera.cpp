@@ -116,7 +116,7 @@ namespace aluminum {
     }
     
     if (isStereo) {
-      printf("isStereo = TRUE\n");
+      //printf("isStereo = TRUE\n");
       rightView = rightTranslate * view;
       leftView = leftTranslate * view;
       
