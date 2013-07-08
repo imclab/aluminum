@@ -148,8 +148,8 @@ public:
     loadProgram(program, HOME + std::string(RESOURCES_DIR) + "textureSlices");
     
     
-    camera = Camera(60.0, width/(height*0.5), 0.001, 100.0);
-    camera.translateZ(-cameraZ);
+    camera = Camera(60.0, width/(height*0.5), 0.001, 100.0).translateZ(-cameraZ).convergence(40.0).eyeSep(0.5);
+    
     
     /*
      MeshData md = MeshUtils::makeRectangle(vec2(-0.5, -0.5), vec2(0.5, 0.5), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
@@ -176,6 +176,7 @@ public:
     glDepthFunc(GL_LEQUAL);
     glEnable (GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_SCISSOR_TEST);
     
     glViewport(0, 0, width, height);
     glClearColor(0.3,0.3,0.3,1.0);
@@ -202,24 +203,12 @@ public:
     }
     
   }
-  
-  //every 1/60th of a second...
-  void onFrame(){
-    
-    handleKeys();
-    handleMouse();
-    
-    if (camera.isTransformed) {
-      camera.transform();
-    }
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+  void draw(mat4 useproj, mat4 useview) {
     
     program.bind(); {
       
-      glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(camera.projection));
-      glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(camera.view));
+      glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(useproj));
+      glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(useview));
       glUniformMatrix4fv(program.uniform("textureRotation"), 1, 0, ptr(textureRotation));
       
       glUniform1f(program.uniform("percent"), percent);
@@ -236,15 +225,15 @@ public:
       glUniform1i(program.uniform("cluster2_time1"), 4);
       glUniform1i(program.uniform("cluster2_time2"), 5);
       glUniform1i(program.uniform("cluster2_time3"), 6);
-    
+      
       glUniform1i(program.uniform("cluster3_time1"), 7);
       glUniform1i(program.uniform("cluster3_time2"), 8);
       glUniform1i(program.uniform("cluster3_time3"), 9);
-    
+      
       glUniform1i(program.uniform("cluster4_time1"), 10);
       glUniform1i(program.uniform("cluster4_time2"), 11);
       glUniform1i(program.uniform("cluster4_time3"), 12);
-    
+      
       glUniform1i(program.uniform("cluster5_time1"), 13);
       glUniform1i(program.uniform("cluster5_time2"), 14);
       glUniform1i(program.uniform("cluster5_time3"), 15);
@@ -290,9 +279,42 @@ public:
     } program.unbind();
   }
   
+  //every 1/60th of a second...
+  void onFrame(){
+    
+    handleKeys();
+    handleMouse();
+    
+    if (camera.isTransformed) {
+      camera.transform();
+    }
+    
+    //Trying out passive stereo...
+   
+    glViewport(0, 0, width/2.0, height); {
+      glScissor(0,0,width/2.0, height);
+      glClearColor(0.0,0.0,0.0,1.0);
+      
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      
+      draw(camera.leftProjection, camera.leftView);
+    }
+  
+    glViewport(width/2.0, 0, width/2.0, height); {
+      glScissor(width/2.0, 0, width/2.0, height);
+      glClearColor(0.0,0.0,0.0,1.0);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      
+      draw(camera.rightProjection, camera.rightView);
+    }
+    
+    }
+  
   void onReshape() {
-    glViewport(0, 0, width, height);
+    //glViewport(0, 0, width, height);
     camera.perspective(60.0, width/(height*0.5), 0.001, 100.0);
+  
+    
   }
   
   void handleMouse() {

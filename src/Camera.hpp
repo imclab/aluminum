@@ -22,9 +22,15 @@ using glm::mat4;
 
       Camera();
       Camera(float fovy, float aspect, float nearPlane, float farPlane); //perspective
-      
-      void setUpStereo(float _convergence, float _eyeSep);
-      //void setupStereoRight(Matrix4f& P, Matrix4f& V); 
+      Camera(float fovy, float aspect, float nearPlane, float farPlane, bool isStereo, bool isFrontBack); //perspective
+    
+      Camera& setUpStereo(float _convergence, float _eyeSep);
+      Camera& convergence(float _convergence);
+      Camera& eyeSep(float _eyeSep);
+      float convergence();
+      float eyeSep();
+    
+    //void setupStereoRight(Matrix4f& P, Matrix4f& V);
       //void setupStereoLeft(Matrix4f& P, Matrix4f& V); 
       
       Camera& perspective(float fovy, float aspect, float nearPlane, float farPlane); //perspective
@@ -40,7 +46,9 @@ using glm::mat4;
       Camera& rotateY(float angle);
       Camera& rotateZ(float angle);
 
-      float fovy, aspect, nearPlane, farPlane, convergence, eyeSep; 
+    float _convergence = 5.0;
+    float _eyeSep = 1.0;
+    float fovy, aspect, nearPlane, farPlane;
       mat4 projection, view, backView;
       mat4 rightProjection, leftProjection, rightView, leftView, rightBackView, leftBackView, rightTranslate, leftTranslate;
       vec3 posVec, viewVec, rightVec, upVec;

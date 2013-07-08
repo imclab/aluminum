@@ -17,7 +17,7 @@
 
 - (id)init: (NSValue*)_target;
 
--(void) buttonAction: (id)sender;
+-(void) toggleClusters: (id)sender;
 -(void) buttonAction2: (id)sender;
 
 

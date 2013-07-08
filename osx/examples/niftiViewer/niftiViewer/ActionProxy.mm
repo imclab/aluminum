@@ -19,6 +19,7 @@
   return self;
 }
 
+
 -(void) toggleClusters: (id)sender {
   ((Slices*)[target pointerValue])->toggleClusters();
 }
