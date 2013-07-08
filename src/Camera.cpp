@@ -65,7 +65,7 @@ namespace aluminum {
     
    
     if (isStereo) {
-      setUpStereo(convergence(), eyeSep());
+      stereo(convergence(), eyeSep());
     }
     
     isTransformed = true;
@@ -74,13 +74,13 @@ namespace aluminum {
   
   Camera& Camera::convergence(float _c) {
     _convergence = _c;
-    setUpStereo(convergence(), eyeSep());
+    stereo(convergence(), eyeSep());
     return *this;
   }
   
   Camera& Camera::eyeSep(float _e) {
     _eyeSep = _e;
-    setUpStereo(convergence(), eyeSep());
+    stereo(convergence(), eyeSep());
     return *this;
   }
   
@@ -131,10 +131,21 @@ namespace aluminum {
     return *this;
   }
   
+  Camera& Camera::frontBack(bool _on) {
+    isFrontBack = _on;
+    return *this;
+  }
+  
+  Camera& Camera::stereo(bool _on) {
+    isStereo = _on;
+    stereo(convergence(), eyeSep());
+   return *this;
+  }
+  
   /* code adapted from http://quiescentspark.blogspot.com/2011/05/rendering-3d-anaglyph-in-opengl.html */
   /* The practical value of convergence depth is chosen on the basis of the shot being prepared and the type of effect (out of the screen or inside screen) used. Eye separation is typically kept at 1/30th of the convergence distance and objects closer than half the convergence distance are avoided in the scene. */
   
-  Camera& Camera::setUpStereo(float _c, float _e) {
+  Camera& Camera::stereo(float _c, float _e) {
   
     isStereo = true;
   

@@ -151,26 +151,9 @@ public:
     camera = Camera(60.0, width/(height*0.5), 0.001, 100.0).translateZ(-cameraZ).convergence(40.0).eyeSep(0.5);
     
     
-    /*
-     MeshData md = MeshUtils::makeRectangle(vec2(-0.5, -0.5), vec2(0.5, 0.5), vec3(-0.5, -0.5, 0.5), vec3(1.5,1.5,0.5)    );
-     mb1.init(md, posLoc, -1, texCoordLoc, -1);
-     */
-    
-    
     createSlices(NUM_SLICES);
     
-    //for (int i = 0; i < numSlices; i++) {
-    //    MeshData md = MeshUtils::makeRectangle(vec3(-0.5, -0.5, zSt + (zInc * i)), vec3(0.5, 0.5, zSt + (zInc * i)), vec3(-0.15, -0.15, tczInc * i), vec3(1.15,1.15,tczInc * i)    );
-    //    mbs[i].init(md, posLoc, -1, texCoordLoc, -1);
-    // }
-    
-    //mb1.init(MeshUtils::makeRectangle(), posLoc, -1, texCoordLoc, -1);
-    
-    // proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-    // view = glm::lookAt(vec3(0.0,0.0,-2), vec3(0,0,0), vec3(0,1,0) );
     textureRotation = glm::mat4();
-    // textureRotation = glm::translate(textureRotation, vec3(0.0,0.0,0.0));
-    
     
     glEnable (GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -178,8 +161,6 @@ public:
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_SCISSOR_TEST);
     
-    glViewport(0, 0, width, height);
-    glClearColor(0.3,0.3,0.3,1.0);
   }
   
   void createSlices(int num) {
@@ -311,10 +292,7 @@ public:
     }
   
   void onReshape() {
-    //glViewport(0, 0, width, height);
     camera.perspective(60.0, width/(height*0.5), 0.001, 100.0);
-  
-    
   }
   
   void handleMouse() {
@@ -372,7 +350,6 @@ public:
   
   
   void handleKeys() {
-    
     
     if (keysDown[kVK_ANSI_1]) {
       textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));

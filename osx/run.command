@@ -101,6 +101,7 @@ OSX_DIR="$RUN_PATH"
 LIB_DIR="/opt/local/lib"
 #INCLUDE_DIR="$OSX_DIR/include"
 INCLUDE_DIR="/opt/local/include"
+INCLUDE_GLM_DIR="/usr/local/include"
 
 FFMPEG="-L/opt/local/lib -lavformat -lavcodec -lswscale -lavutil"
 ASSIMP="$LIB_DIR/libassimp.dylib"
@@ -114,7 +115,7 @@ OPTIONS="-O3 -Wreturn-type -Wformat -Wmissing-braces -Wparentheses -Wswitch -Wun
 #INCLUDE_FFMPEG="-I$INCLUDE_DIR/libswscale -I$INCLUDE_DIR/libavcodec -I$INCLUDE_DIR/libavformat" 
 
 #INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR $INCLUDE_FFMPEG -I./$APP_PATH"
-INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR -I./$APP_PATH"
+INCLUDE="-I./ -I$OSX_DIR -I$SRC_DIR -I$INCLUDE_DIR -I$INCLUDE_GLM_DIR -I./$APP_PATH"
 LIBS="$ASSIMP $FREEIMAGE" #$FFMPEG"
 SRC=" -x objective-c++ $SRC_DIR/*.cpp $OSX_DIR/*.mm $APP_SRC"
 

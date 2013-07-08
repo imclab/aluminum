@@ -86,7 +86,7 @@ class Stereo : public RendererOSX {
     }
 
     void onCreate() {
-      camera = Camera(60.0, width/(height*0.5), 0.01, 100.0);
+      camera = Camera(60.0, width/(height*0.5), 0.01, 100.0).stereo(5.0, 1.0).frontBack(true);
 
       createMeshes();
 
@@ -287,7 +287,7 @@ class Stereo : public RendererOSX {
        */
 
 
-    virtual void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
+    virtual void keyDown(char key) {
 
       switch(key) {
 	case kVK_Space :

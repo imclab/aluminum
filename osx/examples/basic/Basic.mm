@@ -74,6 +74,9 @@ class Basic : public RendererOSX {
 
     virtual void onFrame(){
 
+      handleKeys();
+      handleMouse();
+
       // Clear viewport
       glViewport(0, 0, width, height);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -91,31 +94,43 @@ class Basic : public RendererOSX {
 
     }
 
-    void mouseDragged(int px, int py) {
-      printf("in Basic: mouseDragged %d/%d\n", px, py);
+    void handleMouse() {
+      if (isDragging) {
+	printf("in Basic: mouseDragged %d/%d\n", mouseX, mouseY);
+      }
+
+      if (isMoving) {
+	printf("in Basic: mouseMoved %d/%d\n", mouseX, mouseY);
+      }
+
+      if (isPressing) {
+	printf("in Basic: mouseDown %d/%d\n", mouseX, mouseY);
+      }
+
+
+      if (isReleasing) {
+	printf("in Basic: mouseUp %d/%d\n", mouseX, mouseY);
+      }
+
+      isDragging = false;
+      isMoving = false;
+      isPressing = false; 
+      isReleasing = false;
     }
 
-    void mouseMoved(int px, int py) {
-      printf("in Basic: mouseMoved %d/%d\n", px, py);
-    }
+    void handleKeys() {
 
-    void mouseDown(int px, int py) {
-      printf("in Basic: mouseDown %d/%d\n", px, py);
-    }
+      if (keysDown[kVK_ANSI_A]) {
+	printf("you pressed an 'A'! \n");	
+	keysDown[kVK_ANSI_A] = false;
+      }
 
-    void mouseUp(int px, int py) {
-      printf("in Basic: mouseUp %d/%d\n", px, py);
-    }
-   
-    void keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
-      printf("in Basic: key = %c, shift=%d, control=%d, command=%d, option=%d, function=%d\n", key, shift, control, command, option, function);
-      switch(key) {
-	case kVK_ANSI_A : 
-	printf("you pressed an 'A'! \n");
-	break;
+      if (keysUp[kVK_ANSI_A]) {
+	printf("you released an 'A'! \n");
+	keysUp[kVK_ANSI_A] = false;
       }
     }
- 
+
 };
 
 int main(){ 

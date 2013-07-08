@@ -184,7 +184,6 @@ void RendererOSX::keyDown(char key) {
 void RendererOSX::keyUp(char key) {
     keysUp[key] = true;
     keysDown[key] = false;
-
 }
 
 void RendererOSX::initializeKeyArrays() {

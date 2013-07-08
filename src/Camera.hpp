@@ -24,7 +24,9 @@ using glm::mat4;
       Camera(float fovy, float aspect, float nearPlane, float farPlane); //perspective
       Camera(float fovy, float aspect, float nearPlane, float farPlane, bool isStereo, bool isFrontBack); //perspective
     
-      Camera& setUpStereo(float _convergence, float _eyeSep);
+      Camera& frontBack(bool _on);
+      Camera& stereo(bool _on);
+      Camera& stereo(float _convergence, float _eyeSep);
       Camera& convergence(float _convergence);
       Camera& eyeSep(float _eyeSep);
       float convergence();
