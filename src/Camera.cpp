@@ -138,7 +138,9 @@ namespace aluminum {
   
   Camera& Camera::stereo(bool _on) {
     isStereo = _on;
+      if (_on) {
     stereo(convergence(), eyeSep());
+      }
    return *this;
   }
   

@@ -21,7 +21,7 @@ using namespace aluminum;
 class Slices : public RendererOSX {
     
 public:
-    
+    bool USE_STEREO = false;
     string RESOURCES = (string)[NSHomeDirectory() UTF8String] + "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/";
     int numSlices = 100;
     
@@ -255,6 +255,19 @@ public:
         if (camera.isTransformed) {
             camera.transform();
         }
+     
+        if (!USE_STEREO) {
+        glViewport(0, 0, width, height); {
+         glScissor(0,0,width, height);
+   
+         glClearColor(0.0,0.0,0.0,1.0);
+            
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+         
+            draw(camera.projection, camera.view);
+        }
+        } else {
+        
         
         //Trying out passive stereo...
         
@@ -274,11 +287,12 @@ public:
             
             draw(camera.rightProjection, camera.rightView);
         }
-        
+            
+        }
     }
     
     void onReshape() {
-        camera.perspective(60.0, width/(height*0.5), 0.001, 100.0);
+        camera.perspective(60.0, width/(height*0.5), 0.001, 100.0).stereo(false);
     }
     
     void handleMouse() {

@@ -11,14 +11,14 @@
 
 int main(){
   ///// the normal way to create a full screen app
-  return Slices().start("aluminum::ICA Viewer", 100, 100, 400, 300);
+  //return Slices().start("aluminum::ICA Viewer", 100, 100, 400, 300);
   
   ///// to get just the GL view, so you can add it yourself to a more complicated view hierarchy
  // Slices* nifti = new Slices();
  // nifti->initializeViews();
   
-  //Slices nifti = Slices();
-  //nifti.initializeViews();
+  Slices nifti = Slices();
+  nifti.initializeViews();
 
 }
 
