@@ -24,8 +24,6 @@
 		B5E385171780CEE000E8C57D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5E385161780CEE000E8C57D /* CoreMedia.framework */; };
 		B5E385191780CFA600E8C57D /* libassimp.3.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5E385181780CFA600E8C57D /* libassimp.3.0.0.dylib */; };
 		B5E3851B1780CFE600E8C57D /* libfreeimage.3.15.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5E3851A1780CFE600E8C57D /* libfreeimage.3.15.3.dylib */; };
-		B5E3852B1780D65D00E8C57D /* basic.fsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5E385271780D4B100E8C57D /* basic.fsh */; };
-		B5E3852C1780D65D00E8C57D /* basic.vsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5E385281780D4B100E8C57D /* basic.vsh */; };
 		B5E385381780EC9100E8C57D /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = B5E385361780EC9100E8C57D /* znzlib.c */; };
 		B5E3853A1780ED1000E8C57D /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = B5E385391780ED1000E8C57D /* nifti1_io.c */; };
 		B5E385421782567200E8C57D /* MeshBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384F11780CC7E00E8C57D /* MeshBuffer.cpp */; };
@@ -48,14 +46,12 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		B5E384D81780C9B400E8C57D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			buildActionMask = 12;
+			dstPath = usr/share/man/man1;
 			dstSubfolderSpec = 0;
 			files = (
-				B5E3852B1780D65D00E8C57D /* basic.fsh in CopyFiles */,
-				B5E3852C1780D65D00E8C57D /* basic.vsh in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
