@@ -59,7 +59,7 @@ MeshData& MeshData::reset() {
   
 
 void MeshData::invertNormals() {
-	int Nv = normals().size();
+	size_t Nv = normals().size();
 	for(int i=0; i<Nv; ++i) normals()[i] = -normals()[i];
 }
 
@@ -71,7 +71,7 @@ void MeshData::addMesh(MeshData& m2) {
 
   //1. check which elements need to be merged
 
-  int numCurrentVertices = vertices().size(); 
+  size_t numCurrentVertices = vertices().size();
   if (numCurrentVertices == 0) { //first merge - determine elements from new mesh
       hasNormals = m2.normals().size();
       hasTexCoords = m2.texCoords().size();
@@ -105,7 +105,8 @@ void MeshData::addMesh(MeshData& m2) {
 
   if (hasIndices) {
     for (size_t i = 0; i < m2.indices().size(); i++) {
-      indices().push_back(m2.indices()[i] + numCurrentVertices);
+ //     indices().push_back(m2.indices()[i] + numCurrentVertices);
+      indices().push_back(m2.indices()[i] + (unsigned int)numCurrentVertices);
     }
   }
 

@@ -23,7 +23,7 @@ class Slices : public RendererOSX {
 public:
   bool USE_STEREO = false;
   string RESOURCES = (string)[NSHomeDirectory() UTF8String] + "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/";
-  int numSlices = 100;
+  int numSlices = 10;
   
   Camera camera;
   
@@ -405,6 +405,7 @@ public:
       cout << "000 posVec = " << glm::to_string(camera.posVec) << "\n";
     }
     
+    /*
     if (keysDown[kVK_ANSI_Q]) {
       vec3 pv = vec3(camera.posVec);
       cout << "posVec a = " << glm::to_string(camera.posVec) << "\n";
@@ -452,7 +453,7 @@ public:
       camera.rotateZ(-2);
       camera.translateZ(-cameraZ);
     }
-    
+    */
     if (keysDown[kVK_ANSI_T]) {
       printf("pressed T\n");
       camera.translateZ(0.05);
@@ -462,40 +463,6 @@ public:
       printf("pressed B\n");
       camera.translateZ(-0.05);
     }
-    
-    /*
-     case kVK_ANSI_T :
-     
-     // orbitRadius -= 0.5;
-     // camera.translateZ(0.5);
-     // camera.transform();
-     break;
-     
-     case kVK_ANSI_B :
-     // orbitRadius = 0.5;
-     // camera.translateZ(-0.5);
-     //  camera.transform();
-     break;
-     
-     case kVK_ANSI_Y :
-     camera.translateX(0.5);
-     break;
-     
-     case kVK_ANSI_N :
-     camera.translateX(-0.5);
-     break;
-     
-     case kVK_ANSI_U :
-     camera.translateY(0.5);
-     break;
-     
-     case kVK_ANSI_M :
-     camera.translateY(-0.5);
-     break;
-     }
-     
-     */
-    camera.transform();
   }
   
   void initializeViews() {
@@ -521,8 +488,6 @@ public:
     
     ActionProxy* proxy = [[ActionProxy alloc] init:[NSValue valueWithPointer:this]];
     
-    
-    
     NSSplitView* parentView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
     [parentView setVertical:YES];
     [window setContentView:parentView];
@@ -531,8 +496,6 @@ public:
     NSRect frame = NSMakeRect(10, 40, 90, 40);
     NSButton* pushButton = [[NSButton alloc] initWithFrame: frame];
     pushButton.bezelStyle = NSRoundedBezelStyle;
-    
-    
     
     [pushButton setTarget:proxy];
     [pushButton setAction:@selector(toggleClusters:)];

@@ -8,9 +8,9 @@ namespace aluminum {
 
       glBindVertexArray( vao[0] ); {
       if (useIndices) {
-	glDrawElements(GL_TRIANGLES, data.indices().size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);
       } else {
-	glDrawArrays(GL_TRIANGLES, 0, data.vertices().size() * 9 ); //double check this!
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei) data.vertices().size() * 9 ); //double check this!
 	//printf("here...\n");
       }
     } glBindVertexArray(0);

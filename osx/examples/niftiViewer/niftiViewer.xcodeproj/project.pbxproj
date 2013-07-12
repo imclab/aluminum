@@ -38,8 +38,6 @@
 		B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FB1780CC7E00E8C57D /* Texture.cpp */; };
 		B5E3854C178256A100E8C57D /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FD1780CC7E00E8C57D /* Utils.cpp */; };
 		B5E3854E1783564100E8C57D /* Slices.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854D1783564100E8C57D /* Slices.mm */; };
-		B5E385521784DFA300E8C57D /* textureSlices.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B5E38550178364A000E8C57D /* textureSlices.vsh */; };
-		B5E385531784DFB400E8C57D /* textureSlices.fsh in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854F178364A000E8C57D /* textureSlices.fsh */; };
 		B5E38555178B726B00E8C57D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5E38554178B726B00E8C57D /* Carbon.framework */; };
 /* End PBXBuildFile section */
 
@@ -332,8 +330,6 @@
 				B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */,
 				B5E3854C178256A100E8C57D /* Utils.cpp in Sources */,
 				B5E3854E1783564100E8C57D /* Slices.mm in Sources */,
-				B5E385521784DFA300E8C57D /* textureSlices.vsh in Sources */,
-				B5E385531784DFB400E8C57D /* textureSlices.fsh in Sources */,
 				924CCB6E1788F66F008566EC /* NiftiUtils.h in Sources */,
 				924DAB901789528D00922539 /* ActionProxy.mm in Sources */,
 				924DAB9117895D5100922539 /* ActionProxy.h in Sources */,

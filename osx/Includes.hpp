@@ -1,6 +1,7 @@
 #ifndef INCLUDE_OSX_INCLUDES_HPP
 #define INCLUDE_OSX_INCLUDES_HPP
 
+
 #ifdef __OBJC__
 
 #import <OpenGL/gl3.h>

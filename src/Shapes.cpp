@@ -224,7 +224,7 @@ namespace aluminum {
       double r,i,dr,di;
     };
 
-    int Nv = m.vertices().size();
+    int Nv = (unsigned int)m.vertices().size();
 
     //phi, theta?
     CSin P( M_PI/stacks); P.r = P.dr*radius; P.i = P.di*radius;
@@ -292,7 +292,7 @@ namespace aluminum {
     }
 
     // Add bottom ring and cap
-    int icap = m.vertices().size() + slices;
+    int icap = (unsigned int)m.vertices().size() + slices;
     for(int i=0; i<slices; ++i){
       V = vec3(T.r*P.i, T.i*P.i, P.r);
 
@@ -321,13 +321,13 @@ namespace aluminum {
     m.vertex(V);
     m.normal(N);
 
-    return m.vertices().size()-Nv;
+    return (unsigned int)m.vertices().size()-Nv;
   }
 
 
   int addWireBox(MeshData& m, float w, float h, float d){
 
-    int Nv = m.vertices().size();
+    size_t Nv = m.vertices().size();
 
     /*		6 7
 		4 5
@@ -348,12 +348,12 @@ namespace aluminum {
 
     //m.index(I, sizeof(I)/sizeof(*I), Nv);
     m.index(I, 24);
-    return m.vertices().size() - Nv;
+    return (unsigned int)(m.vertices().size() - Nv);
   }
 
 
   int addSurface(MeshData& m, int Nx, int Ny, float width, float height){
-    int Nv = m.vertices().size();
+    int Nv = (unsigned int)m.vertices().size();
 
     for(int j=0; j<Ny; ++j){ float y=(float(j)/(Ny-1) - 0.5f) * height;
       for(int i=0; i<Nx; ++i){ float x=(float(i)/(Nx-1) - 0.5f) * width;
