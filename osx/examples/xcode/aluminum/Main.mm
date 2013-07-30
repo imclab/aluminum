@@ -46,7 +46,7 @@ class Basic : public RendererOSX {
     virtual void onCreate() {
 
       // Load our shader program
-      loadProgram(program, "/Users/angus/Dropbox/XCodeProjects/aluminum/osx/examples/xcode/aluminum/resources/basic");
+      loadProgram(program, "/Users/angus.forbes/Dropbox/XCodeProjects/aluminum/osx/examples/xcode/aluminum/resources/basic");
 
       // Create a vertex array object
       glGenVertexArrays( 1, &vao );
