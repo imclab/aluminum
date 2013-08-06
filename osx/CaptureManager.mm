@@ -118,9 +118,6 @@ using std::string;
     
     
  // printf("processPixelBuffer IN\n");
-    glEnable(GL_TEXTURE_2D);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, abc.id());
     
     imageBuffer = CMSampleBufferGetImageBuffer(pixelBuffer);
     CVPixelBufferLockBaseAddress( imageBuffer, 0 );
@@ -134,6 +131,10 @@ using std::string;
     linebase = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
     printf("  pixel at 512 = %d\n", linebase[512]);
  
+    glEnable(GL_TEXTURE_2D);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, abc.id());
+    
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 10, 10, 0, GL_BGRA, GL_UNSIGNED_BYTE, linebase);
     
     
