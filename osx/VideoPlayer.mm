@@ -11,7 +11,7 @@ using std::chrono::nanoseconds;
 using std::chrono::milliseconds;
 using std::chrono::high_resolution_clock;
 
-//using namespace aluminum;
+using namespace aluminum;
 using std::string;
 
 

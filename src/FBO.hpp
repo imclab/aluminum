@@ -4,6 +4,10 @@
 //#include <string>
 //#include "Includes.hpp"
 #include "Texture.hpp"
+#ifdef BUILD_IOS
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#endif
 
 namespace aluminum {
 

@@ -11,7 +11,8 @@
 
 #endif
 
-
+#include <iostream>
+/*
 #include <cstdio>
 #include <stdio.h>
 #include <string.h>
@@ -44,3 +45,4 @@
 
 //#include "CocoaGL.h"
 //#include "RendererOSX.h"
+*/

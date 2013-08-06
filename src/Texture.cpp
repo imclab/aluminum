@@ -1,5 +1,8 @@
 #include "Texture.hpp"
-
+#ifdef BUILD_IOS
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#endif
 namespace aluminum {
   
   /*
@@ -86,6 +89,8 @@ namespace aluminum {
    }
    */
   
+  
+#ifndef BUILD_IOS
   // Just loads in data to a byte array.
   void Texture::loadTextureData(GLubyte* &data, int &w, int &h, std::string file) {
     
@@ -146,7 +151,11 @@ namespace aluminum {
         //converting single channel to rgba so shaders are the same...
         //prob should be in its own font loader class, not a general texture loading method
         printf("FIC_MINISBLACK\n");
+//#ifdef BUILD_IOS
+//        pixFormat = GL_LUMINANCE;
+//#elif
         pixFormat = GL_RED;
+//#endif
         //dib = FreeImage_ConvertTo32Bits(dib);
         //pixFormat = GL_RGBA;
         
@@ -211,6 +220,7 @@ namespace aluminum {
     // FreeImage_Unload(dib);
     return texture;
   }
+#endif
   
   
   //empty rgba texture...
@@ -265,7 +275,7 @@ namespace aluminum {
     create2D();
   }
   
-  
+#ifndef BUILD_IOS
   Texture::Texture(GLubyte* _data, int _w, int _h, int _d, GLint _internalFormat, GLenum _pixelFormat, GLenum _type) {
     
     data = _data;
@@ -283,7 +293,7 @@ namespace aluminum {
     
     create3D();
   }
-  
+#endif
   
   
   void Texture::flipBufferX(unsigned char* buffer, int _w, int _h) {
@@ -368,6 +378,7 @@ namespace aluminum {
     return *this;
   }
   
+  #ifndef BUILD_IOS
   Texture& Texture::create3D() {
     
     glEnable(kind());
@@ -394,6 +405,7 @@ namespace aluminum {
     
     return *this;
   }
+#endif
   
   Texture& Texture::bind (GLenum textureUnit) {
     glActiveTexture(textureUnit); //i.e GL_TEXTURE0, etc

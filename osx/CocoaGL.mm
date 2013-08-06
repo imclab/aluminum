@@ -6,6 +6,7 @@
 
 
 #import "Includes.hpp"
+#import "RendererOSX.h"
 
 //allegedly... test this out...
 //you can change the OpenGL graphics context at any time using the setOpenGLContext: method.
@@ -369,8 +370,8 @@ bool firstTime = true;
     printf("in drawView... bounds = %f,%f,%f,%f\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
     
     ((RendererOSX*)renderer)->view = self ;
-    ((RendererOSX*)renderer)->width =  (int)rect.size.width ;
-    ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
+    ((RendererOSX*)renderer)->width = (int)rect.size.width ;
+    ((RendererOSX*)renderer)->height = (int)rect.size.height ;
     
     //OSX seems to *require* a default VAO to do anything, even to load shaders... setting a default here (even though each mesh has its own)
     //really need to set a DEFAULT VAO, since unbinding a meshbuffer will nullify

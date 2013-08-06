@@ -6,15 +6,46 @@ namespace aluminum {
 
   void MeshBuffer::draw() {
 
-      glBindVertexArray( vao[0] ); {
+#ifdef BUILD_IOS
+    glBindVertexArrayOES( vao[0] );
+    {
       if (useIndices) {
-	glDrawElements(GL_TRIANGLES, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);
       } else {
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei) data.vertices().size() * 9 ); //double check this!
-	//printf("here...\n");
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) data.vertices().size() * 9 ); //double check this!
+        //printf("here...\n");
+      }
+    } glBindVertexArrayOES(0); {
+      if (useIndices) {
+        glDrawElements(GL_TRIANGLES, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);
+      } else {
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) data.vertices().size() * 9 ); //double check this!
+        //printf("here...\n");
+      }
+    } glBindVertexArrayOES(0);
+  
+#else
+    glBindVertexArray( vao[0] );
+    {
+      if (useIndices) {
+        glDrawElements(GL_TRIANGLES, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);
+      } else {
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) data.vertices().size() * 9 ); //double check this!
+        //printf("here...\n");
+      }
+    } glBindVertexArray(0); {
+      if (useIndices) {
+        glDrawElements(GL_TRIANGLES, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);
+      } else {
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) data.vertices().size() * 9 ); //double check this!
+        //printf("here...\n");
       }
     } glBindVertexArray(0);
-  }
+
+#endif
+
+}
+
 
   void MeshBuffer::checkAttributes(int p, int n, int tc, int c) {
     if (p < 0) {
@@ -50,8 +81,11 @@ namespace aluminum {
   MeshBuffer MeshBuffer::update(MeshData _data, int p, int n, int tc, int c) {
     data = _data;
 
-    glBindVertexArray( vao[0] ); {
-
+#ifdef BUILD_IOS
+    glBindVertexArrayOES( vao[0] ); {
+#else
+      glBindVertexArray( vao[0] ); {
+#endif
       checkAttributes(p, n, tc, c);
 
       //printf("vbo[0] = %d\n", vbo[0]);
@@ -74,15 +108,24 @@ namespace aluminum {
 	initIBO();
       }
 
-    } glBindVertexArray(0);
-
+    }
+    
+#ifdef BUILD_IOS
+      glBindVertexArrayOES(0);
+#else
+      glBindVertexArray(0);
+#endif
     return *this;
   }
 
   MeshBuffer MeshBuffer::init(MeshData _data, int p, int n, int tc, int c) {
   //MeshBuffer MeshBuffer::init(MeshData &_data, int p, int n, int tc, int c) {
 
+#ifdef BUILD_IOS
+    glGenVertexArraysOES( 1, vao );
+#else
     glGenVertexArrays( 1, vao );
+#endif
     glGenBuffers(4, vbo);
     glGenBuffers(1, ibo);
 

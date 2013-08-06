@@ -24,7 +24,12 @@
   
 namespace aluminum {
 
-using namespace std;
+//using namespace std;
+  using std::map;
+  using std::cout;
+  using std::istringstream;
+  using std::ifstream;
+  using std::pair;
 using glm::vec2;
 using glm::ivec2;
 using glm::ivec4;

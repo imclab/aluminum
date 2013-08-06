@@ -13,9 +13,9 @@
 #import <AVFoundation/AVAsset.h>
 
 
-//using namespace aluminum;
+using namespace aluminum;
 using std::string;
-using aluminum::Texture;
+//using aluminum::Texture;
 
 class aluminum::Texture;
 
@@ -39,7 +39,7 @@ class aluminum::Texture;
   //double currTime;
   bool isLooping;
   bool isLocked;
-  Texture* videoTexture;
+  aluminum::Texture* videoTexture;
   
 }
 

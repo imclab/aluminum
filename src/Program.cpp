@@ -1,5 +1,8 @@
 #include "Program.hpp"
-
+#ifdef BUILD_IOS
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#endif
 /*
 #include <stdio.h>
 #include <string.h>
@@ -104,13 +107,13 @@ namespace aluminum {
     //	printf("GL_ARB_geometry_shader4 defined\n");
     //#endif
 
-    if (s.type() == GL_GEOMETRY_SHADER) {
+   // if (s.type() == GL_GEOMETRY_SHADER) {
       /* agf	
 	 glProgramParameteri(id(),GL_GEOMETRY_INPUT_TYPE, mInPrim);
 	 glProgramParameteri(id(),GL_GEOMETRY_OUTPUT_TYPE, mOutPrim);
 	 glProgramParameteri(id(),GL_GEOMETRY_VERTICES_OUT,mOutVertices);
 	 */
-    }
+   // }
 
     const char* lg = s.log();
     if (lg != NULL) {
@@ -144,13 +147,15 @@ namespace aluminum {
 	  //	printf("GL_ARB_geometry_shader4 defined\n");
 	  //#endif
 
+      /* agf
 	  if (s.type() == GL_GEOMETRY_SHADER) {
-		  /* agf	
+		  	
 		     glProgramParameteri(id(),GL_GEOMETRY_INPUT_TYPE, mInPrim);
 		     glProgramParameteri(id(),GL_GEOMETRY_OUTPUT_TYPE, mOutPrim);
 		     glProgramParameteri(id(),GL_GEOMETRY_VERTICES_OUT,mOutVertices);
-		   */
+		   
 	  }
+       */
 
   const char* lg = s.log();
     if (lg != NULL) {

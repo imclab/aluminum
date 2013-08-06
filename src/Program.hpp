@@ -4,10 +4,13 @@
 //#include <string>
 //#include <map>
 #include "Includes.hpp"
-
+#ifdef BUILD_IOS
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#endif
 namespace aluminum{
 
-  using namespace std;
+  //using namespace std;
 
 
   class Shader {
@@ -85,8 +88,8 @@ namespace aluminum{
       unsigned int mOutVertices;
       void get(int pname, void * params) const;
 
-      map<string, GLint> uniforms;
-      map<string, GLint> attributes;
+    std::map<string, GLint> uniforms;
+    std::map<string, GLint> attributes;
 
 
   };

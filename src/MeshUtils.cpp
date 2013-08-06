@@ -5,6 +5,8 @@
 
 namespace aluminum {
 
+  #ifndef BUILD_IOS
+  
   using std::cout;
   using std::endl;
   using glm::to_string;
@@ -83,6 +85,7 @@ namespace aluminum {
 
   MeshUtils::Scene* MeshUtils :: importScene(const std::string& path) {
 
+
     static struct aiLogStream logStream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT,NULL);
     aiAttachLogStream(&logStream);
     //aiEnableVerboseLogging(true);
@@ -111,6 +114,7 @@ namespace aluminum {
     } else {
       return NULL;
     }
+
   }
 
 
@@ -543,6 +547,7 @@ namespace aluminum {
     return makeRectangle(2,2,flipHoriz,flipVert);
   }
 
+#endif
 
 
 }

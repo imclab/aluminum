@@ -1,5 +1,8 @@
 #include "FBO.hpp"
-
+#ifdef BUILD_IOS
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#endif
 namespace aluminum{
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,6 +15,8 @@ std::string convertInternalFormatToString(GLenum format)
     switch(format)
     {
       //Table 3.12: sized internal color formats
+#ifndef BUILD_IOS
+
       case GL_R8: formatName = "GL_R8"; break;
       case GL_R8_SNORM: formatName = "GL_R8_SNORM"; break;
       case GL_R16: formatName = "GL_R16"; break;
@@ -30,9 +35,8 @@ std::string convertInternalFormatToString(GLenum format)
       case GL_RGB16: formatName = "GL_RGB16"; break;
       case GL_RGB16_SNORM: formatName = "GL_RGB16_SNORM"; break;
       case GL_RGBA2: formatName = "GL_RGBA2"; break;
-      case GL_RGBA4: formatName = "GL_RGBA4"; break;
-      case GL_RGB5_A1: formatName = "GL_RGB5_A1"; break;
       case GL_RGBA8: formatName = "GL_RGBA8"; break;
+        
       case GL_RGBA8_SNORM: formatName = "GL_RGBA8_SNORM"; break;
       case GL_RGB10_A2: formatName = "GL_RGB10_A2"; break;
       case GL_RGBA12: formatName = "GL_RGBA12"; break;
@@ -52,6 +56,7 @@ std::string convertInternalFormatToString(GLenum format)
       case GL_RGB9_E5: formatName = "GL_RGB9_E5"; break;
       case GL_R8I: formatName = "GL_R8I"; break;
       case GL_R8UI: formatName = "GL_R8UI"; break;
+
       case GL_R16I: formatName = "GL_R16I"; break;
       case GL_R16UI: formatName = "GL_R16UI"; break;
       case GL_R32I: formatName = "GL_R32I"; break;
@@ -73,6 +78,9 @@ std::string convertInternalFormatToString(GLenum format)
       case GL_RGBA16UI: formatName = "GL_RGBA16UI"; break;
       case GL_RGBA32I: formatName = "GL_RGBA32I"; break;
       case GL_RGBA32UI: formatName = "GL_RGBA32UI"; break;
+
+      case GL_RGBA4: formatName = "GL_RGBA4"; break;
+      case GL_RGB5_A1: formatName = "GL_RGB5_A1"; break;
 	
       //Table 3.13: sized interal depth formats
       case GL_DEPTH_COMPONENT16: formatName = "GL_DEPTH_COMPONENT16"; break;
@@ -108,7 +116,7 @@ std::string convertInternalFormatToString(GLenum format)
       case GL_RGBA_INTEGER: formatName = "GL_RGBA_INTEGER"; break;
       case GL_BGR_INTEGER: formatName = "GL_BGR_INTEGER"; break;
       case GL_BGRA_INTEGER: formatName = "GL_BGRA_INTEGER"; break;
-
+#endif
       default: formatName = "Unknown Format"; break;
     }
 
@@ -121,6 +129,7 @@ std::string convertInternalFormatToString(GLenum format)
 ///////////////////////////////////////////////////////////////////////////////
 std::string getTextureParameters(GLuint id)
 {
+#ifndef BUILD_IOS
   if(glIsTexture(id) == GL_FALSE)
     return "Not texture object";
 
@@ -138,6 +147,9 @@ std::string getTextureParameters(GLuint id)
   ss << width << "x" << height << ", " << formatName << "(" << format << ")";
 
   return ss.str();
+#else 
+  return "not supported in IOS OpenGLES2.0";
+#endif
 }
 
 
@@ -170,6 +182,7 @@ std::string getRenderbufferParameters(GLuint id)
 
 void printFramebufferInfo()
 {
+#ifndef BUILD_IOS
     std::cout << "\n===== FBO STATUS =====\n";
 
     // print max # of colorbuffers supported by FBO
@@ -257,6 +270,7 @@ void printFramebufferInfo()
     }
 
     std::cout << std::endl;
+#endif
 }
 
 
@@ -269,11 +283,19 @@ FBO& FBO::create() {
   return *this;
 }
 
+#ifdef BUILD_IOS
 FBO& FBO::create(int w, int h) {
   glGenFramebuffers(1, &fboID);
-  return attach(Texture(w, h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), RBO(w, h, GL_DEPTH_COMPONENT24));
+  return attach(Texture(w, h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), RBO(w, h, GL_DEPTH_COMPONENT));
 }
-
+#else
+  FBO& FBO::create(int w, int h) {
+    glGenFramebuffers(1, &fboID);
+    return attach(Texture(w, h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), RBO(w, h, GL_DEPTH_COMPONENT24));
+  }
+  
+#endif
+  
 FBO& FBO::create(Texture t) {
   glGenFramebuffers(1, &fboID);
   return attach(t);
@@ -294,6 +316,35 @@ FBO& FBO::replace(Texture t, RBO rb) {
 
 FBO& FBO::attach(Texture t, RBO rb) {
 
+#ifdef BUILD_IOS
+  
+  texture = t;
+  rbo = rb;
+  width = texture.width;
+  height = texture.height;
+  
+  //1. bind FBO
+  glBindFramebuffer(GL_FRAMEBUFFER, fboID); {
+    
+    //2. attach texture (as color attachment) to fbo
+    texture.bind(); {
+      glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER_APPLE, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
+    } texture.unbind();
+    
+    //3. attach renderbuffer (as depth attachment) to fbo
+    rb.bind(); {
+      glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER_APPLE, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb.id());
+    } rb.unbind();
+    
+    checkStatus();
+    
+    //4. unbind FBO
+  } glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  
+  return *this;
+#else
+  
+  
   texture = t;
   rbo = rb;
   width = texture.width;
@@ -318,6 +369,7 @@ FBO& FBO::attach(Texture t, RBO rb) {
   } glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   return *this;
+#endif
 }
 
 
@@ -326,6 +378,7 @@ FBO& FBO::replace(Texture t) {
   return attach(t);
 }
 
+#ifdef BUILD_IOS
 FBO& FBO::attach(Texture t) {
 
   texture = t;
@@ -337,7 +390,7 @@ FBO& FBO::attach(Texture t) {
 
     //2. attach texture (as color attachment) to fbo 
     texture.bind(); {
-      glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
+      glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER_APPLE, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
     } texture.unbind();
 
     checkStatus();
@@ -347,8 +400,31 @@ FBO& FBO::attach(Texture t) {
 
   return *this;
 }
+#else 
+  FBO& FBO::attach(Texture t) {
+    
+    texture = t;
+    width = texture.width;
+    height = texture.height;
+    
+    //1. bind FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, fboID); {
+      
+      //2. attach texture (as color attachment) to fbo
+      texture.bind(); {
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
+      } texture.unbind();
+      
+      checkStatus();
+      
+      //3. unbind FBO
+    } glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    return *this;
+  }
+#endif
 
-void FBO::checkStatus() {
+  void FBO::checkStatus() {
   /* assumes that the FBO is bound */  
 
   //printFramebufferInfo();

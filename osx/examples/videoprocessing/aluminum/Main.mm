@@ -15,6 +15,9 @@
 
 using namespace aluminum;
 using std::string;
+using std::cout;
+using std::endl;
+
 
 class SMC : public RendererOSX {
     

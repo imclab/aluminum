@@ -4,7 +4,7 @@
 //#import "RendererOSX.h"
 #import <chrono>
 #import <iostream>
-
+#include "Texture.hpp"
 //#import "VideoPlayer.h"
 
 using std::cout;
@@ -12,7 +12,8 @@ using std::chrono::duration_cast;
 using std::chrono::nanoseconds;
 using std::chrono::milliseconds;
 using std::chrono::high_resolution_clock;
-
+using std::string;
+//using aluminum::Texture;
 
 RendererOSX::RendererOSX() { 
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -56,6 +57,10 @@ CocoaGL* RendererOSX::makeGLView(int w, int h) {
   
   return view;
 }
+
+
+
+
 
 
 long RendererOSX::nowPlusMillis(long millis) {
@@ -155,16 +160,6 @@ void RendererOSX::mouseMoved(int px, int py) {
     isMoving = true;
 }
 
-/*
-void RendererOSX::keyDown(char key, bool shift, bool control, bool command, bool option, bool function) {
-  //printf("keyDown not handled\n");
-}
-
-void RendererOSX::keyUp(char key, bool shift, bool control, bool command, bool option, bool function) {
-    //printf("keyDown not handled\n");
-}
-*/
-
 void RendererOSX::handleMouse() { }
 void RendererOSX::handleKeys() {
     /*
@@ -187,7 +182,7 @@ void RendererOSX::keyUp(char key) {
 }
 
 void RendererOSX::initializeKeyArrays() {
-    for (int i = 0; i < 256; i++ ) {
+    for (int i = 0; i < 256; i++) {
         keysDown[i] = false;
         keysUp[i] = false;
     }
@@ -202,6 +197,8 @@ void RendererOSX::initializeMouseInfo() {
     previousMouseX = 0;
     previousMouseY = 0;
 }
+
+
 
 
 

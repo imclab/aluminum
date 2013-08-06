@@ -23,7 +23,7 @@ class Slices : public RendererOSX {
 public:
   bool USE_STEREO = false;
   string RESOURCES = (string)[NSHomeDirectory() UTF8String] + "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/";
-  int numSlices = 10;
+  int numSlices = 100;
   
   Camera camera;
   

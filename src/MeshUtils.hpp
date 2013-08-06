@@ -55,7 +55,8 @@
 
 namespace aluminum {
 
- 
+#ifndef BUILD_IOS
+  
 using glm::to_string;
 using glm::vec2;
 using glm::vec3;
@@ -124,7 +125,7 @@ using glm::mat4;
       static MeshBuffer loadMesh(const std::string& path, int pL, int nL, int tL, int cL);
 
   };
-
+#endif
 }
 
 #endif

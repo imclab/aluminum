@@ -2,6 +2,10 @@
 #define INCLUDE_OSX_INCLUDES_HPP
 
 
+#include "CocoaGL.h"
+#include "RendererOSX.h"
+
+
 #ifdef __OBJC__
 
 #import <OpenGL/gl3.h>
@@ -40,9 +44,6 @@
 #include "assimp/matrix4x4.h"
 
 #include "FreeImage.h"
-
-#include "CocoaGL.h"
-#include "RendererOSX.h"
 
 
 //if these become the more stable, it might make sense to uncomment these so that they are also precomipled. 

@@ -3,10 +3,28 @@
 #ifndef ALLOCORE_RENDERER_OSX
 #define ALLOCORE_RENDERER_OSX
 
-#import "Includes.hpp"
+#include "Includes.hpp"
+#include <iostream>
+
+
 #import "CocoaGL.h"
+#include "Includes.hpp"
+#import "Texture.hpp"
+
+#import <AVFoundation/AVFoundation.h>
+#import <AVFoundation/AVAsset.h>
+
 //#import <string>
 //class CocoaGL;
+//class Texture;
+//using Texture;
+
+using std::string;
+//using aluminum::Texture;
+//using namespace aluminum;
+
+//class Texture;
+
 
 class RendererOSX {
   
@@ -19,12 +37,16 @@ public:
   int start(std::string _name, int x, int y, int w, int h);
   CocoaGL* makeGLView(int w, int h); //for putting the GL view in a more complicated app with multiple views, etc
   
+  //GLubyte* texture2D(const string &fname);
+  
   
   void toggleFullScreen();
   
   virtual void onCreate();
   virtual void onFrame();
   virtual void onReshape();
+  
+  
   
   
   int width;
@@ -74,6 +96,7 @@ public:
   CocoaGL* view;
   
 };
+
 
 
 
