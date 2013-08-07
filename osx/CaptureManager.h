@@ -1,24 +1,5 @@
-//
-//  CaptureManager.h
-//  aluminum
-//
-//  Created by Angus Forbes on 8/4/13.
-//  Copyright (c) 2013 Angus Forbes. All rights reserved.
-//
-
-
 #import "CocoaGL.h"
 #import "Includes.hpp"
-#import "Texture.hpp"
-
-#import <AVFoundation/AVFoundation.h>
-#import <AVFoundation/AVAsset.h>
-
-#import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
-#import <CoreMedia/CoreMedia.h>
-#import <CoreVideo/CoreVideo.h>
-#import <QuartzCore/QuartzCore.h>
 
 using namespace aluminum;
 
@@ -33,17 +14,27 @@ using namespace aluminum;
     Texture captureTexture;
     bool isLocked;
     bool newFrame;
+   bool firstTime;
+  bool textureReady;
+  
+  int tw;
+  int th;
 }
 
 @property Texture captureTexture;
 @property bool newFrame;
+@property bool isReady;
+@property bool textureReady;
 @property unsigned char *ptrToImageBuffer;
 
 - (id) init;
 - (void) startCapture;
 - (void) stopCapture;
+- (void) toggleCapture;
 - (bool) isCapturing;
-- (bool) checkForNewFrame;
-- (bool) checkForNewBytes;
+- (void) setTextureDimensions;
+
+- (bool) nextFrame;
+- (bool) updateTextureWithNextFrame;
 
 @end

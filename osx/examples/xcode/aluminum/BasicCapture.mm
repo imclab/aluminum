@@ -23,7 +23,7 @@ public:
   
   Program program;
   
-  int div = 10;
+  int div = 20;
   int numPts;
   vec3* vs;
   vec4* cs;
@@ -38,6 +38,7 @@ public:
   
   MeshData md;
   MeshBuffer mb1;
+  bool bufferReady = false;
   
   CaptureManager* cm;
   Texture safeTexture;
@@ -67,10 +68,30 @@ public:
   
   virtual void onCreate() {
     
-    //test video capture
+    loadProgram(program, "basic_s");
+    
     cm = [[CaptureManager alloc] init];
     [cm startCapture];
     
+    
+    
+    
+    proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+    view = glm::lookAt(vec3(0.0,0.0,3), vec3(0,0,0), vec3(0,1,0) );
+    
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_DEPTH_TEST);
+    glViewport(0, 0, width, height);
+    glClearColor(1,1,1,1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    
+  }
+  
+  void initMeshData() {
     
     numPts = ((cm.captureTexture.width * cm.captureTexture.height) / div) * 2;
     vs = new vec3[numPts];
@@ -80,139 +101,102 @@ public:
       indices[i] = i;
     }
     
-    
-    loadProgram(program, "basic_s");
-    
-    
     md.vertex(vs, numPts);
     md.color(cs, numPts);
     md.index(indices, numPts);
     
     mb1.init(md, posLoc, -1, -1, colLoc);
-    
-    
-    
-    proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-    view = glm::lookAt(vec3(0.0,0.0,3), vec3(0,0,0), vec3(0,1,0) );
-    
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, width, height);
-    glClearColor(0.3,0.3,0.3,1.0);
   }
   
-  void toggleCapture() {
+  void processFrame() {
     
-    if (frameCount % 500 == 0 && frameCount > 0) {
-      if ([cm isCapturing]) {
-        printf("is capturing = true!\n");
-        [cm stopCapture];
-      } else {
-        printf("is capturing = false!\n");
-        [cm startCapture];
+    if (bufferReady == false) {
+      initMeshData();
+      bufferReady = true;
+    }
+    
+    //printf("in processFrame\n");
+    int bw = cm.captureTexture.width;
+    int bh = cm.captureTexture.height;
+    //printf("bw bh = %d %d\n", cm.captureTexture.width, cm.captureTexture.height);
+    float sx = 1;
+    float sy = 1;
+    float xinc = 2.0/bw;
+    float yinc = 2.0/bh;
+    
+    int bufferIdx = 0;
+    int idx = 0;
+    for (int i = 0; i < bh; i+=div) {
+      for (int j = 0; j < bw; j+=div) {
+        //  printf("i j = %d %d\n", i, j);
+        if (bufferIdx < numPts) {
+          idx = (i * bw * 4) + (j * 4);
+          
+          //   printf("c/r = %d/%d : bi = %d, idx = %d : %f %f %f\n", j, i, bufferIdx, idx, cm.ptrToImageBuffer[idx+1]/255.0, cm.ptrToImageBuffer[idx+1]/255.0, cm.ptrToImageBuffer[idx+1]/255.0);
+          
+          float r = cm.ptrToImageBuffer[idx+2]/255.0;
+          float g = cm.ptrToImageBuffer[idx+1]/255.0;
+          float b = cm.ptrToImageBuffer[idx+0]/255.0;
+          cs[bufferIdx] = vec4(r, g, b, 0.5);
+          cs[bufferIdx+1] = vec4(r, g, b, 0.5);
+          
+          //    printf(" r g b %f %f %f\n",r, g, b);
+          
+          float perc = (r+g+b) / (3.0);
+          float ang = perc * (M_PI * 2);
+          float mag = perc * 0.3;
+          
+          // printf("perc ang mag %f,  %f %f \n", perc, ang, mag);
+          
+          float xp = cos(ang) * mag;
+          float yp = sin(ang) * mag;
+          
+          // printf("xp yp %f %f \n", xp, yp);
+          
+          vs[bufferIdx] =   vec3(sx - xinc*j - xp, sy - yinc*i - yp, 0.0);
+          vs[bufferIdx+1] = vec3(sx - xinc*j + xp, sy - yinc*i + yp, 0.0);
+          
+          bufferIdx += 2;
+        }
+        
       }
     }
+    
+    md.vertices().clear();
+    md.vertex(vs, numPts);
+    md.colors().clear();
+    md.color(cs, numPts);
+    
+    mb1.update(md);
   }
   
   virtual void onFrame(){
     
-    //  if (1 == 1) return;
     handleKeys();
     handleMouse();
     
-    
-    if ([cm checkForNewBytes]) {
-      
-      int bw = cm.captureTexture.width;
-      int bh = cm.captureTexture.height;
-      
-      float sx = 1;
-      float sy = 1;
-      float xinc = 2.0/bw;
-      float yinc = 2.0/bh;
-      
-      int bufferIdx = 0;
-      int idx = 0;
-      for (int i = 0; i < bh; i+=div) {
-        for (int j = 0; j < bw; j+=div) {
-          
-          if (bufferIdx < numPts) {
-            idx = (i * bw * 4) + (j * 4);
-            
-            //printf("c/r = %d/%d : bi = %d, idx = %d : %f %f %f\n", j, i, bufferIdx, idx, cm.ptrToImageBuffer[idx+1]/255.0, cm.ptrToImageBuffer[idx+1]/255.0, cm.ptrToImageBuffer[idx+1]/255.0);
-            
-            float r = cm.ptrToImageBuffer[idx+2]/255.0;
-            float g = cm.ptrToImageBuffer[idx+1]/255.0;
-            float b = cm.ptrToImageBuffer[idx+0]/255.0;
-            cs[bufferIdx] = vec4(r, g, b, 0.4);
-            cs[bufferIdx+1] = vec4(r, g, b, 0.4);
-            
-            //printf(" r g b %f %f %f\n",r, g, b);
-            
-            float perc = (r+g+b) / (3.0);
-            float ang = perc * (M_PI * 2);
-            float mag = perc * 0.3;
-            
-            // printf("perc ang mag %f,  %f %f \n", perc, ang, mag);
-            
-            
-            float xp = cos(ang) * mag;
-            float yp = sin(ang) * mag;
-            
-            // printf("xp yp %f %f \n", xp, yp);
-            
-            vs[bufferIdx] =   vec3(sx - xinc*j - xp, sy - yinc*i - yp, 0.0);
-            vs[bufferIdx+1] = vec3(sx - xinc*j + xp, sy - yinc*i + yp, 0.0);
-            
-            bufferIdx += 2;
-          }
-          
-        }
-      }
-   
-      md.vertices().clear();
-      md.vertex(vs, numPts);
-      md.colors().clear();
-      md.color(cs, numPts);
-      
-      mb1.update(md);
-    }
-    
-    
-    // Clear viewport
-    glClearColor(1.0,1.0,1.0,1.0);
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    
+    if (frameCount % 200 == 0 && frameCount > 0) {
+      //[cm toggleCapture];
+    }
+    
+    if ([cm nextFrame]) {
+      processFrame();
+    }
     
     program.bind(); {
       
       glUniformMatrix4fv(program.uniform("mv"), 1, 0, ptr(view));
       glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
       
+      //  mb1.draw();
       mb1.drawLines();
-      //   mb1.draw();
       
-      /*
-       glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
-       glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
-       glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
-       
-       glUniform1i(program.uniform("tex0"), 0);
-       
-       if ([cm checkForNewBytes]) {
-       //loop through bytes and draw lines
-       
-       }
-       
-       
-       cm.captureTexture.bind(GL_TEXTURE0); {
-       mb1.drawLines();
-       } cm.captureTexture.unbind(GL_TEXTURE0);
-       */
     } program.unbind();
     
-    
-    //printf("frameCount = %d\n", frameCount);
     
   }
   
@@ -256,5 +240,5 @@ public:
 };
 
 int main(){
-  return CaptureEx().start("aluminum::TextureEx", 100, 100, 400, 300);
+  return CaptureEx().start("aluminum::TextureEx", 100, 100, 800, 600);
 }

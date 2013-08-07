@@ -1,48 +1,30 @@
 
 #import "CaptureManager.h"
-#include "Includes.hpp"
-#include "VideoPlayer.h"
-#import <chrono>
-#import <iostream>
-#import "Texture.hpp"
-
-
-#import "CocoaGL.h"
-#import "Includes.hpp"
-#import "Texture.hpp"
-
-
-
-#import <AVFoundation/AVFoundation.h>
-#import <AVFoundation/AVAsset.h>
-
-#import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
-#import <CoreMedia/CoreMedia.h>
-#import <CoreVideo/CoreVideo.h>
-#import <QuartzCore/QuartzCore.h>
-
-#import "ResourceHandler.h"
-
-using namespace aluminum;
-using std::string;
-
 
 @implementation CaptureManager
 
 @synthesize captureTexture;
 @synthesize newFrame;
 @synthesize ptrToImageBuffer;
+@synthesize isReady;
+@synthesize textureReady;
 
 - (id) init {
   if ( self = [super init] ) {
+    
     printf("in CaptureManager constructor\n");
+    
     isLocked = false;
     newFrame = false;
-    
+    isReady = false;
+    firstTime = true;
+    textureReady = false;
+
     session = [[AVCaptureSession alloc] init];
     [session beginConfiguration];
-    [session setSessionPreset:AVCaptureSessionPresetHigh];
+    //[session setSessionPreset:AVCaptureSessionPresetHigh];
+    
+    [session setSessionPreset:AVCaptureSessionPreset640x480];
     
     //get input webcam
     AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -65,14 +47,6 @@ using std::string;
     [session commitConfiguration];
     
     //Now that the session's configuration is committed, we are able to get the resolution of the webcam.
-    AVCaptureInputPort *port = [input.ports objectAtIndex:0];
-    CMFormatDescriptionRef formatDescription = port.formatDescription;
-    CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription);
-    int tw = dimensions.width;
-    int th = dimensions.height;
-    
-    //create the texture to hold the frames from the highest-resolution setting on the webcam
-    captureTexture = Texture(tw, th, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
     
   }
   
@@ -90,12 +64,23 @@ using std::string;
 
 - (void)startCapture {
   [session startRunning];
-  
+  newFrame = false;
 }
 
+- (void) toggleCapture {
+  if ([self isCapturing]) {
+    [self stopCapture];
+  } else {
+    [self startCapture];
+  }
+}
 
-
-- (bool) checkForNewBytes {
+- (bool) nextFrame {
+  
+  if (!firstTime && !textureReady) {
+    captureTexture = Texture(tw, th, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+    textureReady = true;
+  }
   
   if ([self isCapturing] && newFrame == true) {
     newFrame = false;
@@ -105,10 +90,9 @@ using std::string;
   return false;
 }
 
-
-- (bool) checkForNewFrame {
+- (bool) updateTextureWithNextFrame {
   
-  if ([self isCapturing] && newFrame == true) {
+  if (isReady && [self isCapturing] && newFrame == true) {
     captureTexture.bind(GL_TEXTURE0); {
       
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, captureTexture.width, captureTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
@@ -119,24 +103,38 @@ using std::string;
   }
   
   return false;
+}
+
+-(void) setTextureDimensions {
+  AVCaptureInputPort *port = [input.ports objectAtIndex:0];
+  CMFormatDescriptionRef formatDescription = port.formatDescription;
+  CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription);
+  tw = dimensions.width;
+  th = dimensions.height;
   
 }
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
   
-  if (newFrame == true) {
-    printf("can't accept a new frame while old one is being processed\n");
-  } else {
+  //printf("*** in captureOutput\n");
+  
+  if (firstTime) {
+    [self setTextureDimensions];
+    firstTime = false;
+    
+    //printf("*** captureOutput : firstTime = false\n");
+ }
+  
+  if (!newFrame) {
     
     imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CVPixelBufferLockBaseAddress( imageBuffer, 0 );
-    
-    ptrToImageBuffer = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
-    
-    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    CVPixelBufferLockBaseAddress( imageBuffer, 0 ); {
+      ptrToImageBuffer = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
+    } CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
     
     newFrame = true;
   }
+
 }
 
 @end

@@ -16,6 +16,9 @@
 - (void) drawView;
 
 
+
+
+
 @end
 
 @implementation CocoaGL
@@ -173,10 +176,11 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
   NSOpenGLPixelFormatAttribute attrs[] = {
     NSOpenGLPFADoubleBuffer,
     NSOpenGLPFADepthSize, 32,
-    NSOpenGLPFAOpenGLProfile,
-    NSOpenGLProfileVersion3_2Core, //NSOpenGLProfileVersionLegacy,
-    //NSOpenGLPFAColorFloat,
-    //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
+    NSOpenGLPFAAlphaSize, 8,
+    NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+      //NSOpenGLProfileVersionLegacy,
+      //NSOpenGLPFAColorFloat,
+      //NSOpenGLPFAStereo, // ... etc there are a lot of interesting ones....
     0
   };
   
@@ -293,6 +297,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 
 - (void) initGL
 {
+  firstTime = true;
   // Make this openGL context current to the thread
   // (i.e. all openGL on this thread calls will go to this context)
   [[self openGLContext] makeCurrentContext];
@@ -315,12 +320,8 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 }
 
 
-bool firstTime = true;
 
-
-
-- (void) reshape
-{
+- (void) reshape {
   
   [super reshape];
   
@@ -343,6 +344,10 @@ bool firstTime = true;
   ((RendererOSX*)renderer)->height =  (int)rect.size.height ;
   */
   
+  glViewport(0, 0, ((RendererOSX*)renderer)->width, ((RendererOSX*)renderer)->height);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  
+  
   if (!firstTime) {
     ((RendererOSX*)renderer)->onReshape();
   }
@@ -350,8 +355,7 @@ bool firstTime = true;
   CGLUnlockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
 }
 
-- (void) drawView
-{
+- (void) drawView {
   [[self openGLContext] makeCurrentContext];
   
   // We draw on a secondary thread through the display link
@@ -393,8 +397,8 @@ bool firstTime = true;
     
   ((RendererOSX*)renderer)->onFrame();
   ((RendererOSX*)renderer)->frameCount++;
-
-    //glFlush();
+ 
+  //  glFlush();
   
  // [[self openGLContext] flushBuffer];
   //CGLFlushDrawable((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
@@ -402,6 +406,8 @@ bool firstTime = true;
   
   CGLFlushDrawable((CGLContextObj)[[self openGLContext] CGLContextObj]);
   CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
+  
+ 
 }
 
 - (void) printView {
