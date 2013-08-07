@@ -79,7 +79,7 @@ namespace aluminum {
   
   void MeshBuffer::checkAttributes(int p, int n, int tc, int c) {
     if (p < 0) {
-      printf("error : must have a vertex location...\n");
+      printf("error : in MeshBuffer::checkAttributes. The mesh must have vertex locations!\n");
       exit(0);
     }
     
@@ -88,6 +88,7 @@ namespace aluminum {
     useColors = (c >= 0) ? true : false;
   }
   
+  //using this template to pass in either a vector of vec3s or vec4s
   template<class T> void MeshBuffer::initVBO(GLuint vboID, int loc, int size, T b) {
     
     glBindBuffer( GL_ARRAY_BUFFER, vboID );
@@ -143,7 +144,6 @@ namespace aluminum {
         }
         
         if (data.indices().size() > 0) {
-          //printf("initting ibo\n");
           initIBO();
         }
         

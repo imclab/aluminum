@@ -39,45 +39,41 @@ using std::string;
     printf("in CaptureManager constructor\n");
     isLocked = false;
     newFrame = false;
-  
-      
     
-      
-      NSError * error;
-      session = [[AVCaptureSession alloc] init];
-      [session beginConfiguration];
-      //[session setSessionPreset:AVCaptureSessionPreset1280x720];
-      [session setSessionPreset:AVCaptureSessionPreset640x480];
+    session = [[AVCaptureSession alloc] init];
+    [session beginConfiguration];
+    [session setSessionPreset:AVCaptureSessionPresetHigh];
     
+    //get input webcam
+    AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    NSError * error;
+    input = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
+    [session addInput:input];
     
-     // captureTexture = Texture(1280, 720, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
-      captureTexture = Texture(640, 480, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+    //create the output pipe
+    AVCaptureVideoDataOutput* dataOutput = [[AVCaptureVideoDataOutput alloc] init];
+    [dataOutput setAlwaysDiscardsLateVideoFrames:YES];
+    [dataOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+    [session addOutput:dataOutput];
     
+    //conntect the output to a callback method to process the frames
+    dispatch_queue_t videoCaptureQueue = dispatch_queue_create("com.example.subsystem.XYZ", NULL);
+    [dataOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
+    dispatch_release(videoCaptureQueue);
     
-      AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-      input = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
-      //input = [[AVCaptureDeviceInput alloc] initWithDevice:videoDevice error:&error];
-      
-      [session addInput:input];
-      
-      
-      AVCaptureVideoDataOutput* dataOutput = [[AVCaptureVideoDataOutput alloc] init];
-      [dataOutput setAlwaysDiscardsLateVideoFrames:YES];
-      [dataOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-      
-      
-      //it doesn't seem to matter which queue i use...
-      
-      //  dispatch_queue_s* dq = dispatch_get_main_queue();
-      //  [dataOutput setSampleBufferDelegate:self queue:dq];
-      //  dispatch_release(dq);
-      
-      dispatch_queue_t videoCaptureQueue = dispatch_queue_create("com.example.subsystem.XYZ", NULL);
-      [dataOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
-      dispatch_release(videoCaptureQueue);
-      
-      [session addOutput:dataOutput];
-      [session commitConfiguration];
+    //signal that the input and output are connected
+    [session commitConfiguration];
+    
+    //Now that the session's configuration is committed, we are able to get the resolution of the webcam.
+    AVCaptureInputPort *port = [input.ports objectAtIndex:0];
+    CMFormatDescriptionRef formatDescription = port.formatDescription;
+    CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription);
+    int tw = dimensions.width;
+    int th = dimensions.height;
+    
+    //create the texture to hold the frames from the highest-resolution setting on the webcam
+    captureTexture = Texture(tw, th, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+    
   }
   
   return self;
@@ -85,11 +81,11 @@ using std::string;
 
 
 - (bool) isCapturing {
-    return [session isRunning];
+  return [session isRunning];
 }
 
 - (void) stopCapture {
-    [session stopRunning];
+  [session stopRunning];
 }
 
 - (void)startCapture {
@@ -100,31 +96,30 @@ using std::string;
 
 
 - (bool) checkForNewBytes {
-    
-    if ([self isCapturing] && newFrame == true) {
-        newFrame = false;
-        return true;
-    }
-    
-    return false;
+  
+  if ([self isCapturing] && newFrame == true) {
+    newFrame = false;
+    return true;
+  }
+  
+  return false;
 }
 
 
 - (bool) checkForNewFrame {
   
   if ([self isCapturing] && newFrame == true) {
-      captureTexture.bind(GL_TEXTURE0); {
-          
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
- //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1280, 720, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
-      } captureTexture.unbind(GL_TEXTURE0);
-              
-          newFrame = false;
-      return true;
-  }
+    captureTexture.bind(GL_TEXTURE0); {
+      
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, captureTexture.width, captureTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
+    } captureTexture.unbind(GL_TEXTURE0);
     
-    return false;
-
+    newFrame = false;
+    return true;
+  }
+  
+  return false;
+  
 }
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {

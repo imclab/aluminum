@@ -46,9 +46,4 @@ using namespace aluminum;
 - (bool) checkForNewFrame;
 - (bool) checkForNewBytes;
 
-//- (void)startCapture:(Texture*)tex;
-- (void)processPixelBuffer:(CMSampleBufferRef)pixelBuffer;
-
-
-
 @end
