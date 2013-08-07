@@ -41,15 +41,19 @@ using std::string;
     newFrame = false;
   
       
-      captureTexture = Texture(1280, 720, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
-      
+    
       
       NSError * error;
       session = [[AVCaptureSession alloc] init];
       [session beginConfiguration];
-      [session setSessionPreset:AVCaptureSessionPreset1280x720];
-      //[session setSessionPreset:AVCaptureSessionPreset640x480];
-      
+      //[session setSessionPreset:AVCaptureSessionPreset1280x720];
+      [session setSessionPreset:AVCaptureSessionPreset640x480];
+    
+    
+     // captureTexture = Texture(1280, 720, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+      captureTexture = Texture(640, 480, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+    
+    
       AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
       input = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
       //input = [[AVCaptureDeviceInput alloc] initWithDevice:videoDevice error:&error];
@@ -111,8 +115,8 @@ using std::string;
   if ([self isCapturing] && newFrame == true) {
       captureTexture.bind(GL_TEXTURE0); {
           
- //   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1280, 720, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
+ //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1280, 720, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
       } captureTexture.unbind(GL_TEXTURE0);
               
           newFrame = false;

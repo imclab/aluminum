@@ -36,17 +36,19 @@ namespace aluminum {
   class MeshData {
   public:
     
+    /*
     typedef vec3 Vertex;
     typedef vec3 Normal;
     typedef vec4 Color;
     typedef vec3 TexCoord;
     typedef unsigned int Index;
     
-    typedef vector<Vertex> Vertices;
-    typedef vector<Normal> Normals;
-    typedef vector<Color>	Colors;
-    typedef vector<TexCoord> TexCoords;
-    typedef vector<Index>	Indices;
+    typedef vector<vec3> Vertices;
+    typedef vector<vec3> Normals;
+    typedef vector<vec4>	Colors;
+    typedef vector<vec3> TexCoords;
+    typedef vector<unsigned int> Indices;
+    */
     
     /*
      MeshData(const MeshData& cpy) :
@@ -74,7 +76,7 @@ namespace aluminum {
     
     void getBounds(vec3& min, vec3& max) const;
     
-    Vertex getCenter() const;
+    vec3 getCenter() const;
     
     void addMesh(MeshData& m2); //agf
     
@@ -117,11 +119,11 @@ namespace aluminum {
     /// Invert direction of normals
     void invertNormals();
     
-    const vector<Vertex>& vertices() const { return mVertices; }
-    const vector<Normal>& normals() const { return mNormals; }
-    const vector<Color>& colors() const { return mColors; }
-    const vector<TexCoord>& texCoords() const { return mTexCoords; }
-    const vector<Index>& indices() const { return mIndices; }
+    const vector<vec3>& vertices() const { return mVertices; }
+    const vector<vec3>& normals() const { return mNormals; }
+    const vector<vec4>& colors() const { return mColors; }
+    const vector<vec3>& texCoords() const { return mTexCoords; }
+    const vector<unsigned int>& indices() const { return mIndices; }
     
     void index(unsigned int i){ indices().push_back(i); }
     void index(const unsigned int* buf, int size){
@@ -130,41 +132,47 @@ namespace aluminum {
       }
     }
     
-    void color(float r, float g, float b, float a=1){ color(Color(r,g,b,a)); }
-    //void color(const vec4& v) {
-    //    color(v[0], v[1], v[2], v[3]);
-   // }
-      void color(const Color& v) { colors().push_back(v); }
-      
-      void color(const vec4 *buf, int size){
+    void color(float r, float g, float b, float a=1.0){
+      color(vec4(r,g,b,a));
+    }
+    void color(const vec4& v) {
+      colors().push_back(v);
+    }
+    void color(const vec4 *buf, int size){
           for(int i=0; i<size; ++i) {
              color(buf[i][0], buf[i][1], buf[i][2], buf[i][3]);
           }
       }
       
       
-    void normal(float x, float y, float z=0){ normal(Normal(x,y,z)); }
-    void normal(const Normal& v) { normals().push_back(v); }
+    void normal(float x, float y, float z=0.0){
+      normal(vec3(x,y,z));
+    }
+    void normal(const vec3& v) {
+      normals().push_back(v);
+    }
     void normal(const vec3 *buf, int size){
-      for(int i=0; i<size; ++i) normal(buf[i][0], buf[i][1], buf[i][2]);
+      for(int i=0; i<size; ++i) {
+        normal(buf[i][0], buf[i][1], buf[i][2]);
+      }
     }
     
-    void texCoord(float u, float v, float w){ texCoord(TexCoord(u,v,w)); }
-    void texCoord(float u, float v){ texCoord(TexCoord(u,v,0.0)); }
-    void texCoord(const TexCoord& v){ texCoords().push_back(v); }
+    void texCoord(float u, float v, float w=0.0){ texCoord(vec3(u,v,w)); }
+    void texCoord(const vec3& v){
+      texCoords().push_back(v);
+    }
     void texCoord(const vec3 *buf, int size){
-      for(int i=0; i<size; ++i) texCoord(buf[i][0], buf[i][1], buf[i][2]);
+      for(int i=0; i<size; ++i) {
+        texCoord(buf[i][0], buf[i][1], buf[i][2]);}
     }
     
-    void vertex(float x, float y, float z=0){ vertex(Vertex(x,y,z)); }
-    void vertex(const Vertex& v){ vertices().push_back(v); }
-    
-    //this code is problematic...
-    // void vertex(const vec3 buf[], int size){
-    //	for(int i=0; i<size; ++i) vertex(buf[i][0], buf[i][1], buf[i][2]);
-    // }
-    
-    void vertex(const vec3 *buf, int size){
+    void vertex(float x, float y, float z=0.0){
+      vertex(vec3(x,y,z));
+    }
+    void vertex(const vec3& v){
+      vertices().push_back(v);
+    }
+    void vertex(const vec3 *buf, int size) {
         for(int i=0; i<size; ++i) {
             vertex(buf[i][0], buf[i][1], buf[i][2]);
         }
@@ -178,21 +186,21 @@ namespace aluminum {
     /// Get indices as quads
     //	QuadFace& indexAsQuad(){ return (QuadFace*) indices(); }
     
-    Vertices& vertices(){ return mVertices; }
-    Normals& normals(){ return mNormals; }
-    Colors& colors(){ return mColors; }
-    TexCoords& texCoords(){ return mTexCoords; }
-    Indices& indices(){ return mIndices; }
+    vector<vec3>& vertices(){ return mVertices; }
+    vector<vec3>& normals(){ return mNormals; }
+    vector<vec4>& colors(){ return mColors; }
+    vector<vec3>& texCoords(){ return mTexCoords; }
+    vector<unsigned int>& indices(){ return mIndices; }
     
     //GLint id() {return vaoID;}
   protected:
     
     // Only populated (size>0) buffers will be used
-    Vertices mVertices;
-    Normals mNormals;
-    Colors mColors;
-    TexCoords mTexCoords;
-    Indices mIndices;
+    vector<vec3> mVertices;
+    vector<vec3> mNormals;
+    vector<vec4> mColors;
+    vector<vec3> mTexCoords;
+    vector<unsigned int> mIndices;
     
     int mPrimitive;
     
