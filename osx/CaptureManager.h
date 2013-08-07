@@ -11,8 +11,6 @@
 #import "Includes.hpp"
 #import "Texture.hpp"
 
-
-
 #import <AVFoundation/AVFoundation.h>
 #import <AVFoundation/AVAsset.h>
 
@@ -21,37 +19,32 @@
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
 #import <QuartzCore/QuartzCore.h>
-//#import <CoreImage/CoreImage.h>
-//#import <ImageIO/ImageIO.h>
 
 using namespace aluminum;
 
 @interface CaptureManager : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate> {
 
   @public
-  AVCaptureSession *session;
+    AVCaptureSession *session;
     AVCaptureDeviceInput *input;
-    
-    //CMSampleBufferRef pixelBuffer;
     CVImageBufferRef imageBuffer;
-    unsigned char *linebase;
+    unsigned char *ptrToImageBuffer;
     
-    
-    
-   Texture abc;
-    Texture* captureTexture;
-    
+    Texture captureTexture;
     bool isLocked;
-  bool newFrame;
+    bool newFrame;
 }
 
-@property Texture* captureTexture;
-@property Texture abc;
-
+@property Texture captureTexture;
+@property bool newFrame;
+@property unsigned char *ptrToImageBuffer;
 
 - (id) init;
-- (Texture*) createCaptureTexture;
-- (void)startCapture;
+- (void) startCapture;
+- (void) stopCapture;
+- (bool) isCapturing;
+- (bool) checkForNewFrame;
+- (bool) checkForNewBytes;
 
 //- (void)startCapture:(Texture*)tex;
 - (void)processPixelBuffer:(CMSampleBufferRef)pixelBuffer;

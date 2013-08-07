@@ -1,10 +1,3 @@
-//
-//  CaptureManager.m
-//  aluminum
-//
-//  Created by Angus Forbes on 8/4/13.
-//  Copyright (c) 2013 Angus Forbes. All rights reserved.
-//
 
 #import "CaptureManager.h"
 #include "Includes.hpp"
@@ -37,153 +30,114 @@ using std::string;
 
 @implementation CaptureManager
 
-@synthesize abc;
 @synthesize captureTexture;
+@synthesize newFrame;
+@synthesize ptrToImageBuffer;
 
 - (id) init {
   if ( self = [super init] ) {
     printf("in CaptureManager constructor\n");
     isLocked = false;
     newFrame = false;
-    //frameReady = false;
+  
+      
+      captureTexture = Texture(1280, 720, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+      
+      
+      NSError * error;
+      session = [[AVCaptureSession alloc] init];
+      [session beginConfiguration];
+      [session setSessionPreset:AVCaptureSessionPreset1280x720];
+      //[session setSessionPreset:AVCaptureSessionPreset640x480];
+      
+      AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+      input = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
+      //input = [[AVCaptureDeviceInput alloc] initWithDevice:videoDevice error:&error];
+      
+      [session addInput:input];
+      
+      
+      AVCaptureVideoDataOutput* dataOutput = [[AVCaptureVideoDataOutput alloc] init];
+      [dataOutput setAlwaysDiscardsLateVideoFrames:YES];
+      [dataOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+      
+      
+      //it doesn't seem to matter which queue i use...
+      
+      //  dispatch_queue_s* dq = dispatch_get_main_queue();
+      //  [dataOutput setSampleBufferDelegate:self queue:dq];
+      //  dispatch_release(dq);
+      
+      dispatch_queue_t videoCaptureQueue = dispatch_queue_create("com.example.subsystem.XYZ", NULL);
+      [dataOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
+      dispatch_release(videoCaptureQueue);
+      
+      [session addOutput:dataOutput];
+      [session commitConfiguration];
   }
   
   return self;
 }
 
-- (Texture*) createCaptureTexture {
-    
-    
- //   ResourceHandler().loadTexture(abc, "mak.png");
-   
-  abc = Texture(1280, 720, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
-  //abc = Texture(640, 480, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
-  captureTexture = &abc;
+
+- (bool) isCapturing {
+    return [session isRunning];
+}
+
+- (void) stopCapture {
+    [session stopRunning];
+}
+
+- (void)startCapture {
+  [session startRunning];
   
-  //  CFRetain(captureTexture);
+}
+
+
+
+- (bool) checkForNewBytes {
     
+    if ([self isCapturing] && newFrame == true) {
+        newFrame = false;
+        return true;
+    }
     
-    printf("addr in ppb : %p\n", captureTexture);
+    return false;
+}
+
+
+- (bool) checkForNewFrame {
+  
+  if ([self isCapturing] && newFrame == true) {
+      captureTexture.bind(GL_TEXTURE0); {
+          
+ //   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1280, 720, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
+      } captureTexture.unbind(GL_TEXTURE0);
+              
+          newFrame = false;
+      return true;
+  }
     
-    //abc = Texture(640, 480, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
-    
- //   captureTexture = new Texture(640, 480, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
-    [self startCapture];
-    return captureTexture;
+    return false;
 
 }
 
-- (void)startCapture { //:(Texture*) _captureTexture {
-    
-    printf("in startCapture...\n");
-    
-    //captureTexture = _captureTexture;
-    
-    
-    
-    NSError * error;
-    session = [[AVCaptureSession alloc] init];
-    [session beginConfiguration];
-    [session setSessionPreset:AVCaptureSessionPreset1280x720];
-    AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    input = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
-    //input = [[AVCaptureDeviceInput alloc] initWithDevice:videoDevice error:&error];
-
-    [session addInput:input];
-    
-    
-    AVCaptureVideoDataOutput* dataOutput = [[AVCaptureVideoDataOutput alloc] init];
-    [dataOutput setAlwaysDiscardsLateVideoFrames:YES];
-    [dataOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-    
-    //  dispatch_queue_s* dq = [NSOperationQueue mainQueue]; //dispatch_get_main_queue();
-    //dispatch_queue_s* dq = dispatch_get_main_queue();
-    //[dataOutput setSampleBufferDelegate:self queue:dq];
-    
-
-    dispatch_queue_t videoCaptureQueue = dispatch_queue_create("com.example.subsystem.XYZ", NULL);
-    [dataOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
-    
-    //dispatch_release(dq);
-    
-    [session addOutput:dataOutput];
-    [session commitConfiguration];
-    [session startRunning];
-    
-}
-
-- (void)processPixelBuffer:(CMSampleBufferRef)pixelBuffer {
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
   
-  //  NSImage *image = imageFromSampleBuffer(pixelBuffer);
+  if (newFrame == true) {
+    printf("can't accept a new frame while old one is being processed\n");
+  } else {
     
-    
- // printf("processPixelBuffer IN\n");
-    
-    imageBuffer = CMSampleBufferGetImageBuffer(pixelBuffer);
+    imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     CVPixelBufferLockBaseAddress( imageBuffer, 0 );
-   
     
-    
-    
-    int bufferWidth = CVPixelBufferGetWidth(imageBuffer);
-	int bufferHeight = CVPixelBufferGetHeight(imageBuffer);
-  
-    linebase = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
-    printf("  pixel at 512 = %d\n", linebase[512]);
- 
-    glEnable(GL_TEXTURE_2D);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, abc.id());
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 10, 10, 0, GL_BGRA, GL_UNSIGNED_BYTE, linebase);
-    
+    ptrToImageBuffer = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
     
     CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
-   
     
-    glBindTexture(GL_TEXTURE_2D, 0);
-    
-    /*
-  printf("width / height = %zd %zd\n", bufferWidth, bufferHeight);
-  printf("addr in ppb : %p\n", captureTexture);
-  //slow to do it here... rather just pass a flag to the shaders
-  //   Texture::flipBufferY(linebase, videoDimensions.width, videoDimensions.height);
-  //   Texture::flipBufferX(linebase, videoDimensions.width, videoDimensions.height);
-  
- //  dispatch_async(dispatch_get_main_queue(), ^{
-  if (abc.width == bufferWidth && abc.height == bufferHeight) {
-    printf("hi! width / height = %zd %zd\n", bufferWidth, bufferHeight);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, linebase);
+    newFrame = true;
   }
-  // });
-  
-  //
-  //  captureTexture->unbind(GL_TEXTURE0);
-  //  abc.unbind(GL_TEXTURE0);
-    
-   CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
- // CVPixelBufferRelease(imageBuffer);
-  //free(sampleBuffer);
-  
-  
-  newFrame = true;
-  
-  //isLocked = false;
-  
-  printf("processPixelBuffer OUT\n");
-     */
-  
-}
-
--(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-  
-  //CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-  
-  //[self processPixelBuffer:pixelBuffer];
-  
-  [self performSelectorOnMainThread:@selector(processPixelBuffer:) withObject:(id)sampleBuffer waitUntilDone:YES];
-  
-  //CFRelease(sampleBuffer);
 }
 
 @end

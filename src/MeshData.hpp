@@ -131,8 +131,18 @@ namespace aluminum {
     }
     
     void color(float r, float g, float b, float a=1){ color(Color(r,g,b,a)); }
-    void color(const vec4& v) { color(v[0], v[1], v[2], v[3]); }
-    
+    //void color(const vec4& v) {
+    //    color(v[0], v[1], v[2], v[3]);
+   // }
+      void color(const Color& v) { colors().push_back(v); }
+      
+      void color(const vec4 *buf, int size){
+          for(int i=0; i<size; ++i) {
+             color(buf[i][0], buf[i][1], buf[i][2], buf[i][3]);
+          }
+      }
+      
+      
     void normal(float x, float y, float z=0){ normal(Normal(x,y,z)); }
     void normal(const Normal& v) { normals().push_back(v); }
     void normal(const vec3 *buf, int size){
@@ -155,7 +165,9 @@ namespace aluminum {
     // }
     
     void vertex(const vec3 *buf, int size){
-      for(int i=0; i<size; ++i) vertex(buf[i][0], buf[i][1], buf[i][2]);
+        for(int i=0; i<size; ++i) {
+            vertex(buf[i][0], buf[i][1], buf[i][2]);
+        }
     }
     
     

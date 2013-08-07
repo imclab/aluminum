@@ -22,6 +22,7 @@ namespace aluminum{
       MeshBuffer update(MeshData _data, int p, int n, int tc, int c);
 
       virtual void draw();
+      virtual void drawLines();
 
     protected:
   

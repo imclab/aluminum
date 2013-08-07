@@ -9,7 +9,7 @@
 #import "RendererOSX.h"
 
 //allegedly... test this out...
-//you can change the OpenGL graphics context at any time using the setOpenGLContext: method.
+//you can change the OpenGL graphics context at any time using the setOpenGLContext: method. (ie to make it active stereo... or whatever)
 
 @interface CocoaGL (PrivateMethods)
 - (void) initGL;
@@ -19,9 +19,6 @@
 @end
 
 @implementation CocoaGL
-
-
-//OpenGLRenderer* m_renderer;
 
 -(BOOL)acceptsFirstResponder { return YES; }
 -(BOOL)becomeFirstResponder { return YES; }
@@ -50,7 +47,6 @@
 - (void)keyDown:(NSEvent*)keyDownEvent {
   ((RendererOSX*)renderer)->keyDown([keyDownEvent keyCode]);
 }
-
 
 - (void)keyUp:(NSEvent*)keyDownEvent {
   ((RendererOSX*)renderer)->keyUp([keyDownEvent keyCode]);
@@ -361,7 +357,10 @@ bool firstTime = true;
   // We draw on a secondary thread through the display link
   // When resizing the view, -reshape is called automatically on the main thread
   // Add a mutex around to avoid the threads accessing the context simultaneously when resizing
-  CGLLockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
+  
+  CGLContextObj cglContext = (CGLContextObj) [[self openGLContext] CGLContextObj];
+  CGLLockContext(cglContext);
+  //CGLLockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
   
   NSRect rect = [self bounds];
   
@@ -391,11 +390,18 @@ bool firstTime = true;
   
   //glViewport(0, 0, (int)rect.size.width, (int)rect.size.height);
   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
   ((RendererOSX*)renderer)->onFrame();
-  //glFlush();
+  ((RendererOSX*)renderer)->frameCount++;
+
+    //glFlush();
   
-  CGLFlushDrawable((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
-  CGLUnlockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
+ // [[self openGLContext] flushBuffer];
+  //CGLFlushDrawable((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
+  //CGLUnlockContext((_CGLContextObject*)[[self openGLContext] CGLContextObj]);
+  
+  CGLFlushDrawable((CGLContextObj)[[self openGLContext] CGLContextObj]);
+  CGLUnlockContext((CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
 
 - (void) printView {

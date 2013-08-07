@@ -17,7 +17,9 @@ class Basic : public RendererOSX {
   public:
 
     Program program;
-    GLuint vao, vbo, ibo, indices[3] = {0,1,2};
+    GLuint vao, vbo, ibo;
+    GLuint indices[3] = {0,1,2};
+//    GLuint indices[6] = {0,1,1,2,2,0};
 
     vec3 vertices[6] = {
       vec3( -1.0, -1.0, 0.0 ), vec3( 0.0, 1.0, 0.0 ), vec3( 1.0, -1.0, 0.0 ), //vertex
@@ -66,6 +68,7 @@ class Basic : public RendererOSX {
       glGenBuffers(1, &ibo);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
       glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*3, indices, GL_DYNAMIC_DRAW);
+      //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*6, indices, GL_DYNAMIC_DRAW);
 
       // Set up modelvew and projection matrix
       proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
@@ -89,7 +92,9 @@ class Basic : public RendererOSX {
 
 	glBindVertexArray( vao ); 
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-	glBindVertexArray( 0 ); 
+	//glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+        glBindVertexArray( 0 ); 
       } program.unbind();
 
     }

@@ -2,21 +2,13 @@
 #import <Carbon/Carbon.h> //for keyboard keycode info
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CVDisplayLink.h>
-//#include "RendererOSX.h"
-
-//static NSView* parentView;
-//static NSOpenGLView* glView;
 
 
 @interface CocoaGL : NSOpenGLView {
   CVDisplayLinkRef displayLink;
   void* renderer;
-  //BOOL isDragging;
-  //NSWindow* window;
-  
   BOOL cursorOn;
   BOOL stereoOn;
-
 }
 
 //this one creates the window, makes the glView take up the entire window, adds menu bar, and starts the app as well

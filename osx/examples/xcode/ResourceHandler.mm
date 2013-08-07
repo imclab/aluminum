@@ -76,6 +76,11 @@ void ResourceHandler::loadTexture(Texture& t, const std::string& name) {
     // return new Texture(data, _w, _h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 }
 
+
+//void ResourceHandler::checkForNewFrame(Texture &t) { }
+
+
+
 /*
 GLubyte* ResourceHandler::texture2D(const string &fname) {
     

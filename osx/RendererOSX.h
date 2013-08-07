@@ -47,7 +47,7 @@ public:
   virtual void onReshape();
   
   
-  
+  int frameCount = 0;
   
   int width;
   int height;
