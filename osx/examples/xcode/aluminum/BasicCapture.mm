@@ -23,7 +23,7 @@ public:
   
   Program program;
   
-  int div = 20;
+  int div = 15;
   int numPts;
   vec3* vs;
   vec4* cs;
@@ -196,8 +196,6 @@ public:
       mb1.drawLines();
       
     } program.unbind();
-    
-    
   }
   
   void handleMouse() {

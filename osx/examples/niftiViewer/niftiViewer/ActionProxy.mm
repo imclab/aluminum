@@ -27,7 +27,7 @@
 
 -(void) buttonAction2: (id)sender {
   
-  ((NiftiViewer*)[target pointerValue])->SayHello();
+//  ((NiftiViewer*)[target pointerValue])->SayHello();
   
 }
 

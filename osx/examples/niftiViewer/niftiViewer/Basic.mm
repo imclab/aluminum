@@ -34,7 +34,7 @@ typedef signed short MY_DATATYPE;
 
 using namespace aluminum;
 
-class NiftiViewer : public RendererOSX {
+class Basic : public RendererOSX {
 public:
 
     char* HOME = (char *) [NSHomeDirectory() UTF8String];

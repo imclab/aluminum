@@ -94,7 +94,7 @@ public:
   
   void loadNiftiInto3DTextures (string path) {
     
-    string nii_brain = (path + "MNI152_T1_2mm_brain.nii").c_str();
+    string nii_brain = (path + "MNI_2mm.nii").c_str();
     string nii_c1t1 = (path + "all_s1_IC2.nii").c_str();
     string nii_c1t2 = (path + "all_s2_IC2.nii").c_str();
     string nii_c1t3 = (path + "all_s3_IC2.nii").c_str();
@@ -111,7 +111,7 @@ public:
     string nii_c5t2 = (path + "all_s2_IC39.nii").c_str();
     string nii_c5t3 = (path + "all_s3_IC39.nii").c_str();
     
-    NiftiUtils::read_nifti_file(nii_brain, brain, 16);
+    NiftiUtils::read_nifti_file(nii_brain, brain, 8);
     NiftiUtils::read_nifti_file(nii_c1t1, cluster1_time1, 32);
     NiftiUtils::read_nifti_file(nii_c1t2, cluster1_time2, 32);
     NiftiUtils::read_nifti_file(nii_c1t3, cluster1_time3, 32);
@@ -135,9 +135,11 @@ public:
     
     loadProgram(program, RESOURCES + "textureSlices");
     
-    camera = Camera(60.0, width/(height*0.5), 0.001, 100.0).translateZ(-cameraZ).convergence(10.0).eyeSep(1.0/30.0 * 10.0);
+    //camera = Camera(60.0, width/(height*0.5), 0.001, 100.0).translateZ(-cameraZ).convergence(10.0).eyeSep(1.0/30.0 * 10.0);
     
-    
+    camera = Camera(60.0, width/(height*2.0), 0.001, 100.0).translateZ(-cameraZ).convergence(6.0).eyeSep(2.0/30.0 * 6.0);
+      
+
     createSlices(numSlices);
     
     textureRotation = glm::mat4();
@@ -294,10 +296,14 @@ public:
     }
   }
   
-  void onReshape() {
+    void onReshape() {
+        
+        camera.perspective(60.0, width/(height*2.0), 0.001, 100.0).stereo(USE_STEREO);
+//        camera.perspective(60.0, width/(height*0.5), 0.001, 100.0).stereo(USE_STEREO);
+    }
     
-    camera.perspective(60.0, width/(height*0.5), 0.001, 100.0).stereo(USE_STEREO);
-  }
+
+    
   
   void handleMouse() {
     

@@ -22,9 +22,9 @@
 
     session = [[AVCaptureSession alloc] init];
     [session beginConfiguration];
-    //[session setSessionPreset:AVCaptureSessionPresetHigh];
+    [session setSessionPreset:AVCaptureSessionPresetHigh];
     
-    [session setSessionPreset:AVCaptureSessionPreset640x480];
+    //[session setSessionPreset:AVCaptureSessionPreset640x480];
     
     //get input webcam
     AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];

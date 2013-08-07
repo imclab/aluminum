@@ -17,9 +17,10 @@ int main(){
  // Slices* nifti = new Slices();
  // nifti->initializeViews();
   
-  Slices nifti = Slices();
-  nifti.initializeViews();
+ Slices nifti = Slices();
+ nifti.initializeViews();
 
+//    Basic nifti = Basic();
 }
 
 /*

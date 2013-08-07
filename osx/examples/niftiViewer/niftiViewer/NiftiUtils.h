@@ -32,9 +32,11 @@ public:
     
     nifti_1_header hdr = read_nifti_header(data_file, fp);
     
-    //print_nifti_header_info(hdr);
+    print_nifti_header_info(hdr);
     
-    if (dataType == 16) {
+    if (dataType == 8) {
+      return read_nifti_data_unsigned_char(fp, hdr, t);
+    } else if (dataType == 16) {
       return read_nifti_data_signed_short(fp, hdr, t);
     } else if (dataType == 32) {
       return read_nifti_data_float(fp, hdr, t);
@@ -50,6 +52,81 @@ public:
   
 private:
   
+    
+    static int read_nifti_data_unsigned_char(FILE *fp, nifti_1_header hdr, Texture& t) {
+        unsigned char *data=NULL;
+        
+        unsigned long ret;
+        int i;
+        double total;
+        
+        data = (unsigned char *) malloc(sizeof(unsigned char) * hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
+        
+        if (data == NULL) {
+            fprintf(stderr, "\nError allocating data buffer\n"); // for %s\n",data_file.c_str());
+            exit(1);
+        }
+        
+        
+        
+        ret = fread(data, sizeof(unsigned char), hdr.dim[1]*hdr.dim[2]*hdr.dim[3], fp);
+        
+        printf("ret = %ld,  size = %d\n", ret, (hdr.dim[1]*hdr.dim[2]*hdr.dim[3]));
+        if (ret != hdr.dim[1]*hdr.dim[2]*hdr.dim[3]) {
+            //fprintf(stderr, "\nError reading volume 1 from %s (%ld)\n",data_file.c_str(),ret);
+            fprintf(stderr, "error loading volume data from file...\n");
+            exit(1);
+        }
+        fclose(fp);
+        
+        
+        /********** scale the data buffer  */
+        
+        /*
+         if (hdr.scl_slope != 0) {
+         for (i=0; i<hdr.dim[1]*hdr.dim[2]*hdr.dim[3]; i++)
+         data[i] = (data[i] * hdr.scl_slope) + hdr.scl_inter;
+         }
+         */
+        
+        /********** print mean of data */
+        
+        total = 0;
+        int max = 0;
+        
+        for (i=0; i<hdr.dim[1]*hdr.dim[2]*hdr.dim[3]; i++) {
+            
+            total += data[i];
+            if (data[i] > max){
+                printf("%d\n", data[i]);
+                max = data[i];
+            }
+        }
+        total /= (hdr.dim[1]*hdr.dim[2]*hdr.dim[3]);
+        //fprintf(stderr, "\nMean of volume 1 in %s is %.3f\n",data_file.c_str(),total);
+        
+        /** save to 3D Texture **/
+        int numBytes = hdr.dim[1]*hdr.dim[2]*hdr.dim[3];
+        GLubyte *oneslice = (GLubyte *) malloc(sizeof(GLubyte) * (numBytes) );
+        
+        int idx = 0;
+        for (i=0; i < numBytes; i++) {
+            oneslice[idx++] = (GLubyte) (( (float)data[i]/(float)max ) * 255 );
+        }
+        
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        
+        t = Texture(oneslice, hdr.dim[1], hdr.dim[2], hdr.dim[3], GL_RGBA, GL_RED, GL_UNSIGNED_BYTE);
+        
+        t.minFilter(GL_LINEAR);
+        t.maxFilter(GL_LINEAR);
+        
+        return(0);
+        
+    }
+
+    
   static int read_nifti_data_signed_short(FILE *fp, nifti_1_header hdr, Texture& t) {
     signed short *data=NULL;
     
@@ -70,8 +147,9 @@ private:
     
     printf("ret = %ld,  size = %d\n", ret, (hdr.dim[1]*hdr.dim[2]*hdr.dim[3]));
     if (ret != hdr.dim[1]*hdr.dim[2]*hdr.dim[3]) {
-      // fprintf(stderr, "\nError reading volume 1 from %s (%ld)\n",data_file.c_str(),ret);
-      exit(1);
+       //fprintf(stderr, "\nError reading volume 1 from %s (%ld)\n",data_file.c_str(),ret);
+        fprintf(stderr, "error loading volume data from file...\n");
+        exit(1);
     }
     fclose(fp);
     
@@ -94,7 +172,7 @@ private:
       
       total += data[i];
       if (data[i] > max){
-        //printf("%d\n", data[i]);
+        printf("%d\n", data[i]);
         max = data[i];
       }
     }

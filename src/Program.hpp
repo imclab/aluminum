@@ -10,7 +10,7 @@
 #endif
 namespace aluminum{
 
-  //using namespace std;
+  using namespace std;
 
 
   class Shader {
