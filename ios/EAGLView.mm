@@ -46,7 +46,7 @@
 		animating = FALSE;
 		animationFrameInterval = 1;
 		displayLink = nil;
-		
+
     
     UIPinchGestureRecognizer *pinch = [[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(twoFingerPinch:)] autorelease];
     [self addGestureRecognizer:pinch];
@@ -105,7 +105,7 @@
   glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
   
   r->onFrame();
-  
+    r->frameCount++;
   //glViewport(0, 0, backingWidth, backingHeight);
   //glClearColor(0.5f, 0.4f, 0.5f, 1.0f);
   //glClear(GL_COLOR_BUFFER_BIT);

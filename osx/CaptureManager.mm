@@ -5,7 +5,7 @@
 
 @synthesize captureTexture;
 @synthesize newFrame;
-@synthesize ptrToImageBuffer;
+@synthesize pixels;
 @synthesize isReady;
 @synthesize textureReady;
 
@@ -23,8 +23,6 @@
     session = [[AVCaptureSession alloc] init];
     [session beginConfiguration];
     [session setSessionPreset:AVCaptureSessionPresetHigh];
-    
-    //[session setSessionPreset:AVCaptureSessionPreset640x480];
     
     //get input webcam
     AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -95,7 +93,7 @@
   if (isReady && [self isCapturing] && newFrame == true) {
     captureTexture.bind(GL_TEXTURE0); {
       
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, captureTexture.width, captureTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, ptrToImageBuffer);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, captureTexture.width, captureTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
     } captureTexture.unbind(GL_TEXTURE0);
     
     newFrame = false;
@@ -120,6 +118,8 @@
   
   if (firstTime) {
     [self setTextureDimensions];
+    pixels = (unsigned char*)malloc(tw * th * 4 * sizeof(unsigned char));
+    
     firstTime = false;
     
     //printf("*** captureOutput : firstTime = false\n");
@@ -129,7 +129,9 @@
     
     imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     CVPixelBufferLockBaseAddress( imageBuffer, 0 ); {
-      ptrToImageBuffer = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
+     // ptrToImageBuffer = (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer);
+      memcpy(pixels, (unsigned char*)CVPixelBufferGetBaseAddress(imageBuffer), tw * th * 4 * sizeof(unsigned char));
+      
     } CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
     
     newFrame = true;

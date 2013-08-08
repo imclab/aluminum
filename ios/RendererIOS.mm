@@ -1,13 +1,8 @@
 
-
 #include "RendererIOS.h"
 #include "AppDelegate.h"
 
-
-using namespace std;
-
 RendererIOS::RendererIOS() {}
-
 
 int RendererIOS::start() {
   @autoreleasepool {
@@ -29,6 +24,7 @@ longPressPosition = x,y
 pinching = true
 pinchScale = 1.2
 -- or does the display synch take care of this?? 
+ (that is, do we need to keep track of touches separately from the callbacks - or is there some built in run loop that will make sure that touches + other events happen before rendering...?)
 */
 
 //virtual method that must be implemented (if you want anything to happen)
@@ -43,21 +39,3 @@ void RendererIOS::touchEnded(ivec2 mouse) {}
 void RendererIOS::longPress(ivec2 mouse) {}
 void RendererIOS::pinch(float scale) {}
 void RendererIOS::pinchEnded() {}
-
-const char* RendererIOS::contentsOfFile(string& file) {
-  NSString* filePath = [[NSString alloc] initWithUTF8String:file.c_str()];
-  NSString* contents = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-  return [contents UTF8String];
-}
-
-
-string RendererIOS::pathToResource(const string& resource, const string& type) {
-  
-  NSString* resourcePath = [[NSString alloc] initWithUTF8String:resource.c_str()];
-  NSString* typePath = [[NSString alloc] initWithUTF8String:type.c_str()];
-  NSBundle* mainBundle = [NSBundle mainBundle];
-  NSString* fullPath = [mainBundle pathForResource:resourcePath ofType:typePath];
-  
-  cout << "in GetPathForResourceOfType(...), pathStr = " << [fullPath UTF8String] << "\n";
-  return [fullPath UTF8String];
-}

@@ -1,12 +1,11 @@
 
 
-#ifndef __GLES2Sample__RendererIOS__
-#define __GLES2Sample__RendererIOS__
-
+#ifndef INCLUDE_RENDERER_IOS_H
+#define INCLUDE_RENDERER_IOS_H
 
 #import "Includes.hpp"
 
-using namespace std;
+using std::string;
 using glm::ivec2;
 
 class RendererIOS {
@@ -23,6 +22,7 @@ public:
   virtual void onCreate();
   virtual void onFrame();
   
+  int frameCount = 0;
   
   virtual void touchBegan(ivec2 mouse);
   virtual void touchMoved(ivec2 prevMouse, ivec2 mouse);
@@ -36,13 +36,4 @@ public:
   
 };
 
-
-
-
-
-
-
-
-
-
-#endif /* defined(__GLES2Sample__RendererIOS__) */
+#endif

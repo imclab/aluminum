@@ -9,7 +9,7 @@ using namespace aluminum;
     AVCaptureSession *session;
     AVCaptureDeviceInput *input;
     CVImageBufferRef imageBuffer;
-    unsigned char *ptrToImageBuffer;
+    unsigned char *pixels;
     
     Texture captureTexture;
     bool isLocked;
@@ -25,7 +25,7 @@ using namespace aluminum;
 @property bool newFrame;
 @property bool isReady;
 @property bool textureReady;
-@property unsigned char *ptrToImageBuffer;
+@property unsigned char *pixels;
 
 - (id) init;
 - (void) startCapture;

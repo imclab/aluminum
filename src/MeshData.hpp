@@ -143,6 +143,11 @@ namespace aluminum {
              color(buf[i][0], buf[i][1], buf[i][2], buf[i][3]);
           }
       }
+    void color(const vec3 *buf, int size){
+          for(int i=0; i<size; ++i) {
+              color(buf[i][0], buf[i][1], buf[i][2], 1.0);
+          }
+      }
       
       
     void normal(float x, float y, float z=0.0){

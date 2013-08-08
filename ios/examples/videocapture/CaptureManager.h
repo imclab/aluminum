@@ -15,30 +15,32 @@ using namespace aluminum;
     AVCaptureSession *session;
     AVCaptureDeviceInput *input;
     CVImageBufferRef imageBuffer;
-    unsigned char *ptrToImageBuffer;
+    unsigned char *pixels;
     
     Texture captureTexture;
-    bool isLocked;
     bool newFrame;
     bool firstTime;
     bool textureReady;
-    
-    int tw;
-    int th;
+ 
+  CMVideoDimensions dimensions;
 }
 
 @property Texture captureTexture;
 @property bool newFrame;
-@property bool isReady;
 @property bool textureReady;
-@property unsigned char *ptrToImageBuffer;
+@property unsigned char *pixels;
 
 - (id) init;
+- (id) init:(NSString *)preset side:(AVCaptureDevicePosition)side;
+- (void) setupCapture:(NSString *)preset side:(AVCaptureDevicePosition)side;
+- (AVCaptureDevice *)frontFacing;
+- (AVCaptureDevice *)backFacing;
 - (void) startCapture;
 - (void) stopCapture;
 - (void) toggleCapture;
 - (bool) isCapturing;
 - (void) setTextureDimensions;
+//- (void) processPixelBuffer:(CMSampleBufferRef) sampleBuffer;
 
 - (bool) nextFrame;
 - (bool) updateTextureWithNextFrame;

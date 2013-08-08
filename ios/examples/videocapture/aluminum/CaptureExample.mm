@@ -3,27 +3,29 @@
 
 #include "Includes.hpp"
 
-#include "RendererOSX.h"
 #include "MeshBuffer.hpp"
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
 #include "Program.hpp"
 #include "Shapes.hpp"
 
-#include "CaptureManager.h"
+#import "ResourceHandler.h"
 
-#include "ResourceHandler.h"
+#import "RendererIOS.h"
+#import "AppDelegate.h"
+
+#import "CaptureManager.h"
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
 using namespace aluminum;
 
-class CaptureEx : public RendererOSX {
+class CaptureExample : public RendererIOS {
 public:
   
   Program program;
   
-  int div = 15;
+  int div = 6;
   int numPts;
   vec3* vs;
   vec4* cs;
@@ -68,13 +70,10 @@ public:
   
   virtual void onCreate() {
     
-    loadProgram(program, "basic_s");
+    loadProgram(program, "basic");
     
-    cm = [[CaptureManager alloc] init];
+    cm = [[CaptureManager alloc] init:AVCaptureSessionPresetLow side:AVCaptureDevicePositionBack];
     [cm startCapture];
-    
-    
-    
     
     proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
     view = glm::lookAt(vec3(0.0,0.0,3), vec3(0,0,0), vec3(0,1,0) );
@@ -85,7 +84,7 @@ public:
     glEnable(GL_TEXTURE_2D);
     //glEnable(GL_DEPTH_TEST);
     glViewport(0, 0, width, height);
-    glClearColor(1,1,1,1.0);
+    glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     
@@ -93,6 +92,7 @@ public:
   
   void initMeshData() {
     
+    printf("in initMeshData()\n");
     numPts = ((cm.captureTexture.width * cm.captureTexture.height) / div) * 2;
     vs = new vec3[numPts];
     cs = new vec4[numPts];
@@ -115,12 +115,10 @@ public:
       bufferReady = true;
     }
     
-    //printf("in processFrame\n");
     int bw = cm.captureTexture.width;
     int bh = cm.captureTexture.height;
-    //printf("bw bh = %d %d\n", cm.captureTexture.width, cm.captureTexture.height);
-    float sx = 1;
-    float sy = 1;
+    float sx = -1;
+    float sy = -1;
     float xinc = 2.0/bw;
     float yinc = 2.0/bh;
     
@@ -128,36 +126,28 @@ public:
     int idx = 0;
     for (int i = 0; i < bh; i+=div) {
       for (int j = 0; j < bw; j+=div) {
-        //  printf("i j = %d %d\n", i, j);
-        if (bufferIdx < numPts) {
-          idx = (i * bw * 4) + (j * 4);
-          
-          //   printf("c/r = %d/%d : bi = %d, idx = %d : %f %f %f\n", j, i, bufferIdx, idx, cm.ptrToImageBuffer[idx+1]/255.0, cm.ptrToImageBuffer[idx+1]/255.0, cm.ptrToImageBuffer[idx+1]/255.0);
-          
-          float r = cm.pixels[idx+2]/255.0;
-          float g = cm.pixels[idx+1]/255.0;
-          float b = cm.pixels[idx+0]/255.0;
-          cs[bufferIdx] = vec4(r, g, b, 0.5);
-          cs[bufferIdx+1] = vec4(r, g, b, 0.5);
-          
-          //    printf(" r g b %f %f %f\n",r, g, b);
-          
-          float perc = (r+g+b) / (3.0);
-          float ang = perc * (M_PI * 2);
-          float mag = perc * 0.3;
-          
-          // printf("perc ang mag %f,  %f %f \n", perc, ang, mag);
-          
-          float xp = cos(ang) * mag;
-          float yp = sin(ang) * mag;
-          
-          // printf("xp yp %f %f \n", xp, yp);
-          
-          vs[bufferIdx] =   vec3(sx - xinc*j - xp, sy - yinc*i - yp, 0.0);
-          vs[bufferIdx+1] = vec3(sx - xinc*j + xp, sy - yinc*i + yp, 0.0);
-          
-          bufferIdx += 2;
-        }
+        
+        idx = (i * bw * 4) + (j * 4);
+        
+        float r = cm.pixels[idx+2]/255.0;
+        float g = cm.pixels[idx+1]/255.0;
+        float b = cm.pixels[idx+0]/255.0;
+        
+        float perc = (r+g+b) / (3.0);
+        float ang = perc * (M_PI * 2);
+        float mag = perc * 0.3;
+        
+        float xp = cos(ang) * mag;
+        float yp = sin(ang) * mag;
+        
+        vs[bufferIdx] =   vec3(sx + xinc*j - xp, sy + yinc*i - yp, 0.0);
+        vs[bufferIdx+1] = vec3(sx + xinc*j + xp, sy + yinc*i + yp, 0.0);
+        
+        cs[bufferIdx] = vec4(r, g, b, 0.5);
+        cs[bufferIdx+1] = vec4(r, g, b, 0.5);
+        
+        bufferIdx += 2;
+        
         
       }
     }
@@ -171,12 +161,13 @@ public:
   }
   
   virtual void onFrame(){
-    
-    handleKeys();
-    handleMouse();
+    // printf("frameCount = %d\n", frameCount);
+    //handleKeys();
+    //handleMouse();
     
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
     
     
     if (frameCount % 200 == 0 && frameCount > 0) {
@@ -187,6 +178,7 @@ public:
       processFrame();
     }
     
+    
     program.bind(); {
       
       glUniformMatrix4fv(program.uniform("mv"), 1, 0, ptr(view));
@@ -196,47 +188,50 @@ public:
       mb1.drawLines();
       
     } program.unbind();
+    
   }
   
-  void handleMouse() {
-    if (isDragging) {
-      printf("in Basic: mouseDragged %d/%d\n", mouseX, mouseY);
-    }
-    
-    if (isMoving) {
-      printf("in Basic: mouseMoved %d/%d\n", mouseX, mouseY);
-    }
-    
-    if (isPressing) {
-      printf("in Basic: mouseDown %d/%d\n", mouseX, mouseY);
-    }
-    
-    
-    if (isReleasing) {
-      printf("in Basic: mouseUp %d/%d\n", mouseX, mouseY);
-    }
-    
-    isDragging = false;
-    isMoving = false;
-    isPressing = false;
-    isReleasing = false;
-  }
-  
-  void handleKeys() {
-    
-    if (keysDown[kVK_ANSI_A]) {
-      printf("you pressed an 'A'! \n");
-      keysDown[kVK_ANSI_A] = false;
-    }
-    
-    if (keysUp[kVK_ANSI_A]) {
-      printf("you released an 'A'! \n");
-      keysUp[kVK_ANSI_A] = false;
-    }
-  }
+  /*
+   void handleMouse() {
+   if (isDragging) {
+   printf("in Basic: mouseDragged %d/%d\n", mouseX, mouseY);
+   }
+   
+   if (isMoving) {
+   printf("in Basic: mouseMoved %d/%d\n", mouseX, mouseY);
+   }
+   
+   if (isPressing) {
+   printf("in Basic: mouseDown %d/%d\n", mouseX, mouseY);
+   }
+   
+   
+   if (isReleasing) {
+   printf("in Basic: mouseUp %d/%d\n", mouseX, mouseY);
+   }
+   
+   isDragging = false;
+   isMoving = false;
+   isPressing = false;
+   isReleasing = false;
+   }
+   
+   void handleKeys() {
+   
+   if (keysDown[kVK_ANSI_A]) {
+   printf("you pressed an 'A'! \n");
+   keysDown[kVK_ANSI_A] = false;
+   }
+   
+   if (keysUp[kVK_ANSI_A]) {
+   printf("you released an 'A'! \n");
+   keysUp[kVK_ANSI_A] = false;
+   }
+   }
+   */
   
 };
 
 int main(){
-  return CaptureEx().start("aluminum::TextureEx", 100, 100, 800, 600);
+  CaptureExample().start();
 }

@@ -26,5 +26,9 @@
     [super viewDidUnload];
 }
 
+ - (void)didReceiveMemoryWarning {
+   printf("MEMORY WARNING\n");
+   [super didReceiveMemoryWarning];
+ }
 
 @end
