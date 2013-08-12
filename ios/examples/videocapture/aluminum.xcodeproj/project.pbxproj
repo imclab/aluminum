@@ -393,6 +393,7 @@
 		92347A9017ADAD1600DAEB61 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "aluminum/aluminum-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -401,6 +402,7 @@
 				);
 				INFOPLIST_FILE = "aluminum/aluminum-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -408,6 +410,7 @@
 		92347A9117ADAD1600DAEB61 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "aluminum/aluminum-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -416,6 +419,7 @@
 				);
 				INFOPLIST_FILE = "aluminum/aluminum-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
