@@ -5,7 +5,7 @@ Lightweight, minimal OpenGL framework using C++11. Supports openGL 3.2 on osx/co
 
 ***
 
-aluminum was orginally created for the Allosphere Research Facility at UC Santa Barbara and is based largely off of the Allocore library (now called AlloSystem), written by Graham Wakefield, Lance Putnam, and others. (https://github.com/AlloSphere-Research-Group/AlloSystem).  
+aluminum was initially created for the Allosphere Research Facility at UC Santa Barbara and was orignally based largely off of the Allocore library (now called AlloSystem), written by Graham Wakefield, Lance Putnam, and others. (https://github.com/AlloSphere-Research-Group/AlloSystem). 
 
 *** 
 
