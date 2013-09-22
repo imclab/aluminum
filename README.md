@@ -3,6 +3,12 @@ aluminum
 
 Lightweight, minimal OpenGL framework using C++11. Supports openGL 3.2 on osx/cocoa and linux/freeglut.
 
+***
+
+aluminum was orginally created for the Allosphere Research Facility at UC Santa Barbara and is based largely off of the Allocore library (now called AlloSystem), written by Graham Wakefield, Lance Putnam, and others. (https://github.com/AlloSphere-Research-Group/AlloSystem).  
+
+*** 
+
 Required libraries: freeimage, assimp3, glm.
 
 Features: active, passive, and anaglyph stereo rendering; signed-distance fonts; textured fonts; high resolution timing/animation methods (via C++11's chrono); model loading (via assimp3); texture reading/writing (via freeimage); 6DOF vector camera class; etc. 
