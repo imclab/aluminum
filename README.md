@@ -13,9 +13,11 @@ Required libraries: ~~freeimage~~, ~~assimp3~~, glm.
 
 Features: active, passive, and anaglyph stereo rendering; signed-distance fonts; textured fonts; high resolution timing/animation methods (via C++11's chrono); model loading (via assimp3); texture reading/writing (via freeimage); 6DOF vector camera class; etc. 
 
-Linux requires freeglut2.6 (or above?), see readme in linux directory.
+Linux requires freeglut2.6 (or above?), see readme in linux directory. (may need a little work...)
 
 Sample OSX/Cocoa projects using XCode 4.6.2 provided.
+
+Sample iOS projects using XCode 4.6.2 provided.
 
 ***
 
