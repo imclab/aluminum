@@ -37,6 +37,7 @@
 		92347ACE17ADAE8500DAEB61 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92347ACB17ADAE8500DAEB61 /* CoreMotion.framework */; };
 		92347AD617ADD1FE00DAEB61 /* basic.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 92347AD217ADD1E400DAEB61 /* basic.fsh */; };
 		92347AD717ADD1FE00DAEB61 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 92347AD317ADD1E400DAEB61 /* basic.vsh */; };
+		B583BC1417FA3A8A006CD22E /* ResourceHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = B583BC1317FA3A8A006CD22E /* ResourceHandler.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +90,8 @@
 		92347ACB17ADAE8500DAEB61 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		92347AD217ADD1E400DAEB61 /* basic.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.fsh; path = resources/basic.fsh; sourceTree = "<group>"; };
 		92347AD317ADD1E400DAEB61 /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vsh; path = resources/basic.vsh; sourceTree = "<group>"; };
+		B583BC1217FA3A8A006CD22E /* ResourceHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceHandler.h; path = ../../ResourceHandler.h; sourceTree = "<group>"; };
+		B583BC1317FA3A8A006CD22E /* ResourceHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ResourceHandler.mm; path = ../../ResourceHandler.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +176,8 @@
 			children = (
 				92347A9217ADAD5500DAEB61 /* AppDelegate.h */,
 				92347A9317ADAD5500DAEB61 /* AppDelegate.mm */,
+				B583BC1217FA3A8A006CD22E /* ResourceHandler.h */,
+				B583BC1317FA3A8A006CD22E /* ResourceHandler.mm */,
 				92347A9417ADAD5500DAEB61 /* EAGLView.h */,
 				92347A9517ADAD5500DAEB61 /* EAGLView.mm */,
 				92347A9617ADAD5500DAEB61 /* Includes.hpp */,
@@ -285,6 +290,7 @@
 				92347A9C17ADAD5500DAEB61 /* EAGLView.mm in Sources */,
 				92347A9D17ADAD5500DAEB61 /* RendererIOS.mm in Sources */,
 				92347A9E17ADAD5500DAEB61 /* ViewController.mm in Sources */,
+				B583BC1417FA3A8A006CD22E /* ResourceHandler.mm in Sources */,
 				92347AB717ADAD6D00DAEB61 /* Behavior.cpp in Sources */,
 				92347AB817ADAD6D00DAEB61 /* Camera.cpp in Sources */,
 				92347AB917ADAD6D00DAEB61 /* FBO.cpp in Sources */,

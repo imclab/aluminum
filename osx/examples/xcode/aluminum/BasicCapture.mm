@@ -8,7 +8,6 @@
 #include "MeshData.hpp"
 #include "MeshUtils.hpp"
 #include "Program.hpp"
-#include "Shapes.hpp"
 
 #include "CaptureManager.h"
 
@@ -72,9 +71,6 @@ public:
     
     cm = [[CaptureManager alloc] init];
     [cm startCapture];
-    
-    
-    
     
     proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
     view = glm::lookAt(vec3(0.0,0.0,3), vec3(0,0,0), vec3(0,1,0) );

@@ -38,8 +38,8 @@
 		92347AD617ADD1FE00DAEB61 /* basic.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 92347AD217ADD1E400DAEB61 /* basic.fsh */; };
 		92347AD717ADD1FE00DAEB61 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 92347AD317ADD1E400DAEB61 /* basic.vsh */; };
 		9299225617B34DA500FF13AA /* CaptureExample.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9299225417B34DA500FF13AA /* CaptureExample.mm */; };
-		9299225917B34E3D00FF13AA /* ResourceHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9299225717B34E3D00FF13AA /* ResourceHandler.mm */; };
-		B5A6F13817B304840053B0E7 /* CaptureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5A6F13617B304840053B0E7 /* CaptureManager.mm */; };
+		B583BC1917FA3ABF006CD22E /* CaptureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B583BC1617FA3ABF006CD22E /* CaptureManager.mm */; };
+		B583BC1A17FA3ABF006CD22E /* ResourceHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = B583BC1817FA3ABF006CD22E /* ResourceHandler.mm */; };
 		B5A6F13A17B305F60053B0E7 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A6F13917B305F60053B0E7 /* CoreVideo.framework */; };
 /* End PBXBuildFile section */
 
@@ -94,10 +94,10 @@
 		92347AD217ADD1E400DAEB61 /* basic.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.fsh; path = resources/basic.fsh; sourceTree = "<group>"; };
 		92347AD317ADD1E400DAEB61 /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vsh; path = resources/basic.vsh; sourceTree = "<group>"; };
 		9299225417B34DA500FF13AA /* CaptureExample.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CaptureExample.mm; sourceTree = "<group>"; };
-		9299225717B34E3D00FF13AA /* ResourceHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourceHandler.mm; sourceTree = "<group>"; };
-		9299225817B34E3D00FF13AA /* ResourceHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceHandler.h; sourceTree = "<group>"; };
-		B5A6F13617B304840053B0E7 /* CaptureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CaptureManager.mm; sourceTree = "<group>"; };
-		B5A6F13717B304840053B0E7 /* CaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptureManager.h; sourceTree = "<group>"; };
+		B583BC1517FA3ABF006CD22E /* CaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CaptureManager.h; path = ../../CaptureManager.h; sourceTree = "<group>"; };
+		B583BC1617FA3ABF006CD22E /* CaptureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CaptureManager.mm; path = ../../CaptureManager.mm; sourceTree = "<group>"; };
+		B583BC1717FA3ABF006CD22E /* ResourceHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceHandler.h; path = ../../ResourceHandler.h; sourceTree = "<group>"; };
+		B583BC1817FA3ABF006CD22E /* ResourceHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ResourceHandler.mm; path = ../../ResourceHandler.mm; sourceTree = "<group>"; };
 		B5A6F13917B305F60053B0E7 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -193,10 +193,10 @@
 				92347A9817ADAD5500DAEB61 /* RendererIOS.mm */,
 				92347A9917ADAD5500DAEB61 /* ViewController.h */,
 				92347A9A17ADAD5500DAEB61 /* ViewController.mm */,
-				B5A6F13717B304840053B0E7 /* CaptureManager.h */,
-				B5A6F13617B304840053B0E7 /* CaptureManager.mm */,
-				9299225817B34E3D00FF13AA /* ResourceHandler.h */,
-				9299225717B34E3D00FF13AA /* ResourceHandler.mm */,
+				B583BC1517FA3ABF006CD22E /* CaptureManager.h */,
+				B583BC1617FA3ABF006CD22E /* CaptureManager.mm */,
+				B583BC1717FA3ABF006CD22E /* ResourceHandler.h */,
+				B583BC1817FA3ABF006CD22E /* ResourceHandler.mm */,
 			);
 			name = ios;
 			sourceTree = "<group>";
@@ -298,6 +298,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B583BC1917FA3ABF006CD22E /* CaptureManager.mm in Sources */,
 				92347A9B17ADAD5500DAEB61 /* AppDelegate.mm in Sources */,
 				92347A9C17ADAD5500DAEB61 /* EAGLView.mm in Sources */,
 				92347A9D17ADAD5500DAEB61 /* RendererIOS.mm in Sources */,
@@ -306,6 +307,7 @@
 				92347AB817ADAD6D00DAEB61 /* Camera.cpp in Sources */,
 				92347AB917ADAD6D00DAEB61 /* FBO.cpp in Sources */,
 				92347ABA17ADAD6D00DAEB61 /* Font.cpp in Sources */,
+				B583BC1A17FA3ABF006CD22E /* ResourceHandler.mm in Sources */,
 				92347ABB17ADAD6D00DAEB61 /* MeshBuffer.cpp in Sources */,
 				92347ABC17ADAD6D00DAEB61 /* MeshData.cpp in Sources */,
 				92347ABD17ADAD6D00DAEB61 /* MeshUtils.cpp in Sources */,
@@ -314,9 +316,7 @@
 				92347AC017ADAD6D00DAEB61 /* Texture.cpp in Sources */,
 				92347AC117ADAD6D00DAEB61 /* Utils.cpp in Sources */,
 				92347AC417ADAD9500DAEB61 /* Basic.mm in Sources */,
-				B5A6F13817B304840053B0E7 /* CaptureManager.mm in Sources */,
 				9299225617B34DA500FF13AA /* CaptureExample.mm in Sources */,
-				9299225917B34E3D00FF13AA /* ResourceHandler.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

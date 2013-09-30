@@ -10,6 +10,7 @@
 
 #import "RendererIOS.h"
 #import "AppDelegate.h"
+#import "ResourceHandler.h"
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
@@ -38,20 +39,20 @@ public:
   
   int frameNum = 0;
   
-  
+  ResourceHandler rh;
   
   void loadProgram(Program &p, const std::string& name) {
     
     p.create();
     
-    string sv = pathToResource(name, "vsh");
-    p.attach(contentsOfFile(sv), GL_VERTEX_SHADER);
+    string sv = rh.pathToResource(name, "vsh");
+    p.attach(rh.contentsOfFile(sv), GL_VERTEX_SHADER);
     
     glBindAttribLocation(p.id(), posLoc, "vertexPosition");
     glBindAttribLocation(p.id(), colLoc, "vertexColor");
    
-    string sp = pathToResource(name, "fsh");
-    p.attach(contentsOfFile(sp), GL_FRAGMENT_SHADER);
+    string sp = rh.pathToResource(name, "fsh");
+    p.attach(rh.contentsOfFile(sp), GL_FRAGMENT_SHADER);
     
     p.link();
   }
