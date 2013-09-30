@@ -116,11 +116,6 @@
 		92347A6917ADAD1600DAEB61 = {
 			isa = PBXGroup;
 			children = (
-				92347AC917ADAE8500DAEB61 /* AVFoundation.framework */,
-				92347ACA17ADAE8500DAEB61 /* CoreMedia.framework */,
-				92347ACB17ADAE8500DAEB61 /* CoreMotion.framework */,
-				92347AC517ADAE6D00DAEB61 /* OpenGLES.framework */,
-				92347AC617ADAE6D00DAEB61 /* QuartzCore.framework */,
 				92347AA017ADAD6D00DAEB61 /* src */,
 				92347A9F17ADAD5E00DAEB61 /* ios */,
 				92347A7B17ADAD1600DAEB61 /* aluminum */,
@@ -140,6 +135,11 @@
 		92347A7417ADAD1600DAEB61 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				92347AC917ADAE8500DAEB61 /* AVFoundation.framework */,
+				92347ACA17ADAE8500DAEB61 /* CoreMedia.framework */,
+				92347ACB17ADAE8500DAEB61 /* CoreMotion.framework */,
+				92347AC517ADAE6D00DAEB61 /* OpenGLES.framework */,
+				92347AC617ADAE6D00DAEB61 /* QuartzCore.framework */,
 				92347A7517ADAD1600DAEB61 /* UIKit.framework */,
 				92347A7717ADAD1600DAEB61 /* Foundation.framework */,
 				92347A7917ADAD1600DAEB61 /* CoreGraphics.framework */,

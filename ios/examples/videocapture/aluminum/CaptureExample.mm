@@ -232,6 +232,8 @@ public:
   
 };
 
-int main(){
+/*
+int mainX(){
   CaptureExample().start();
 }
+*/

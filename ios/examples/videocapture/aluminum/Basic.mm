@@ -11,7 +11,7 @@
 #import "RendererIOS.h"
 #import "AppDelegate.h"
 
-#include "CaptureManager.h"
+#import "ResourceHandler.h"
 
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
@@ -25,8 +25,8 @@ class Basic : public RendererIOS {
     
 public:
     
-    CaptureManager* cm;
-    
+    ResourceHandler rh;
+
     
     Program program;
     
@@ -43,14 +43,14 @@ public:
         
         p.create();
         
-        string sv = pathToResource(name, "vsh");
-        p.attach(contentsOfFile(sv), GL_VERTEX_SHADER);
+        string sv = rh.pathToResource(name, "vsh");
+        p.attach(rh.contentsOfFile(sv), GL_VERTEX_SHADER);
         
         glBindAttribLocation(p.id(), posLoc, "vertexPosition");
         glBindAttribLocation(p.id(), colLoc, "vertexColor");
         
-        string sp = pathToResource(name, "fsh");
-        p.attach(contentsOfFile(sp), GL_FRAGMENT_SHADER);
+        string sp = rh.pathToResource(name, "fsh");
+        p.attach(rh.contentsOfFile(sp), GL_FRAGMENT_SHADER);
         
         p.link();
     }
@@ -58,10 +58,7 @@ public:
     virtual void onCreate() {
         // Load our shader program
         loadProgram(program, "basic");
-        
-        cm = [[CaptureManager alloc] init];
-        [cm startCapture];
-
+       
         
         GLuint is[3] = {0,1,2};
         
@@ -69,7 +66,6 @@ public:
             vec3( -1.0, -1.0, 0.0 ), vec3( 0.0, 1.0, 0.0 ), vec3( 1.0, -1.0, 0.0 ) };
         vec3 cs[3] = {
             vec3( 1.0,0.0,0.0 ), vec3( 0.0,1.0,0.0 ), vec3( 0.0,0.0,1.0 )};
-        
         
         
         md.vertex(vs, 3);
@@ -85,12 +81,6 @@ public:
     }
     
     virtual void onFrame(){
-        
-        //AppDelegate *ad = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        //EAGLView* ev = ad.glView;
-        
-        //for (UITouch* touch in ev->touches) {
-        
         
         // Clear viewport
         glViewport(0, 0, width, height);
@@ -134,10 +124,9 @@ public:
     
 };
 
-/*
+
 int main(int argc, char *argv[]) {
     
     Basic().start();
     
 }
-*/
