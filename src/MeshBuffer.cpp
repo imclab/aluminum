@@ -75,6 +75,37 @@ namespace aluminum {
   }
   
   
+    
+    void MeshBuffer::drawTriangleStrip() {
+        
+#ifdef BUILD_IOS
+        
+        glBindVertexArrayOES( vao[0] );
+        {
+            if (useIndices) {
+                glDrawElements(GL_TRIANGLE_STRIP, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);         } else {
+                    //glDrawArrays(GL_TRIANGLES, 0, (GLsizei) data.vertices().size() * 9 ); //double check this!
+                    //printf("here...\n");
+                }
+        }
+        
+        
+#else
+        
+        glBindVertexArray( vao[0] );
+        {
+            if (useIndices) {
+                glDrawElements(GL_TRIANGLE_STRIP, (GLsizei) data.indices().size(), GL_UNSIGNED_INT, 0);
+            } else {
+                //glDrawArrays(GL_LINES, 0, (GLsizei) data.vertices().size() * 7 ); //double check this!
+                //printf("A here...\n");
+            }
+        }
+        
+#endif
+        
+    }
+    
   
   
   void MeshBuffer::checkAttributes(int p, int n, int tc, int c) {

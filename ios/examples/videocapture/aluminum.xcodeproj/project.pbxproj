@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		632B9DA017FB3A2E007AD5FE /* Test1.mm in Sources */ = {isa = PBXBuildFile; fileRef = 632B9D9F17FB3A2E007AD5FE /* Test1.mm */; };
 		92347A7617ADAD1600DAEB61 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92347A7517ADAD1600DAEB61 /* UIKit.framework */; };
 		92347A7817ADAD1600DAEB61 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92347A7717ADAD1600DAEB61 /* Foundation.framework */; };
 		92347A7A17ADAD1600DAEB61 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92347A7917ADAD1600DAEB61 /* CoreGraphics.framework */; };
@@ -44,6 +45,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		632B9D9F17FB3A2E007AD5FE /* Test1.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Test1.mm; sourceTree = "<group>"; };
 		92347A7217ADAD1600DAEB61 /* aluminum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = aluminum.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92347A7517ADAD1600DAEB61 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		92347A7717ADAD1600DAEB61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -91,8 +93,8 @@
 		92347AC917ADAE8500DAEB61 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		92347ACA17ADAE8500DAEB61 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		92347ACB17ADAE8500DAEB61 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		92347AD217ADD1E400DAEB61 /* basic.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.fsh; path = resources/basic.fsh; sourceTree = "<group>"; };
-		92347AD317ADD1E400DAEB61 /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vsh; path = resources/basic.vsh; sourceTree = "<group>"; };
+		92347AD217ADD1E400DAEB61 /* basic.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.fsh; path = resources/basic.fsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
+		92347AD317ADD1E400DAEB61 /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vsh; path = resources/basic.vsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
 		9299225417B34DA500FF13AA /* CaptureExample.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CaptureExample.mm; sourceTree = "<group>"; };
 		B583BC1517FA3ABF006CD22E /* CaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CaptureManager.h; path = ../../CaptureManager.h; sourceTree = "<group>"; };
 		B583BC1617FA3ABF006CD22E /* CaptureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CaptureManager.mm; path = ../../CaptureManager.mm; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			children = (
 				92347A7C17ADAD1600DAEB61 /* Supporting Files */,
 				92347AC217ADAD9500DAEB61 /* Basic.mm */,
+				632B9D9F17FB3A2E007AD5FE /* Test1.mm */,
 				9299225417B34DA500FF13AA /* CaptureExample.mm */,
 			);
 			path = aluminum;
@@ -317,6 +320,7 @@
 				92347AC117ADAD6D00DAEB61 /* Utils.cpp in Sources */,
 				92347AC417ADAD9500DAEB61 /* Basic.mm in Sources */,
 				9299225617B34DA500FF13AA /* CaptureExample.mm in Sources */,
+				632B9DA017FB3A2E007AD5FE /* Test1.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,7 +362,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -382,7 +386,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
