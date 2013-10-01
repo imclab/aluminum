@@ -267,10 +267,11 @@ namespace aluminum {
     type = _type; //GL_UNSIGNED_BYTE, GL_FLOAT, etc
     kind(GL_TEXTURE_2D);
     
-    mWrapMode = GL_REPEAT; //(GL_REPEAT);
-    mMinFilter = GL_NEAREST; //(GL_LINEAR);
-    mMaxFilter= GL_NEAREST; //(GL_LINEAR);
-    
+    /** GL_REPEAT is not fully supported on iOS, **ONLY** if you use Power-of-Two textures!!! To be safe, we are using the GL_CLAMP_TO_EDGE as the default **/
+      
+    mWrapMode = GL_CLAMP_TO_EDGE; //GL_REPEAT;
+    mMinFilter = GL_LINEAR; //GL_NEAREST;
+    mMaxFilter= GL_LINEAR; //GL_NEAREST;
     
     create2D();
   }
@@ -364,13 +365,18 @@ namespace aluminum {
       
       glTexParameteri(kind(), GL_TEXTURE_WRAP_S, wrapMode());
       glTexParameteri(kind(), GL_TEXTURE_WRAP_T, wrapMode());
+  
+      /*
+      for (int i = 0; i < width*height; i++) {
+      	//if (data[i] != 0)
+        {	printf("%d \n", data[i]); }
+      }
+      */
       
-      //for (int i = 0; i < width*height; i++) {
-      //	if (data[i] != 0) {	printf("%d \n", data[i]); }
-      //}
-      
-      glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, &data[0]);
-      
+    //  glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, &data[0]);
+      //  glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, &data[0]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &data[0]);
+        
     } glBindTexture(kind(), 0);
     
     dump();
@@ -410,6 +416,7 @@ namespace aluminum {
   Texture& Texture::bind (GLenum textureUnit) {
     glActiveTexture(textureUnit); //i.e GL_TEXTURE0, etc
     glBindTexture(kind(), id());
+      //printf("binding texture id %d\n", id());
     return *this;
   }
   

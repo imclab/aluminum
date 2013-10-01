@@ -314,6 +314,7 @@ namespace aluminum {
   }
 
 
+    #endif
 
   MeshData MeshUtils::makeCube(float s) {
 
@@ -547,7 +548,7 @@ namespace aluminum {
     return makeRectangle(2,2,flipHoriz,flipVert);
   }
 
-#endif
+
 
 
 }

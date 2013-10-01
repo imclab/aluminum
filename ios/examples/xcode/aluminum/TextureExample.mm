@@ -18,25 +18,34 @@ using namespace aluminum;
 using glm::ivec2;
 using glm::to_string;
 
-class Basic : public RendererIOS {
+class TextureExample : public RendererIOS {
   
   
   
 public:
   
   Program program;
-  GLuint vao, vbo, ibo, indices[3] = {0,1,2};
+   // GLuint vao; //, vbo, ibo, indices[3] = {0,1,2};
   
+    /*
   vec3 vertices[6] = {
     vec3( -1.0, -1.0, 0.0 ), vec3( 0.0, 1.0, 0.0 ), vec3( 1.0, -1.0, 0.0 ), //vertex
     vec3( 1.0,0.0,0.0 ), vec3( 0.0,1.0,0.0 ), vec3( 0.0,0.0,1.0 ), //color
   };
-  
+  */
+    
   GLint posLoc = 0;
-  GLint colLoc = 1;
+  GLint tcLoc = 1;
   mat4 proj;
-  mat4 mv;
+  mat4 view;
+    mat4 model;
   
+    Texture t1;
+    MeshBuffer mb1;
+    
+    float bloomAmt = 1.0;
+
+    
   int frameNum = 0;
   
   ResourceHandler rh;
@@ -49,7 +58,7 @@ public:
     p.attach(rh.contentsOfFile(sv), GL_VERTEX_SHADER);
     
     glBindAttribLocation(p.id(), posLoc, "vertexPosition");
-    glBindAttribLocation(p.id(), colLoc, "vertexColor");
+    glBindAttribLocation(p.id(), tcLoc, "vertexTexCoord");
    
     string sp = rh.pathToResource(name, "fsh");
     p.attach(rh.contentsOfFile(sp), GL_FRAGMENT_SHADER);
@@ -59,12 +68,15 @@ public:
   
   virtual void onCreate() {
     // Load our shader program
-    loadProgram(program, "basic");
+    loadProgram(program, "texture");
     
+      rh.loadTexture(t1, "javier.png");
+      
     // Create a vertex array object
-    glGenVertexArraysOES( 1, &vao );
-    glBindVertexArrayOES( vao );
+   // glGenVertexArraysOES( 1, &vao );
+   // glBindVertexArrayOES( vao );
     
+      /*
     // Create and initialize a buffer object
     glGenBuffers( 1, &vbo );
     glBindBuffer( GL_ARRAY_BUFFER, vbo );
@@ -73,43 +85,52 @@ public:
     glEnableVertexAttribArray( posLoc );
     glVertexAttribPointer( posLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0*sizeof(vec3)));
     
-    glEnableVertexAttribArray( colLoc );
-    glVertexAttribPointer( colLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(3*sizeof(vec3)));
+    glEnableVertexAttribArray( tcLoc );
+    glVertexAttribPointer( tcLoc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(3*sizeof(vec3)));
     
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*3, indices, GL_DYNAMIC_DRAW);
-    
-    // Set up modelvew and projection matrix
-    proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-    mv = glm::lookAt(vec3(0,0,-2.5), vec3(0,0,0), vec3(0,1,0) );
+    */
+      
+      mb1.init(MeshUtils::makeRectangle(), posLoc, -1, tcLoc, -1);
+      
+      proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+      view = glm::lookAt(vec3(0.0,0.0,2), vec3(0,0,0), vec3(0,1,0) );
+      model = glm::mat4();
+      
+      glEnable(GL_DEPTH_TEST);
+     
+      glViewport(0, 0, width, height);
+      glClearColor(1.0,0.3,0.3,1.0);
   }
   
   virtual void onFrame(){
     
-    AppDelegate *ad = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    EAGLView* ev = ad.glView;
+     // GLubyte* tdata = (GLubyte*)malloc( texture.width * texture.height * 4 );
+    //AppDelegate *ad = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
-    //for (UITouch* touch in ev->touches) {
-    
-
     // Clear viewport
-    glViewport(0, 0, width, height);
+    //glViewport(0, 0, width, height);
     
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // Draw our vbos to the screen
-    program.bind(); {
-      
-      glUniformMatrix4fv(program.uniform("mv"), 1, 0, ptr(mv));
-      glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
-      
-      glBindVertexArrayOES( vao );
-      glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-      glBindVertexArrayOES( 0 );
-    } program.unbind();
-    
-    
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+       glEnable(GL_TEXTURE_2D);
+      program.bind(); {
+          
+          glUniformMatrix4fv(program.uniform("model"), 1, 0, ptr(model));
+          glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(view));
+          glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
+          
+         // glUniform1f(program.uniform("bloom"), bloomAmt);
+          glUniform1i(program.uniform("tex0"), 0);
+          
+          //texture.dump();
+          
+          t1.bind(GL_TEXTURE0); {
+              mb1.draw();
+          } t1.unbind(GL_TEXTURE0);
+          
+      } program.unbind();
     frameNum++;
   }
   
@@ -141,8 +162,8 @@ public:
 };
 
 
-int __main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   
-  Basic().start();
+  TextureExample().start();
   
 }

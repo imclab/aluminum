@@ -240,8 +240,8 @@ public:
     
 };
 
-/*
+
 int main(){
     return TextureEx().start("aluminum::TextureEx", 100, 100, 400, 300);
 }
- */
+ 

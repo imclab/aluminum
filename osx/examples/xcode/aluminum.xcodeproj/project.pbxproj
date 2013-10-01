@@ -33,16 +33,14 @@
 		92E2749B178E133A00279684 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E2749A178E133A00279684 /* Foundation.framework */; };
 		92E274E0178E140D00279684 /* libfreeimage.3.15.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274D6178E140D00279684 /* libfreeimage.3.15.3.dylib */; };
 		92E274E1178E140D00279684 /* libassimp.3.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274D7178E140D00279684 /* libassimp.3.0.0.dylib */; };
-		92E274E2178E140D00279684 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274D8178E140D00279684 /* Carbon.framework */; };
-		92E274E3178E140D00279684 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274D9178E140D00279684 /* CoreMedia.framework */; };
-		92E274E4178E140D00279684 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274DA178E140D00279684 /* AVFoundation.framework */; };
-		92E274E5178E140D00279684 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274DB178E140D00279684 /* Foundation.framework */; };
-		92E274E6178E140D00279684 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274DC178E140D00279684 /* AppKit.framework */; };
-		92E274E7178E140D00279684 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274DD178E140D00279684 /* OpenGL.framework */; };
-		92E274E8178E140D00279684 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274DE178E140D00279684 /* QuartzCore.framework */; };
-		92E274E9178E140D00279684 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E274DF178E140D00279684 /* Cocoa.framework */; };
 		92E274EB178E146800279684 /* Main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 92E274EA178E146800279684 /* Main.mm */; };
-		B5E9428A17B03C2E000CD8B1 /* ResourceHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E9428817B03C2E000CD8B1 /* ResourceHandler.mm */; };
+		B583BC2B17FB7166006CD22E /* ResourceHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = B583BC2A17FB7166006CD22E /* ResourceHandler.mm */; };
+		B583BC2D17FB71D2006CD22E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC2C17FB71D2006CD22E /* OpenGL.framework */; };
+		B583BC2F17FB71DF006CD22E /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC2E17FB71DF006CD22E /* Carbon.framework */; };
+		B583BC3117FB71ED006CD22E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC3017FB71ED006CD22E /* CoreVideo.framework */; };
+		B583BC3317FB71FE006CD22E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC3217FB71FE006CD22E /* AVFoundation.framework */; };
+		B583BC3517FB7229006CD22E /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC3417FB7229006CD22E /* CoreMedia.framework */; };
+		B583BC3917FB7281006CD22E /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC3817FB7281006CD22E /* AppKit.framework */; };
 		B5E9428D17B0400A000CD8B1 /* BasicCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E9428B17B04009000CD8B1 /* BasicCapture.mm */; };
 /* End PBXBuildFile section */
 
@@ -106,17 +104,16 @@
 		92E274A0178E133A00279684 /* aluminum-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "aluminum-Prefix.pch"; sourceTree = "<group>"; };
 		92E274D6178E140D00279684 /* libfreeimage.3.15.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.15.3.dylib; path = ../../../../../../../../../opt/local/lib/libfreeimage.3.15.3.dylib; sourceTree = "<group>"; };
 		92E274D7178E140D00279684 /* libassimp.3.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.3.0.0.dylib; path = ../../../../../../../../../opt/local/lib/libassimp.3.0.0.dylib; sourceTree = "<group>"; };
-		92E274D8178E140D00279684 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/Carbon.framework; sourceTree = DEVELOPER_DIR; };
-		92E274D9178E140D00279684 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/CoreMedia.framework; sourceTree = DEVELOPER_DIR; };
-		92E274DA178E140D00279684 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
-		92E274DB178E140D00279684 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		92E274DC178E140D00279684 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
-		92E274DD178E140D00279684 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
-		92E274DE178E140D00279684 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
-		92E274DF178E140D00279684 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		92E274EA178E146800279684 /* Main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Main.mm; sourceTree = SOURCE_ROOT; };
-		B5E9428817B03C2E000CD8B1 /* ResourceHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourceHandler.mm; sourceTree = "<group>"; };
-		B5E9428917B03C2E000CD8B1 /* ResourceHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceHandler.h; sourceTree = "<group>"; };
+		B583BC2917FB7166006CD22E /* ResourceHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceHandler.h; path = ../../ResourceHandler.h; sourceTree = "<group>"; };
+		B583BC2A17FB7166006CD22E /* ResourceHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ResourceHandler.mm; path = ../../ResourceHandler.mm; sourceTree = "<group>"; };
+		B583BC2C17FB71D2006CD22E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		B583BC2E17FB71DF006CD22E /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		B583BC3017FB71ED006CD22E /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		B583BC3217FB71FE006CD22E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B583BC3417FB7229006CD22E /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		B583BC3617FB723F006CD22E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B583BC3817FB7281006CD22E /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		B5E9428B17B04009000CD8B1 /* BasicCapture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BasicCapture.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -125,17 +122,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B583BC3917FB7281006CD22E /* AppKit.framework in Frameworks */,
+				B583BC3517FB7229006CD22E /* CoreMedia.framework in Frameworks */,
+				B583BC3317FB71FE006CD22E /* AVFoundation.framework in Frameworks */,
+				B583BC3117FB71ED006CD22E /* CoreVideo.framework in Frameworks */,
+				B583BC2F17FB71DF006CD22E /* Carbon.framework in Frameworks */,
+				B583BC2D17FB71D2006CD22E /* OpenGL.framework in Frameworks */,
 				92E274E0178E140D00279684 /* libfreeimage.3.15.3.dylib in Frameworks */,
 				92E274E1178E140D00279684 /* libassimp.3.0.0.dylib in Frameworks */,
-				92E274E2178E140D00279684 /* Carbon.framework in Frameworks */,
-				92E274E3178E140D00279684 /* CoreMedia.framework in Frameworks */,
 				92E2749B178E133A00279684 /* Foundation.framework in Frameworks */,
-				92E274E4178E140D00279684 /* AVFoundation.framework in Frameworks */,
-				92E274E5178E140D00279684 /* Foundation.framework in Frameworks */,
-				92E274E6178E140D00279684 /* AppKit.framework in Frameworks */,
-				92E274E7178E140D00279684 /* OpenGL.framework in Frameworks */,
-				92E274E8178E140D00279684 /* QuartzCore.framework in Frameworks */,
-				92E274E9178E140D00279684 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,6 +173,13 @@
 		92E27499178E133A00279684 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B583BC3817FB7281006CD22E /* AppKit.framework */,
+				B583BC3617FB723F006CD22E /* QuartzCore.framework */,
+				B583BC3417FB7229006CD22E /* CoreMedia.framework */,
+				B583BC3217FB71FE006CD22E /* AVFoundation.framework */,
+				B583BC3017FB71ED006CD22E /* CoreVideo.framework */,
+				B583BC2E17FB71DF006CD22E /* Carbon.framework */,
+				B583BC2C17FB71D2006CD22E /* OpenGL.framework */,
 				92E2749A178E133A00279684 /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -216,8 +218,8 @@
 				92347AFF17ADD62600DAEB61 /* VideoPlayer.mm */,
 				92347B5C17AF3C4900DAEB61 /* CaptureManager.h */,
 				92347B5D17AF3C4900DAEB61 /* CaptureManager.mm */,
-				B5E9428917B03C2E000CD8B1 /* ResourceHandler.h */,
-				B5E9428817B03C2E000CD8B1 /* ResourceHandler.mm */,
+				B583BC2917FB7166006CD22E /* ResourceHandler.h */,
+				B583BC2A17FB7166006CD22E /* ResourceHandler.mm */,
 			);
 			name = osx;
 			sourceTree = "<group>";
@@ -256,14 +258,6 @@
 			children = (
 				92E274D6178E140D00279684 /* libfreeimage.3.15.3.dylib */,
 				92E274D7178E140D00279684 /* libassimp.3.0.0.dylib */,
-				92E274D8178E140D00279684 /* Carbon.framework */,
-				92E274D9178E140D00279684 /* CoreMedia.framework */,
-				92E274DA178E140D00279684 /* AVFoundation.framework */,
-				92E274DB178E140D00279684 /* Foundation.framework */,
-				92E274DC178E140D00279684 /* AppKit.framework */,
-				92E274DD178E140D00279684 /* OpenGL.framework */,
-				92E274DE178E140D00279684 /* QuartzCore.framework */,
-				92E274DF178E140D00279684 /* Cocoa.framework */,
 			);
 			name = frameworks;
 			sourceTree = "<group>";
@@ -324,6 +318,7 @@
 				92347AEF17ADD5F000DAEB61 /* Camera.cpp in Sources */,
 				92347AF017ADD5F000DAEB61 /* FBO.cpp in Sources */,
 				92347AF117ADD5F000DAEB61 /* Font.cpp in Sources */,
+				B583BC2B17FB7166006CD22E /* ResourceHandler.mm in Sources */,
 				92347AF217ADD5F000DAEB61 /* MeshBuffer.cpp in Sources */,
 				92347AF317ADD5F000DAEB61 /* MeshData.cpp in Sources */,
 				92347AF417ADD5F000DAEB61 /* MeshUtils.cpp in Sources */,
@@ -338,7 +333,6 @@
 				92347B4517ADE78700DAEB61 /* basic_s.fsh in Sources */,
 				92347B5E17AF3C4900DAEB61 /* CaptureManager.mm in Sources */,
 				9290558F17B00C32009C0688 /* BasicTexture.mm in Sources */,
-				B5E9428A17B03C2E000CD8B1 /* ResourceHandler.mm in Sources */,
 				B5E9428D17B0400A000CD8B1 /* BasicCapture.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,7 +423,7 @@
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
@@ -458,7 +452,7 @@
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;
 			};
 			name = Release;

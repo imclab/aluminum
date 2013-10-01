@@ -82,6 +82,6 @@ namespace aluminum {
   };
 
 
-} // al::
+}
 
 #endif

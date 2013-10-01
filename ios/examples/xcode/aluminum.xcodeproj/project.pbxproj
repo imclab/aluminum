@@ -38,6 +38,13 @@
 		92347AD617ADD1FE00DAEB61 /* basic.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 92347AD217ADD1E400DAEB61 /* basic.fsh */; };
 		92347AD717ADD1FE00DAEB61 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 92347AD317ADD1E400DAEB61 /* basic.vsh */; };
 		B583BC1417FA3A8A006CD22E /* ResourceHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = B583BC1317FA3A8A006CD22E /* ResourceHandler.mm */; };
+		B583BC1C17FB56D5006CD22E /* TextureExample.mm in Sources */ = {isa = PBXBuildFile; fileRef = B583BC1B17FB56D5006CD22E /* TextureExample.mm */; };
+		B583BC2017FB5776006CD22E /* hubble.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B583BC1D17FB5776006CD22E /* hubble.jpg */; };
+		B583BC2117FB5776006CD22E /* texture.fsh in Sources */ = {isa = PBXBuildFile; fileRef = B583BC1E17FB5776006CD22E /* texture.fsh */; };
+		B583BC2217FB5776006CD22E /* texture.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B583BC1F17FB5776006CD22E /* texture.vsh */; };
+		B583BC2317FB5CA4006CD22E /* texture.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B583BC1E17FB5776006CD22E /* texture.fsh */; };
+		B583BC2417FB5CA4006CD22E /* texture.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B583BC1F17FB5776006CD22E /* texture.vsh */; };
+		B583BC3B17FB7F44006CD22E /* javier.png in Resources */ = {isa = PBXBuildFile; fileRef = B583BC3A17FB7F44006CD22E /* javier.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +99,11 @@
 		92347AD317ADD1E400DAEB61 /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vsh; path = resources/basic.vsh; sourceTree = "<group>"; };
 		B583BC1217FA3A8A006CD22E /* ResourceHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceHandler.h; path = ../../ResourceHandler.h; sourceTree = "<group>"; };
 		B583BC1317FA3A8A006CD22E /* ResourceHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ResourceHandler.mm; path = ../../ResourceHandler.mm; sourceTree = "<group>"; };
+		B583BC1B17FB56D5006CD22E /* TextureExample.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextureExample.mm; sourceTree = "<group>"; };
+		B583BC1D17FB5776006CD22E /* hubble.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = hubble.jpg; path = resources/hubble.jpg; sourceTree = "<group>"; };
+		B583BC1E17FB5776006CD22E /* texture.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = texture.fsh; path = resources/texture.fsh; sourceTree = "<group>"; };
+		B583BC1F17FB5776006CD22E /* texture.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = texture.vsh; path = resources/texture.vsh; sourceTree = "<group>"; };
+		B583BC3A17FB7F44006CD22E /* javier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = javier.png; path = aluminum/resources/javier.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +128,7 @@
 		92347A6917ADAD1600DAEB61 = {
 			isa = PBXGroup;
 			children = (
+				B583BC3A17FB7F44006CD22E /* javier.png */,
 				92347AA017ADAD6D00DAEB61 /* src */,
 				92347A9F17ADAD5E00DAEB61 /* ios */,
 				92347A7B17ADAD1600DAEB61 /* aluminum */,
@@ -152,6 +165,7 @@
 			children = (
 				92347A7C17ADAD1600DAEB61 /* Supporting Files */,
 				92347AC217ADAD9500DAEB61 /* Basic.mm */,
+				B583BC1B17FB56D5006CD22E /* TextureExample.mm */,
 			);
 			path = aluminum;
 			sourceTree = "<group>";
@@ -161,6 +175,9 @@
 			children = (
 				92347AD217ADD1E400DAEB61 /* basic.fsh */,
 				92347AD317ADD1E400DAEB61 /* basic.vsh */,
+				B583BC1D17FB5776006CD22E /* hubble.jpg */,
+				B583BC1E17FB5776006CD22E /* texture.fsh */,
+				B583BC1F17FB5776006CD22E /* texture.vsh */,
 				92347A7D17ADAD1600DAEB61 /* aluminum-Info.plist */,
 				92347A7E17ADAD1600DAEB61 /* InfoPlist.strings */,
 				92347A8317ADAD1600DAEB61 /* aluminum-Prefix.pch */,
@@ -247,6 +264,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Angus Forbes";
+				TargetAttributes = {
+					92347A7117ADAD1600DAEB61 = {
+						DevelopmentTeam = TF6C4ANE37;
+					};
+				};
 			};
 			buildConfigurationList = 92347A6D17ADAD1600DAEB61 /* Build configuration list for PBXProject "aluminum" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -270,11 +292,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B583BC3B17FB7F44006CD22E /* javier.png in Resources */,
+				B583BC2317FB5CA4006CD22E /* texture.fsh in Resources */,
+				B583BC2417FB5CA4006CD22E /* texture.vsh in Resources */,
 				92347AD617ADD1FE00DAEB61 /* basic.fsh in Resources */,
 				92347AD717ADD1FE00DAEB61 /* basic.vsh in Resources */,
 				92347A8017ADAD1600DAEB61 /* InfoPlist.strings in Resources */,
 				92347A8817ADAD1600DAEB61 /* Default.png in Resources */,
 				92347A8A17ADAD1600DAEB61 /* Default@2x.png in Resources */,
+				B583BC2017FB5776006CD22E /* hubble.jpg in Resources */,
 				92347A8C17ADAD1600DAEB61 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -288,6 +314,7 @@
 			files = (
 				92347A9B17ADAD5500DAEB61 /* AppDelegate.mm in Sources */,
 				92347A9C17ADAD5500DAEB61 /* EAGLView.mm in Sources */,
+				B583BC1C17FB56D5006CD22E /* TextureExample.mm in Sources */,
 				92347A9D17ADAD5500DAEB61 /* RendererIOS.mm in Sources */,
 				92347A9E17ADAD5500DAEB61 /* ViewController.mm in Sources */,
 				B583BC1417FA3A8A006CD22E /* ResourceHandler.mm in Sources */,
@@ -297,8 +324,10 @@
 				92347ABA17ADAD6D00DAEB61 /* Font.cpp in Sources */,
 				92347ABB17ADAD6D00DAEB61 /* MeshBuffer.cpp in Sources */,
 				92347ABC17ADAD6D00DAEB61 /* MeshData.cpp in Sources */,
+				B583BC2117FB5776006CD22E /* texture.fsh in Sources */,
 				92347ABD17ADAD6D00DAEB61 /* MeshUtils.cpp in Sources */,
 				92347ABE17ADAD6D00DAEB61 /* Program.cpp in Sources */,
+				B583BC2217FB5776006CD22E /* texture.vsh in Sources */,
 				92347ABF17ADAD6D00DAEB61 /* Shapes.cpp in Sources */,
 				92347AC017ADAD6D00DAEB61 /* Texture.cpp in Sources */,
 				92347AC117ADAD6D00DAEB61 /* Utils.cpp in Sources */,
@@ -379,6 +408,8 @@
 		92347A9017ADAD1600DAEB61 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "aluminum/aluminum-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -386,7 +417,9 @@
 					/usr/local/include/,
 				);
 				INFOPLIST_FILE = "aluminum/aluminum-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -394,6 +427,8 @@
 		92347A9117ADAD1600DAEB61 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "aluminum/aluminum-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -401,7 +436,9 @@
 					/usr/local/include/,
 				);
 				INFOPLIST_FILE = "aluminum/aluminum-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -26,7 +26,6 @@ class Basic : public RendererIOS {
 public:
     
     ResourceHandler rh;
-
     
     Program program;
     

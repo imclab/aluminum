@@ -33,9 +33,12 @@ void ResourceHandler::loadTexture(Texture& t, const std::string& fname) {
   NSString* fileStr = [splits objectAtIndex:0];
   NSString* typeStr = [splits objectAtIndex:1];
   
+    cout << "in ResourceHandler::loadTexture, looking for <" << [fileStr UTF8String] << ">.<" << [typeStr UTF8String] << ">." << endl;
+    
   NSString* path = [[NSBundle mainBundle] pathForResource:fileStr ofType:typeStr];
-  cout << "in ResourceHandler::loadTexture : loading texture: " << fileStr << "." << typeStr << endl;
-  
+  cout << "in ResourceHandler::loadTexture : loading texture: " << [fileStr UTF8String] << "." << [typeStr UTF8String] << endl;
+    cout << "in ResourceHandler::pathToResource : pathStr = " << [path UTF8String] << endl;
+
   NSData *texData = [[NSData alloc] initWithContentsOfFile:path];
   UIImage *image = [[UIImage alloc] initWithData:texData];
   
@@ -53,15 +56,17 @@ void ResourceHandler::loadTexture(Texture& t, const std::string& fname) {
   CGColorSpaceRelease( colorSpace );
   CGContextClearRect( context, CGRectMake( 0, 0, _w, _h ) );
 
-  // CGContextTranslateCTM( context, 0, height - height );
+  // CGContextTranslateCTM( context, 0, _h - _h );
   // CGContextTranslateCTM(context, _w, 0);
   // CGContextScaleCTM(context, -1, 1);
   
   CGContextDrawImage( context, CGRectMake( 0, 0, _w, _h ), image.CGImage );
   
   CGContextRelease(context);
-  [texData release];
-  
+  //[texData release];
+    Texture::flipBufferY(data, _w, _h);
+    
   t = aluminum::Texture(data, _w, _h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+    
 }
 
