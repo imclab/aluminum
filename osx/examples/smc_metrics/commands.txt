@@ -1,5 +1,0 @@
-
-ls 30  | awk '{ printf("../AnalyzeFramesInFolder 30/%s 60 > 30/%s/metric.txt\n", $1, $1) }' | /bin/sh
-
-find 40 -name metric.txt  | awk '{ printf("cp %s /Users/angus.forbes/Dropbox/SubtleMotionCuesProject/mturkQUIZ/userstudy6/videos/%s\n", $1, $1) }' | /bin/sh
-
