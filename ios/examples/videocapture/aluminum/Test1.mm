@@ -19,12 +19,17 @@ using namespace aluminum;
 using glm::ivec2;
 using glm::to_string;
 
+const int Ryp = 600;
+const int Rxp = 600;
+
 class Test1 : public RendererIOS {
     
     
     
 public:
     
+    
+        
     ResourceHandler rh;
 
     
@@ -34,10 +39,16 @@ public:
     MeshBuffer mb;
     
     GLint posLoc = 0;
-    GLint colLoc = 1;
+    //GLint tcLoc = 1;
     
     mat4 proj;
     mat4 mv;
+    vec2 TouchCords;
+    
+    // texture variables
+    
+    Texture t1;
+    GLint tcLoc = 1;
     
     void loadProgram(Program &p, const std::string& name) {
         
@@ -48,6 +59,7 @@ public:
         
         glBindAttribLocation(p.id(), posLoc, "vertexPosition");
       //  glBindAttribLocation(p.id(), colLoc, "vertexColor");
+        glBindAttribLocation(p.id(), tcLoc, "vertexTexCoord");
         
         string sp = rh.pathToResource(name, "fsh");
         p.attach(rh.contentsOfFile(sp), GL_FRAGMENT_SHADER);
@@ -57,9 +69,9 @@ public:
     
     virtual void onCreate() {
         // Load our shader program
-        loadProgram(program, "basic");
+        loadProgram(program, "basicNew");
        
-        
+         rh.loadTexture(t1, "javier.png");
         // create the data mesh
         
         
@@ -68,11 +80,21 @@ public:
         float yl = -1.0;
         float yu = 1.0;
         
-        const int Ryp = 200;
-        const int Rxp = 200;
+      
+        const int numElems = Ryp*Rxp;
+        printf("numElems = %zd\n", numElems);
         
-        vec3 vs[Ryp*Rxp];
+        //data = (GLubyte*) malloc (_w*_h*4*sizeof(GLubyte));
         
+        
+        vec3 *ts = (vec3*) malloc(numElems * sizeof(vec3));
+        vec3 *vs = (vec3*) malloc(numElems * sizeof(vec3));
+        
+        //vec3 ts[numElems] = {vec3()};
+        //vec3 vs[numElems] = {vec3()};
+ 
+      //  printf("sizeof vec3 = %ld", sizeof(vec3));
+      //  exit(0);
         for (int y =0; y<Ryp; y++) {
             for (int x=0; x < Rxp ; x++) {
                 
@@ -80,14 +102,19 @@ public:
                 vs[Rxp*y+x].y= yl +y*(yu-yl)/(float)(Ryp-1.0);
                 vs[Rxp*y+x].z = 0.0f;
                 
-//                 TextuCoordsA[RxA*y+x].x = TextuAmplifier.width*x/(float)RxA;
-//                 TextuCoordsA[RxA*y+x].y = TextuAmplifier.height - TextuAmplifier.height*y/(float)RyA;
+                ts[Rxp*y+x].x = x/(float)Rxp;
+                ts[Rxp*y+x].y = 1.0 - y/(float)Ryp;
+                ts[Rxp*y+x].z = 0.0;
+                
+               // printf("idx = %d\n", Rxp*y+x);
             }
         }
         
         
          // index vector
-         GLuint is[Rxp*2*(Ryp-1)+2*(Ryp-2)];
+     //   printf("num elems in is = %d\n", (Rxp*2*(Ryp-1)+2*(Ryp-2)));
+         //GLuint is[Rxp*2*(Ryp-1)+2*(Ryp-2)];
+        GLuint *is = (GLuint*) malloc(  (Rxp*2*(Ryp-1)+2*(Ryp-2)) * sizeof(GLuint));
         
         int q =0;
         
@@ -97,6 +124,8 @@ public:
                 q++;
                 is[q] = x + (y+1)*Rxp;
                 q++;
+                
+               // printf("q = %d\n", q);
             } 
             if( y < Ryp-2){ // the degenerate triangles
                 
@@ -106,7 +135,10 @@ public:
                 //repiting next one
                 is[q] =  (y+1)*Rxp;
                 q++;
-            } 
+            
+             // printf("q = %d\n", q);
+            }
+            
         }
         
         
@@ -121,32 +153,45 @@ public:
 //            vec3( 1.0,0.0,0.0 ), vec3( 0.0,1.0,0.0 ), vec3( 0.0,0.0,1.0 )};
         
         md.vertex(vs,Ryp*Rxp);
+        md.texCoord(ts, Ryp*Rxp);
 //        md.vertex(vs, 3);
  //       md.color(cs, 3);
 //        md.index(is, 3);
         md.index(is, Rxp*2*(Ryp-1)+2*(Ryp-2));        
 //        mb.init(md, posLoc, -1, -1, colLoc);
-        mb.init(md, posLoc, -1, -1, -1);
+        mb.init(md, posLoc, -1,tcLoc, -1);
         
         // Set up modelvew and projection matrix
-        proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
-        mv = glm::lookAt(vec3(0,0,-2.5), vec3(0,0,0), vec3(0,1,0) );
+       // proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
+        // Prjection for plane (-1,1,-1,1) filling the screen
+        // camera at 5.0 near plane 1.0
+        proj = glm::frustum(-1.0/5.0, 1.0/5.0, -1.0/5.0, 1.0/5.0, 1.0, 10.0);
+        mv = glm::lookAt(vec3(0,0,5.0), vec3(0,0,-5.0), vec3(0,1,0) );
+  
+         glEnable(GL_DEPTH_TEST);
+    
+        
+        free(ts);
+        free(vs);
+        free(is);
     }
     
     virtual void onFrame(){
-        const int Ryp =200;
-        const int Rxp = 200;
-        // Clear viewport
+       // Clear viewport
         glViewport(0, 0, width, height);
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_TEXTURE_2D);
         
         program.bind(); {
             glUniformMatrix4fv(program.uniform("mv"), 1, 0, ptr(mv));
             glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
-            
-          //  glDrawElements(GL_TRIANGLE_STRIP, Rxp*2*(Ryp-1)+2*(Ryp-2) , GL_UNSIGNED_INT, 0);
+            glUniform2fv(program.uniform("MouseCords"), 1, ptr(TouchCords));
+            glUniform1i(program.uniform("tex0"), 0);
+            t1.bind(GL_TEXTURE0); {
             mb.drawTriangleStrip();
+            } t1.unbind(GL_TEXTURE0);
+        
         } program.unbind();
         
         
@@ -156,10 +201,14 @@ public:
     
     virtual void touchBegan(ivec2 mouse) {
         cout << "touch began: " << to_string(mouse) << endl;
+        TouchCords.x = 2*(mouse.x/(float)width - 0.5);
+        TouchCords.y = 2*(mouse.y/(float)height - 0.5);
     }
     
     virtual void touchMoved(ivec2 prevMouse, ivec2 mouse) {
         cout << "touch moved: prev:" << to_string(prevMouse) << ", current: " << to_string(prevMouse) << endl;
+        TouchCords.x =  2*(mouse.x/(float)width - 0.5);
+        TouchCords.y = 2*(mouse.y/(float)height - 0.5);
     }
     
     virtual void touchEnded(ivec2 mouse) {
