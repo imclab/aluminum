@@ -25,33 +25,28 @@ const int Rxp = 600;
 
 class Test1 : public RendererIOS {
     
-   
+    
     
 public:
-    
-    
     ResourceHandler rh;
-    
     
     Program program;
     
     MeshData md;
     MeshBuffer mb;
+    Texture t1;
+    
+    CaptureManager* cm;
     
     GLint posLoc = 0;
-    //GLint tcLoc = 1;
+    GLint tcLoc = 1;
     
     mat4 proj;
     mat4 mv;
     vec2 TouchCords;
     
-    // texture variables
-    
-    Texture t1;
-    GLint tcLoc = 1;
-    
-    // capture variables
-    CaptureManager* cm;
+    mat4 webcamMatrix = mat4();
+    mat4 touchMatrix = mat4();
     
     void loadProgram(Program &p, const std::string& name) {
         
@@ -61,7 +56,6 @@ public:
         p.attach(rh.contentsOfFile(sv), GL_VERTEX_SHADER);
         
         glBindAttribLocation(p.id(), posLoc, "vertexPosition");
-        //  glBindAttribLocation(p.id(), colLoc, "vertexColor");
         glBindAttribLocation(p.id(), tcLoc, "vertexTexCoord");
         
         string sp = rh.pathToResource(name, "fsh");
@@ -74,16 +68,25 @@ public:
         // Load our shader program
         loadProgram(program, "basicNew");
         
-        
         rh.loadTexture(t1, "grid3.png");
         // create the data mesh
         
         mb.init(MeshUtils::makeSurface(Rxp, Ryp, -1.0, 1.0, -1.0, 1.0, true), posLoc, -1, tcLoc, -1);
-      
+        
+        /* Javier -- if you are planning on doing a full screen app, you don't need to use projection - ah I see you are using the z-axis for distorting the mesh */
         // Prjection for plane (-1,1,-1,1) filling the screen
         // camera at 3.0 near plane 1.0
         proj = glm::frustum(-1.0/3.0, 1.0/3.0, -1.0/3.0, 1.0/3.0, 1.0, 20.0);
         mv = glm::lookAt(vec3(0,0,3.0), vec3(0,0,-5.0), vec3(0,1,0) );
+        
+        //set up matrices to account for webcam distortion - this is for front camera/portrait. Will be different for other orientations.
+        webcamMatrix = glm::scale(webcamMatrix, vec3(-1.0,1.0,1.0));
+        webcamMatrix = glm::rotate(webcamMatrix , -90.0f, vec3(0,0,1));
+        mv *= webcamMatrix;
+        
+        touchMatrix = glm::scale(touchMatrix, vec3(1.0,-1.0,1.0));
+        touchMatrix = glm::rotate(touchMatrix , -90.0f, vec3(0,0,1));
+        
         
         glEnable(GL_DEPTH_TEST);
         glEnable (GL_BLEND);
@@ -103,24 +106,32 @@ public:
         glEnable(GL_TEXTURE_2D);
         
         
+        
         [cm updateTextureWithNextFrame];
         
         if (!cm.textureReady) {
             return;
         }
         
-      //  printf("here... drawing texture?\n");
+        
         program.bind(); {
             glUniformMatrix4fv(program.uniform("mv"), 1, 0, ptr(mv));
             glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
-            glUniform2fv(program.uniform("MouseCords"), 1, ptr(TouchCords));
+            
+            
+            vec4 touchVec = touchMatrix * vec4(TouchCords.x, TouchCords.y, 0.0f, 1.0f); //align the touches with the transformed webcam view
+            glUniform2fv(program.uniform("MouseCords"), 1, ptr(vec2(touchVec.x, touchVec.y)));
+            
             glUniform1i(program.uniform("tex0"), 0);
             glUniform1i(program.uniform("tex1"), 1);
-            t1.bind(GL_TEXTURE1); {
-            cm.captureTexture.bind(GL_TEXTURE0); {
-                mb.drawTriangleStrip();
-            } cm.captureTexture.unbind(GL_TEXTURE0);
-                } t1.unbind(GL_TEXTURE1);
+            
+            cm.captureTexture.bind(GL_TEXTURE0);
+            t1.bind(GL_TEXTURE1);
+            
+            mb.drawTriangleStrip();
+            
+            cm.captureTexture.unbind(GL_TEXTURE0);
+            t1.unbind(GL_TEXTURE1);
             
         } program.unbind();
         

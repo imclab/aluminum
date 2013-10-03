@@ -12,6 +12,6 @@
 
 @property(nonatomic, retain) EAGLView *glView;
 
-- (id)initWithFrame:(CGRect)_screenBounds;
+//- (id)initWithFrame:(CGRect)_screenBounds;
 
 @end

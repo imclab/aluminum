@@ -30,6 +30,7 @@ void main() {
    
     color = vec4(Grayval,Grayval,Grayval,1.0);
     
-  gl_Position = proj * mv * newPos; 
+  gl_Position = proj * mv * newPos;
+    
 } 
 
