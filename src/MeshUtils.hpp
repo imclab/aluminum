@@ -82,6 +82,7 @@ using glm::mat4;
       static MeshData makeClipRectangle(bool flipHoriz, bool flipVert);
    
       static MeshData makeRectangle();
+      static MeshData makeSurface(int Xres, int Yres, float xl, float xu, float yl, float yu, bool GenTextData);
 
      //static MeshData& makeRectangle3( MeshData &m, vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
      //static MeshData& makeRectangle3( MeshData &m, vec2 vLL, vec2 vUR, vec2 tcLL, vec2 tcUR);

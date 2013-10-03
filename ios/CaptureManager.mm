@@ -134,7 +134,7 @@
 
    
     if ([self isCapturing] && newFrame == true) {
-        printf("here! adding new data to texture...\n");
+        //printf("here! adding new data to texture...\n");
         captureTexture.bind(GL_TEXTURE0); {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, captureTexture.width, captureTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
         } captureTexture.unbind(GL_TEXTURE0);
@@ -230,7 +230,7 @@
   }
   
   if (!newFrame) {
-      printf("read new data from camera\n");
+    //  printf("read new data from camera\n");
     imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
     CVPixelBufferLockBaseAddress( imageBuffer, 0 ); {
