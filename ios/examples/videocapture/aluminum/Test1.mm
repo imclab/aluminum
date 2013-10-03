@@ -20,8 +20,8 @@ using namespace aluminum;
 using glm::ivec2;
 using glm::to_string;
 
-const int Ryp = 600;
-const int Rxp = 600;
+const int Ryp = 100;
+const int Rxp = 100;
 
 class Test1 : public RendererIOS {
     
@@ -76,8 +76,10 @@ public:
         /* Javier -- if you are planning on doing a full screen app, you don't need to use projection - ah I see you are using the z-axis for distorting the mesh */
         // Prjection for plane (-1,1,-1,1) filling the screen
         // camera at 3.0 near plane 1.0
-        proj = glm::frustum(-1.0/3.0, 1.0/3.0, -1.0/3.0, 1.0/3.0, 1.0, 20.0);
-        mv = glm::lookAt(vec3(0,0,3.0), vec3(0,0,-5.0), vec3(0,1,0) );
+        //proj = glm::frustum(-1.0/3.0, 1.0/3.0, -1.0/3.0, 1.0/3.0, 1.0, 20.0);
+        //mv = glm::lookAt(vec3(0,0,3.0), vec3(0,0,-5.0), vec3(0,1,0) );
+        proj = glm::mat4();
+        mv = glm::mat4();
         
         //set up matrices to account for webcam distortion - this is for front camera/portrait. Will be different for other orientations.
         webcamMatrix = glm::scale(webcamMatrix, vec3(-1.0,1.0,1.0));
@@ -126,12 +128,12 @@ public:
             glUniform1i(program.uniform("tex1"), 1);
             
             cm.captureTexture.bind(GL_TEXTURE0);
-            t1.bind(GL_TEXTURE1);
+          //  t1.bind(GL_TEXTURE1);
             
             mb.drawTriangleStrip();
             
             cm.captureTexture.unbind(GL_TEXTURE0);
-            t1.unbind(GL_TEXTURE1);
+           // t1.unbind(GL_TEXTURE1);
             
         } program.unbind();
         
