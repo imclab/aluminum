@@ -442,6 +442,83 @@ namespace aluminum {
     return makeRectangle(v0,v1,v2,v3,t0,t1,t2,t3);
   }
 
+    
+    
+    
+    
+    MeshData MeshUtils::makeSurface(int Xres, int Yres, float xl, float xu, float yl, float yu, bool GenTextData) {
+    // plane surface with triangle strip in the square x-y [xl,xu,yl,yu],
+    //    resolution Xres, Yres
+        
+        
+        MeshData m;
+
+
+         vec3* vs = new vec3[Xres * Yres];
+        
+        vec3* ts;
+        if (GenTextData){
+            ts = new vec3[Xres * Yres];
+        }
+        GLuint *is = new GLuint [(Xres*2*(Yres-1)+2*(Yres-2))];
+        
+        
+        
+        
+        
+        for (int y =0; y<Yres; y++) {
+            for (int x=0; x < Xres ; x++) {
+                
+                vs[Xres*y+x].x= xl +x*(xu-xl)/(float)(Xres-1.0);
+                vs[Xres*y+x].y= yl +y*(yu-yl)/(float)(Yres-1.0);
+                vs[Xres*y+x].z = 0.0f;
+                
+                if (GenTextData){
+                ts[Xres*y+x].x = x/(float)Xres;
+                ts[Xres*y+x].y = 1.0 - y/(float)Yres;
+                ts[Xres*y+x].z = 0.0;
+                }
+         
+            }
+        }
+        
+        // Index data
+        
+        int q =0;
+        
+        for (int y =0; y<Yres-1; y++) {
+            for (int x=0; x < Xres ; x++) {
+                is[q] = x + y*Xres;
+                q++;
+                is[q] = x + (y+1)*Xres;
+                q++;
+            }
+            if( y < Yres-2){ // the degenerate triangles
+                
+                //repiting last one
+                is[q] = (Xres-1) + (y+1)*Xres;
+                q++;
+                //repiting next one
+                is[q] =  (y+1)*Xres;
+                q++;
+            }
+            
+        }
+        
+        m.vertex(vs,Xres*Yres);
+        m.texCoord(ts, Xres*Yres);
+        m.index(is, Xres*2*(Yres-1)+2*(Yres-2));
+        
+        delete vs;
+        if(GenTextData){
+        delete ts;
+        }
+        delete is;
+        return m;
+    }
+    
+    
+    
   /*
   MeshData& MeshUtils::makeRectangle3(MeshData &m, vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3) {
 

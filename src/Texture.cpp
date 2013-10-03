@@ -236,7 +236,7 @@ namespace aluminum {
     kind(GL_TEXTURE_2D);
     
     
-    mWrapMode = GL_REPEAT; //(GL_REPEAT);
+    mWrapMode = GL_CLAMP_TO_EDGE; //GL_REPEAT; //(GL_REPEAT);
     mMinFilter = GL_NEAREST; //(GL_LINEAR);
     mMaxFilter= GL_NEAREST; //(GL_LINEAR);
     

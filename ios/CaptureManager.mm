@@ -126,20 +126,27 @@
 - (bool) updateTextureWithNextFrame {
   
   if (!firstTime && !textureReady) {
-    captureTexture = Texture(dimensions.width, dimensions.height, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
-    textureReady = true;
+    //captureTexture = Texture(dimensions.width, dimensions.height, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+      captureTexture = Texture(dimensions.width, dimensions.height, GL_RGBA, GL_RGB, GL_UNSIGNED_BYTE);
+      
+      textureReady = true;
   }
-  
-  if ([self isCapturing] && newFrame == true) {
-    captureTexture.bind(GL_TEXTURE0); {
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, captureTexture.width, captureTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-    } captureTexture.unbind(GL_TEXTURE0);
+
+   
+    if ([self isCapturing] && newFrame == true) {
+        //printf("here! adding new data to texture...\n");
+        captureTexture.bind(GL_TEXTURE0); {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, captureTexture.width, captureTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+        } captureTexture.unbind(GL_TEXTURE0);
+        
+        newFrame = false;
+     
+        return true;
+    }
     
-    newFrame = false;
-    return true;
-  }
-  
-  return false;
+    
+    
+    return false;
 }
 
 -(void) setTextureDimensions {
@@ -223,6 +230,7 @@
   }
   
   if (!newFrame) {
+    //  printf("read new data from camera\n");
     imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
     CVPixelBufferLockBaseAddress( imageBuffer, 0 ); {
