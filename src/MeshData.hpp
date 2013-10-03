@@ -177,12 +177,15 @@ namespace aluminum {
     void vertex(const vec3& v){
       vertices().push_back(v);
     }
-    void vertex(const vec3 *buf, int size) {
+    
+      void vertex(const vec3 *buf, int size) {
         for(int i=0; i<size; ++i) {
             vertex(buf[i][0], buf[i][1], buf[i][2]);
         }
     }
     
+      
+      
     
     /// Get number of faces (assumes triangles or quads)
     //	int numFaces() const { return mIndices.size() / ( ( mPrimitive == Graphics::TRIANGLES ) ? 3 : 4 ); }

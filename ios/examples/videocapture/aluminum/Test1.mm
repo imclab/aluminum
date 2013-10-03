@@ -12,7 +12,7 @@
 #import "AppDelegate.h"
 
 #import "ResourceHandler.h"
-
+#include <array>
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
 using namespace aluminum;
@@ -21,9 +21,17 @@ using glm::to_string;
 
 class Test1 : public RendererIOS {
     
-    
+   
     
 public:
+    
+    
+    static const int Ryp = 2800;
+    static const int Rxp = 2800;
+    
+    //vec3 vs[Ryp*Rxp];
+    //std::array<vec3,Rxp*Ryp> vs;
+    //std::array<GLuint,Rxp*2*(Ryp-1)+2*(Ryp-2)> is;
     
     ResourceHandler rh;
 
@@ -68,10 +76,8 @@ public:
         float yl = -1.0;
         float yu = 1.0;
         
-        const int Ryp = 200;
-        const int Rxp = 200;
-        
-        vec3 vs[Ryp*Rxp];
+    
+        vec3* vs = new vec3[Rxp * Ryp];
         
         for (int y =0; y<Ryp; y++) {
             for (int x=0; x < Rxp ; x++) {
@@ -87,7 +93,8 @@ public:
         
         
          // index vector
-         GLuint is[Rxp*2*(Ryp-1)+2*(Ryp-2)];
+        
+        GLuint* is = new GLuint[Rxp*2*(Ryp-1)+2*(Ryp-2)];
         
         int q =0;
         
@@ -124,7 +131,7 @@ public:
 //        md.vertex(vs, 3);
  //       md.color(cs, 3);
 //        md.index(is, 3);
-        md.index(is, Rxp*2*(Ryp-1)+2*(Ryp-2));        
+        md.index(is, Rxp*2*(Ryp-1)+2*(Ryp-2));
 //        mb.init(md, posLoc, -1, -1, colLoc);
         mb.init(md, posLoc, -1, -1, -1);
         
@@ -134,8 +141,8 @@ public:
     }
     
     virtual void onFrame(){
-        const int Ryp =200;
-        const int Rxp = 200;
+        //const int Ryp = 200;
+        //const int Rxp = 200;
         // Clear viewport
         glViewport(0, 0, width, height);
         
