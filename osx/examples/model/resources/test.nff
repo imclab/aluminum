@@ -1,0 +1,13 @@
+
+#higher number = greater tesselation. I think 4 is default
+tess 3
+ 
+# sphere at point (0,0,0) with radius 2
+s 1 0 0 2
+
+#tet 0 0 0 1
+#oct 0 0 0 2
+#dod 0 0 0 2
+
+# cube at (0,0,0) with radius 2
+#hex 0 0 0 2
