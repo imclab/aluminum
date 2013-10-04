@@ -68,10 +68,12 @@ public:
         // Load our shader program
         loadProgram(program, "basicNew");
         
-        rh.loadTexture(t1, "grid3.png");
+        //rh.loadTexture(t1, "grid3.png");
         // create the data mesh
         
-        mb.init(MeshUtils::makeSurface(Rxp, Ryp, -1.0, 1.0, -1.0, 1.0, true), posLoc, -1, tcLoc, -1);
+        mb.init(MeshUtils::makeClipGrid(Rxp, Ryp), posLoc, -1, tcLoc, -1);
+
+      //  mb.init(MeshUtils::makeSurface(Rxp, Ryp, -1.0, 1.0, -1.0, 1.0, true), posLoc, -1, tcLoc, -1);
         
         /* Javier -- if you are planning on doing a full screen app, you don't need to use projection - ah I see you are using the z-axis for distorting the mesh */
         // Prjection for plane (-1,1,-1,1) filling the screen
@@ -120,12 +122,11 @@ public:
             glUniformMatrix4fv(program.uniform("mv"), 1, 0, ptr(mv));
             glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(proj));
             
-            
             vec4 touchVec = touchMatrix * vec4(TouchCords.x, TouchCords.y, 0.0f, 1.0f); //align the touches with the transformed webcam view
             glUniform2fv(program.uniform("MouseCords"), 1, ptr(vec2(touchVec.x, touchVec.y)));
             
             glUniform1i(program.uniform("tex0"), 0);
-            glUniform1i(program.uniform("tex1"), 1);
+            //glUniform1i(program.uniform("tex1"), 1);
             
             cm.captureTexture.bind(GL_TEXTURE0);
           //  t1.bind(GL_TEXTURE1);
