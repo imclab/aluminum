@@ -462,6 +462,11 @@ FBO& FBO::unbind() {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   return *this;
 }
+    
+    void FBO::unbindAll() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    }
 
 
 

@@ -59,7 +59,14 @@ CocoaGL* RendererOSX::makeGLView(int w, int h) {
 }
 
 
+void RendererOSX::createDefaultVAO() {
+    glGenVertexArrays(1, &_glVaoID );
+    
+}
 
+void RendererOSX::bindDefaultVAO() {
+    glBindVertexArray( _glVaoID );
+}
 
 
 

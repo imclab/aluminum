@@ -95,6 +95,11 @@ public:
   CocoaGL* getView();
   CocoaGL* view;
   
+  GLuint _glVaoID;
+ void createDefaultVAO();
+ void bindDefaultVAO();
+    
+    
 };
 
 

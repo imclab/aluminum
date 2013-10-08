@@ -77,12 +77,16 @@ public:
         
         loadProgram(program, "texture");
         
-        mb1.init(MeshUtils::makeRectangle(), posLoc, -1, texCoordLoc, -1);
+        mb1.init(MeshUtils::makeClipRectangle(), posLoc, -1, texCoordLoc, -1);
         
         
         proj = glm::perspective(45.0, 1.0, 0.1, 100.0);
         view = glm::lookAt(vec3(0.0,0.0,-2), vec3(0,0,0), vec3(0,1,0) );
         model = glm::mat4();
+        
+        view = glm::mat4();
+        proj = glm::mat4();
+        
         
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_DEPTH_TEST);
@@ -144,7 +148,7 @@ public:
          return;
          }
          */
-        printf("onFrame IN\n");
+     //   printf("onFrame IN\n");
         
         glClearColor(0.0,1.0,0.0,1.0);
         
@@ -196,7 +200,7 @@ public:
         
         // cm->newFrame = false;
         
-        printf("onFrame OUT\n");
+     //   printf("onFrame OUT\n");
         
         
     }
@@ -241,7 +245,8 @@ public:
 };
 
 
-int main(){
+int tex_main(){
     return TextureEx().start("aluminum::TextureEx", 100, 100, 400, 300);
 }
+
  

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9207035F18038FD3006A8A22 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9207035E18038FD3006A8A22 /* CoreData.framework */; };
+		920703611803A00C006A8A22 /* CellularAutomata.mm in Sources */ = {isa = PBXBuildFile; fileRef = 920703601803A00C006A8A22 /* CellularAutomata.mm */; };
 		92347AEE17ADD5F000DAEB61 /* Behavior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AD817ADD5F000DAEB61 /* Behavior.cpp */; };
 		92347AEF17ADD5F000DAEB61 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347ADA17ADD5F000DAEB61 /* Camera.cpp */; };
 		92347AF017ADD5F000DAEB61 /* FBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347ADC17ADD5F000DAEB61 /* FBO.cpp */; };
@@ -41,6 +43,8 @@
 		B583BC3317FB71FE006CD22E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC3217FB71FE006CD22E /* AVFoundation.framework */; };
 		B583BC3517FB7229006CD22E /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC3417FB7229006CD22E /* CoreMedia.framework */; };
 		B583BC3917FB7281006CD22E /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B583BC3817FB7281006CD22E /* AppKit.framework */; };
+		B583BC3E18047C83006CD22E /* CA.fsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = B583BC3C18047C83006CD22E /* CA.fsh */; };
+		B583BC3F18047C83006CD22E /* CA.vsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = B583BC3D18047C83006CD22E /* CA.vsh */; };
 		B5E9428D17B0400A000CD8B1 /* BasicCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E9428B17B04009000CD8B1 /* BasicCapture.mm */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +55,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
+				B583BC3E18047C83006CD22E /* CA.fsh in CopyFiles */,
+				B583BC3F18047C83006CD22E /* CA.vsh in CopyFiles */,
 				9290558C17AF9710009C0688 /* mak.png in CopyFiles */,
 				92347B6117AF452E00DAEB61 /* texture.fsh in CopyFiles */,
 				92347B6217AF452E00DAEB61 /* texture.vsh in CopyFiles */,
@@ -62,6 +68,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9207035E18038FD3006A8A22 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		920703601803A00C006A8A22 /* CellularAutomata.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CellularAutomata.mm; sourceTree = "<group>"; };
 		92347AD817ADD5F000DAEB61 /* Behavior.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = Behavior.cpp; path = ../../../src/Behavior.cpp; sourceTree = "<group>"; };
 		92347AD917ADD5F000DAEB61 /* Behavior.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Behavior.hpp; path = ../../../src/Behavior.hpp; sourceTree = "<group>"; };
 		92347ADA17ADD5F000DAEB61 /* Camera.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = Camera.cpp; path = ../../../src/Camera.cpp; sourceTree = "<group>"; };
@@ -114,6 +122,8 @@
 		B583BC3417FB7229006CD22E /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		B583BC3617FB723F006CD22E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B583BC3817FB7281006CD22E /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		B583BC3C18047C83006CD22E /* CA.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CA.fsh; path = Resources/CA.fsh; sourceTree = "<group>"; };
+		B583BC3D18047C83006CD22E /* CA.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CA.vsh; path = Resources/CA.vsh; sourceTree = "<group>"; };
 		B5E9428B17B04009000CD8B1 /* BasicCapture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BasicCapture.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -122,6 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9207035F18038FD3006A8A22 /* CoreData.framework in Frameworks */,
 				B583BC3917FB7281006CD22E /* AppKit.framework in Frameworks */,
 				B583BC3517FB7229006CD22E /* CoreMedia.framework in Frameworks */,
 				B583BC3317FB71FE006CD22E /* AVFoundation.framework in Frameworks */,
@@ -140,6 +151,8 @@
 		92347B3117ADDC1500DAEB61 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B583BC3C18047C83006CD22E /* CA.fsh */,
+				B583BC3D18047C83006CD22E /* CA.vsh */,
 				92347B5F17AF452D00DAEB61 /* texture.fsh */,
 				92347B6017AF452D00DAEB61 /* texture.vsh */,
 				92347B3817ADE2C800DAEB61 /* basic_s.fsh */,
@@ -152,6 +165,7 @@
 		92E2748E178E133A00279684 = {
 			isa = PBXGroup;
 			children = (
+				9207035E18038FD3006A8A22 /* CoreData.framework */,
 				9290558B17AF9710009C0688 /* mak.png */,
 				92E274D5178E13FC00279684 /* frameworks */,
 				92E274D4178E13C200279684 /* aluminum */,
@@ -188,6 +202,7 @@
 		92E2749C178E133A00279684 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				920703601803A00C006A8A22 /* CellularAutomata.mm */,
 				92E274EA178E146800279684 /* Main.mm */,
 				9290558E17B00C32009C0688 /* BasicTexture.mm */,
 				B5E9428B17B04009000CD8B1 /* BasicCapture.mm */,
@@ -334,6 +349,7 @@
 				92347B5E17AF3C4900DAEB61 /* CaptureManager.mm in Sources */,
 				9290558F17B00C32009C0688 /* BasicTexture.mm in Sources */,
 				B5E9428D17B0400A000CD8B1 /* BasicCapture.mm in Sources */,
+				920703611803A00C006A8A22 /* CellularAutomata.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

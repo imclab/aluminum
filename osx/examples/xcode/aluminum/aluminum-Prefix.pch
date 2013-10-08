@@ -3,6 +3,7 @@
 //
 
 #ifdef __OBJC__
+#import <CoreData/CoreData.h>
   #import <Foundation/Foundation.h>
   #import <OpenGL/gl3.h>
   #import <Cocoa/Cocoa.h>

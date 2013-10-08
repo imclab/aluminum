@@ -33,6 +33,7 @@ namespace aluminum {
       Texture(GLubyte* data, int w, int h, int d, GLint _internalFormat, GLenum _format, GLenum _type);
       Texture& create3D();
           
+      Texture& updateData(GLubyte* new_data_of_same_size_and_type_as_before) ;
       Texture& updateData() ;
       Texture& updateParameters() ;
 
@@ -63,7 +64,8 @@ namespace aluminum {
       int height;
       int depth; //only for GL_TEXTURE_3D
 
-      const GLubyte* data; //does this need to be const?
+      //const
+      GLubyte* data; //does this need to be const?
 
     protected:
 

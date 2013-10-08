@@ -233,6 +233,7 @@ public:
   
 };
 
+
 int __main(){
   return CaptureEx().start("aluminum::TextureEx", 100, 100, 800, 600);
 }

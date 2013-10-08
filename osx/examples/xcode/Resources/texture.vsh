@@ -12,7 +12,8 @@ in vec4 vertexTexCoord;
 out vec2 texCoord;
 
 void main() {  
-  texCoord = vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y); //flips upside down webcam
-  gl_Position = proj * view * model * vertexPosition; 
+//  texCoord = vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y); //flips upside down webcam
+    texCoord = vec2(vertexTexCoord.x, vertexTexCoord.y); //flips upside down webcam
+  gl_Position = proj * view * model * vertexPosition;
 } 
 

@@ -54,6 +54,8 @@ GLint height;
  FBO& bind();
  FBO& unbind();
 
+ static void unbindAll();
+    
  void checkStatus();
 
  Texture texture;

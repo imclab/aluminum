@@ -380,10 +380,14 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     //really need to set a DEFAULT VAO, since unbinding a meshbuffer will nullify
     //   our efforts here... TODO: store _glVaoID as a DefaultVAO and be able to get it whenever
     //   (ie when mesh buffer unbinds, etc)
-    GLuint _glVaoID;
-    glGenVertexArrays(1, &_glVaoID );
-    glBindVertexArray( _glVaoID );
-    
+ //   GLuint _glVaoID;
+ //   glGenVertexArrays(1, &_glVaoID );
+ //   glBindVertexArray( _glVaoID );
+   
+      ((RendererOSX*)renderer)->createDefaultVAO();
+      ((RendererOSX*)renderer)->bindDefaultVAO();
+      
+      
     ((RendererOSX*)renderer)->setStartTick();
     ((RendererOSX*)renderer)->onCreate();
     

@@ -450,6 +450,22 @@ namespace aluminum {
     
   }
   
+    
+  //update with brand new data
+  Texture& Texture::updateData(GLubyte* _data) {
+        
+        data = _data;
+        
+        bind(); {
+            
+            glTexImage2D(kind(), 0, internalFormat, width, height, 0, pixelFormat, type, data);
+            
+        } unbind();
+        
+        return *this;
+    }
+    
+  //assumes you have already changed the current data array attached to this texture
   Texture& Texture::updateData() {
     bind(); {
       
