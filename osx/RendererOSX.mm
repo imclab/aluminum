@@ -59,11 +59,12 @@ CocoaGL* RendererOSX::makeGLView(int w, int h) {
 }
 
 
+/* called when CocoaGL first initializes the OpenGL context */
 void RendererOSX::createDefaultVAO() {
     glGenVertexArrays(1, &_glVaoID );
-    
 }
 
+/* called when CocoaGL first initializes the OpenGL context, but may need to be explicitly called before linking shaders */
 void RendererOSX::bindDefaultVAO() {
     glBindVertexArray( _glVaoID );
 }

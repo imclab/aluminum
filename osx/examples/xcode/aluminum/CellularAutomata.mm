@@ -19,20 +19,16 @@ using namespace aluminum;
 class CellularAutomataEx : public RendererOSX {
 public:
     
-    int numCols = 100;
-    int numRows = 100;
-    
+    int numCols = 200;
+    int numRows = 200;
     
     Program caProgram, outputProgram;
     FBO fboA, fboB;
     
-    
     GLint posLoc=0;
     GLint texCoordLoc=1;
     
-    mat4 proj;
-    mat4 view;
-    mat4 model;
+    mat4 proj, view, model;
     
     MeshBuffer clipRect, outputRect;
     
@@ -42,47 +38,34 @@ public:
         
         bindDefaultVAO();
         
-        
         p.create();
         
         string sv = rh.pathToResource(name, "vsh");
-        // cout << "path of vertex shader is: " << sv << endl;
-        
         p.attach(rh.contentsOfFile(sv), GL_VERTEX_SHADER);
-        
         glBindAttribLocation(p.id(), posLoc, "vertexPosition");
         glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
-        //glBindAttribLocation(p.id(), colLoc, "vertexColor");
+      
         
         string sp = rh.pathToResource(name, "fsh");
-        // cout << "path of vertex shader is: " << sp << endl;
-        
         p.attach(rh.contentsOfFile(sp), GL_FRAGMENT_SHADER);
-        
         p.link();
     }
     
-    virtual void onCreate() {
-        
-        loadProgram(outputProgram, "texture");
-        loadProgram(caProgram, "CA");
-        
-        clipRect.init(MeshUtils::makeClipRectangle(), posLoc, -1, texCoordLoc, -1);
-        
-        outputRect.init(MeshUtils::makeRectangle(1.5, 1.5), posLoc, -1, texCoordLoc, -1);
-        
-        
-        
-        
+    void initFBOs() {
         
         fboA.create(numCols, numRows);
         fboB.create(numCols, numRows);
         
-        GLubyte val;
+        //make sure textures are on repeat so the system will loop around walls instead of die at the edges
+        fboA.texture.wrapMode(GL_REPEAT);
+        fboB.texture.wrapMode(GL_REPEAT);
+        
+        //add some random data to the first texture to start the CA system
         Utils::randomSeed();
+        GLubyte val;
         
         for (int i = 0; i < numCols * numRows * 4; i+=4) {
-            if ( Utils::random() > 0.5) {
+            if ( Utils::random() > 0.6) {
                 val = 0;
             } else {
                 val = 255;
@@ -94,7 +77,17 @@ public:
         
         fboB.texture.updateData();
         
+    }
+    
+    virtual void onCreate() {
         
+        loadProgram(outputProgram, "texture");
+        loadProgram(caProgram, "CA");
+        
+        clipRect.init(MeshUtils::makeClipRectangle(), posLoc, -1, texCoordLoc, -1);
+        outputRect.init(MeshUtils::makeRectangle(1.5, 1.5), posLoc, -1, texCoordLoc, -1);
+        
+        initFBOs();
         
         proj = glm::mat4();
         view = glm::mat4();
@@ -103,13 +96,7 @@ public:
         glEnable (GL_BLEND);
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
-        glEnable(GL_TEXTURE_2D);
-        //glEnable(GL_DEPTH_TEST);
-        glClearColor(1,1,0,1.0);
-        
-        
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.3, 0.3, 0.3, 1.0);
         
         
     }
