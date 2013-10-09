@@ -450,7 +450,24 @@ namespace aluminum {
     
   }
   
+  
+  //update with brand new data
+  Texture& Texture::updateData(GLubyte* subdata, GLint xoff, GLint yoff, GLsizei _w, GLsizei _h) {
     
+    //data = _data;
+    
+    bind(); {
+      glTexSubImage2D (kind(), 0, xoff, yoff, _w, _h, pixelFormat, type, subdata);
+
+      //glTexImage2D    (kind(), 0, internalFormat, width, height, 0, pixelFormat, type, data);
+      
+    } unbind();
+    
+    return *this;
+  }
+  
+  
+  
   //update with brand new data
   Texture& Texture::updateData(GLubyte* _data) {
         

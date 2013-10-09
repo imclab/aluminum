@@ -439,7 +439,7 @@
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = "";
 				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
@@ -468,7 +468,7 @@
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = "";
 				VALID_ARCHS = x86_64;
 			};
 			name = Release;

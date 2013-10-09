@@ -31,6 +31,27 @@ string ResourceHandler::pathToResource(const string& resource, const string& typ
 }
 
 
+void ResourceHandler::loadProgram(Program &p, const std::string& name, int pLoc, int nLoc, int tcLoc, int cLoc) {
+  
+  //bindDefaultVAO();
+  
+  p.create();
+  
+  string sv = pathToResource(name, "vsh");
+  p.attach(contentsOfFile(sv), GL_VERTEX_SHADER);
+  
+  if (pLoc >= 0) glBindAttribLocation(p.id(), pLoc, "vertexPosition");
+  if (nLoc >= 0) glBindAttribLocation(p.id(), nLoc, "vertexNormal");
+  if (tcLoc >= 0) glBindAttribLocation(p.id(), tcLoc, "vertexTexCoord");
+  if (pLoc >= 0) glBindAttribLocation(p.id(), cLoc, "vertexColor");
+
+  string sp = pathToResource(name, "fsh");
+  p.attach(contentsOfFile(sp), GL_FRAGMENT_SHADER);
+  p.link();
+}
+
+
+
 void ResourceHandler::loadTexture(Texture& t, const std::string& name) {
     
     NSString* basePath = [[NSString alloc] initWithUTF8String:name.c_str()];
