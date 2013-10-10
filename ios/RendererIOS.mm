@@ -1,6 +1,7 @@
 
 #include "RendererIOS.h"
 #include "AppDelegate.h"
+#import "EAGLView.h"
 
 RendererIOS::RendererIOS() {}
 
@@ -12,6 +13,16 @@ int RendererIOS::start() {
     return UIApplicationMain(nil, nil, nil, NSStringFromClass([AppDelegate class]));
     
   }
+}
+
+GLuint RendererIOS::getDefaultFrameBuffer() {
+    
+    AppDelegate* ad = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    EAGLView *ev = ad.glView;
+    
+    return (GLuint)[ev getDefaultFramebuffer];
+    
 }
 
 /*

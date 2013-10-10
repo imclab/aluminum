@@ -44,5 +44,5 @@
 - (void) stopAnimation;
 - (void) drawView:(id)sender;
 - (BOOL) resizeFromLayer:(CAEAGLLayer *)layer;
-
+- (GLuint) getDefaultFramebuffer;
 @end
