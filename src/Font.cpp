@@ -1,30 +1,4 @@
 #include "Font.hpp"
-/*
-#include "FBO.hpp"
-#include "Shapes.hpp"
-
-#include <stdio.h>
-#include <string.h>
-#include <map>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <stdlib.h>
-*/
-
-/*
-using std::map;
-using std::string;
-
-using glm::to_string;
-using glm::ivec2;
-using glm::vec2;
-using glm::vec3;
-using glm::vec4;
-using glm::ivec4;
-using glm::mat4;
-*/
 
 namespace aluminum {
 
@@ -330,7 +304,7 @@ namespace aluminum {
   Text2D&  Text2D::height(float height) {
     textHeight = height;
     textWidth = height * ((float)pixelW/(float)pixelH);
-    printf("in height : tw/th = %f/%f\n", textWidth, textHeight);
+ //   printf("in height : tw/th = %f/%f\n", textWidth, textHeight);
     isBox = false;
     isSetToWidth = false;
     return *this;
@@ -379,7 +353,7 @@ namespace aluminum {
 	scaleW = ( ((float)textWidth/(float)screenW) / (float)(getTextPixelWidth() + font.padding) ) * 2.0;
 	scaleH = ( ((float)textHeight/(float)screenH) / (float)(font.lineHeight) ) * 2.0;
       } else {
-	printf("ddd\n");
+//	printf("ddd\n");
 	scaleW = ( ((float)textHeight/(float)screenW) / (float)(font.lineHeight) ) * 2.0;
 	scaleH = ( ((float)textHeight/(float)screenH) / (float)(font.lineHeight) ) * 2.0;
       }
@@ -399,7 +373,7 @@ namespace aluminum {
     }
 
 
-      printf("scaleW , scaleH = %f %f\n", scaleW , scaleH );
+//      printf("scaleW , scaleH = %f %f\n", scaleW , scaleH );
 
     //TranslateYOffset = -(fontHeight - font.base) * (yScale*0.5);
 
@@ -411,15 +385,15 @@ namespace aluminum {
     textureH = (int) ((bh/2.0) * screenH);
 
 
-    printf("bw/bh = %f/%f\n", bw, bh);
-    printf("tw/th = %d/%d\n", textureW, textureH);
+//    printf("bw/bh = %f/%f\n", bw, bh);
+//    printf("tw/th = %d/%d\n", textureW, textureH);
     float bx0, bx1, by0, by1; 
     //justifyText(penX, penY, justifyX, justifyY, bw, bh, bx0, bx1, by0, by1);
     justifyText(screenW, screenH, penX, penY, justifyX, justifyY, bw, bh, bx0, bx1, by0, by1);
 
     //draw background...
     drawBackground(vec2(bx0, by0), vec2(bx1, by1), mat4(), mat4(), mat4());
- printf("bx0/by0 = %f/%f\n", bx1-bx0, by1-by0);
+ //printf("bx0/by0 = %f/%f\n", bx1-bx0, by1-by0);
     
     //draw glyphs...
     float pen_x = bx0 + ((font.padding/2) * scaleW);

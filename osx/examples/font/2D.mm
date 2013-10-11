@@ -30,16 +30,7 @@
 #include "Font.hpp"
 #include "Utils.hpp"
 #include "Behavior.hpp"
-
-/*
-#define GLM_SWIZZLE
-#include <glm/glm.hpp>
-#include <glm/gtx/string_cast.hpp>
-
-#include <iostream>
-#include <chrono>
-#include <sstream> 
- */
+#include "ResourceHandler.h"
 
 using namespace aluminum;
 
@@ -67,10 +58,13 @@ class TextExample : public RendererOSX {
     int num = 0;
     vector<Holder*> texts;
     Text2D tr, tl, br, bl;
+    
+    ResourceHandler rh;
 
     void loadFont(Font& font, const std::string& name) {
       Texture fontTex;
-      Texture::loadTexture(fontTex, name + ".png");
+      rh.loadTexture(fontTex, name + ".png");
+      //Texture::loadTexture(fontTex, name + ".png");
       fontTex.minFilter(GL_LINEAR);
       fontTex.maxFilter(GL_LINEAR);
       Font::loadFont(font, fontTex, name);
@@ -81,8 +75,11 @@ class TextExample : public RendererOSX {
       VP = ivec4(0, 0, width, height);
 
       Font font;
-      loadFont(font, "resources/checkSD"); //signed distance font
+      
+      loadFont(font, "resources/yoyo"); //signed distance font
+      //loadFont(font, "resources/checkSD"); //signed distance font
       //loadFont(font, "resources/Univers36"); //signed distance font
+      //loadFont(font, "resources/IdealSans-Book"); //signed distance font
 
       for (int i = 0; i < NUM_TEXTS; i++) {
 
@@ -117,7 +114,7 @@ class TextExample : public RendererOSX {
       glClearColor(0.0, 0.0, 0.0, 1);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+/*
 
       for (int i = 0; i < NUM_TEXTS; i++) {
 
@@ -130,7 +127,7 @@ class TextExample : public RendererOSX {
         h->t.pen(total, 0.5).height(0.25).screen(width, height).background(vec4(total, 0.0, 1.0-total, 0.3)).color(vec4(1.0-total, 0.5, total, 0.3)).text(s.str()).draw();
 
       }
-
+*/
 
       /*
          tl.pixel(0,0).height(30).screen(width,height).justify(-1,1).draw();
@@ -145,11 +142,12 @@ class TextExample : public RendererOSX {
       //br.pen(0.0,0.0).width(0.5).screen(VP).justify(-1,-1);
       //br.pen(0.0,0.0).height(0.5).screen(VP).justify(-1,-1);
       //br.pen(0.0,0.0).size(0.5, 0.5).screen(VP).justify(-1,-1);
-      br.height(0.5);    
+      bl.height(0.5);    
+      bl.width(0.5);    
       ivec2 pix = br.pixels();
 
       //br.draw();
-      br.draw(VP);
+      bl.draw(VP);
 
       //printf(" pixs = %d/%d\n", pix.x, pix.y);
 

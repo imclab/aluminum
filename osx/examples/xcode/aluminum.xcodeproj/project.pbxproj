@@ -163,7 +163,6 @@
 		92E2748E178E133A00279684 = {
 			isa = PBXGroup;
 			children = (
-				9207035E18038FD3006A8A22 /* CoreData.framework */,
 				9290558B17AF9710009C0688 /* mak.png */,
 				92E274D5178E13FC00279684 /* frameworks */,
 				92E274D4178E13C200279684 /* aluminum */,
@@ -185,6 +184,7 @@
 		92E27499178E133A00279684 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9207035E18038FD3006A8A22 /* CoreData.framework */,
 				B583BC3817FB7281006CD22E /* AppKit.framework */,
 				B583BC3617FB723F006CD22E /* QuartzCore.framework */,
 				B583BC3417FB7229006CD22E /* CoreMedia.framework */,
