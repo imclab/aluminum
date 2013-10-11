@@ -34,6 +34,8 @@ public:
   const char* contentsOfFile(string& file);
   string pathToResource(const string& resource, const string& type);
   
+    GLuint getDefaultFrameBuffer();
+    
 };
 
 #endif

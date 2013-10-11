@@ -286,7 +286,7 @@ FBO& FBO::create() {
 #ifdef BUILD_IOS
 FBO& FBO::create(int w, int h) {
   glGenFramebuffers(1, &fboID);
-  return attach(Texture(w, h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), RBO(w, h, GL_DEPTH_COMPONENT));
+  return attach(Texture(w, h, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE), RBO(w, h, GL_DEPTH_COMPONENT16));
 }
 #else
   FBO& FBO::create(int w, int h) {
@@ -329,13 +329,18 @@ FBO& FBO::attach(Texture t, RBO rb) {
     //2. attach texture (as color attachment) to fbo
     texture.bind(); {
       glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER_APPLE, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
+   //     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
+        
     } texture.unbind();
     
+      
+      
     //3. attach renderbuffer (as depth attachment) to fbo
     rb.bind(); {
       glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER_APPLE, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb.id());
     } rb.unbind();
     
+      
     checkStatus();
     
     //4. unbind FBO
