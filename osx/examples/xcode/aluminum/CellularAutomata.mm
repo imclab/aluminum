@@ -21,8 +21,8 @@ public:
   bool caRunning = true;
   bool toggleFBOs = true;
   
-  int numCols = 80;
-  int numRows = 80;
+  int numCols = 120;
+  int numRows = 120;
   
   Program caProgram, outputProgram;
   FBO fboA, fboB;
@@ -34,8 +34,7 @@ public:
   mat4 proj, view, model;
   
   ResourceHandler rh;
-  
-  
+    
   void loadProgram(Program &p, const std::string& name) {
     
     bindDefaultVAO();

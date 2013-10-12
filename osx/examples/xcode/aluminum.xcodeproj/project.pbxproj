@@ -19,7 +19,6 @@
 		92347AF517ADD5F000DAEB61 /* Program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AE617ADD5F000DAEB61 /* Program.cpp */; };
 		92347AF617ADD5F000DAEB61 /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AE817ADD5F000DAEB61 /* Shapes.cpp */; };
 		92347AF717ADD5F000DAEB61 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AEA17ADD5F000DAEB61 /* Texture.cpp */; };
-		92347AF817ADD5F000DAEB61 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AEC17ADD5F000DAEB61 /* Utils.cpp */; };
 		92347B0017ADD62600DAEB61 /* CocoaGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 92347AFA17ADD62600DAEB61 /* CocoaGL.mm */; };
 		92347B0117ADD62600DAEB61 /* RendererOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 92347AFD17ADD62600DAEB61 /* RendererOSX.mm */; };
 		92347B0217ADD62600DAEB61 /* VideoPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 92347AFF17ADD62600DAEB61 /* VideoPlayer.mm */; };
@@ -90,7 +89,6 @@
 		92347AE917ADD5F000DAEB61 /* Shapes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Shapes.hpp; path = ../../../src/Shapes.hpp; sourceTree = "<group>"; };
 		92347AEA17ADD5F000DAEB61 /* Texture.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = Texture.cpp; path = ../../../src/Texture.cpp; sourceTree = "<group>"; };
 		92347AEB17ADD5F000DAEB61 /* Texture.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Texture.hpp; path = ../../../src/Texture.hpp; sourceTree = "<group>"; };
-		92347AEC17ADD5F000DAEB61 /* Utils.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = Utils.cpp; path = ../../../src/Utils.cpp; sourceTree = "<group>"; };
 		92347AED17ADD5F000DAEB61 /* Utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Utils.hpp; path = ../../../src/Utils.hpp; sourceTree = "<group>"; };
 		92347AF917ADD62600DAEB61 /* CocoaGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaGL.h; path = ../../CocoaGL.h; sourceTree = "<group>"; };
 		92347AFA17ADD62600DAEB61 /* CocoaGL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaGL.mm; path = ../../CocoaGL.mm; sourceTree = "<group>"; };
@@ -165,7 +163,6 @@
 		92E2748E178E133A00279684 = {
 			isa = PBXGroup;
 			children = (
-				9207035E18038FD3006A8A22 /* CoreData.framework */,
 				9290558B17AF9710009C0688 /* mak.png */,
 				92E274D5178E13FC00279684 /* frameworks */,
 				92E274D4178E13C200279684 /* aluminum */,
@@ -187,6 +184,7 @@
 		92E27499178E133A00279684 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9207035E18038FD3006A8A22 /* CoreData.framework */,
 				B583BC3817FB7281006CD22E /* AppKit.framework */,
 				B583BC3617FB723F006CD22E /* QuartzCore.framework */,
 				B583BC3417FB7229006CD22E /* CoreMedia.framework */,
@@ -262,7 +260,6 @@
 				92347AE917ADD5F000DAEB61 /* Shapes.hpp */,
 				92347AEA17ADD5F000DAEB61 /* Texture.cpp */,
 				92347AEB17ADD5F000DAEB61 /* Texture.hpp */,
-				92347AEC17ADD5F000DAEB61 /* Utils.cpp */,
 				92347AED17ADD5F000DAEB61 /* Utils.hpp */,
 			);
 			name = aluminum;
@@ -340,7 +337,6 @@
 				92347AF517ADD5F000DAEB61 /* Program.cpp in Sources */,
 				92347AF617ADD5F000DAEB61 /* Shapes.cpp in Sources */,
 				92347AF717ADD5F000DAEB61 /* Texture.cpp in Sources */,
-				92347AF817ADD5F000DAEB61 /* Utils.cpp in Sources */,
 				92347B0017ADD62600DAEB61 /* CocoaGL.mm in Sources */,
 				92347B0117ADD62600DAEB61 /* RendererOSX.mm in Sources */,
 				92347B0217ADD62600DAEB61 /* VideoPlayer.mm in Sources */,
