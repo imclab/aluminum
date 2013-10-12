@@ -334,12 +334,12 @@ FBO& FBO::attach(Texture t, RBO rb) {
     } texture.unbind();
     
       
-      
+    /*
     //3. attach renderbuffer (as depth attachment) to fbo
     rb.bind(); {
       glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER_APPLE, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb.id());
     } rb.unbind();
-    
+    */
       
     checkStatus();
     

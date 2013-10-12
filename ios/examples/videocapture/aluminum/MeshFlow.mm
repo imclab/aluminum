@@ -23,10 +23,12 @@ using glm::to_string;
 
 //Mesh dimensions
 
-const int MeshX = 180;//214;
-const int MeshY = 134;//160;
+//const int MeshX = 180;//214;
+//const int MeshY = 134;//160;
+const int MeshX = 128;// test
+const int MeshY = 128;
 
-
+bool touchpresent = false;
 class MeshFlow : public RendererIOS {
     
     
@@ -52,6 +54,12 @@ public:
     
     mat4 webcamMatrix = mat4();
     mat4 touchMatrix = mat4();
+    int camWidth = 640;
+    int camHeight = 480;
+    const int texX = MeshX;
+    const int texY = MeshY;
+    vec2 VertexPos [MeshX][MeshY];
+    vec2 VertexVel [MeshX][MeshY];
     
     void loadProgram(Program &p, const std::string& name) {
         
@@ -69,48 +77,63 @@ public:
         p.link();
     }
     
+    void InitVertex(){
+        
+        // set position on the grid and velocity to zero
+        float xl = -1.0;
+        float yl = -1.0;
+        float xu = 1.0;
+        float yu = 1.0;
+        for (int x = 0; x < MeshX; x++) {
+            for (int y = 0; y < MeshY; y++) {
+                VertexPos[x][y] = vec2(xl +x*(xu-xl)/(float)(MeshX-1.0),
+                                       yl +y*(yu-yl)/(float)(MeshY-1.0));
+                VertexVel[x][y] = vec2(0.0,0.0);
+                
+            }
+        }
+        
+    }
+    
+    
     virtual void onCreate() {
         // Load our shader program
+        InitVertex();
         loadProgram(programGrad, "GradientCalc");
         loadProgram(programMesh, "Meshflow");
         
-        printf("%d %d \n", width, height);
-        fboGrad.create(128, 128);
+        
+        fboGrad.create(texX, texY);
         
         //exit(0);
         //fboGrad.texture.wrapMode(GL_CLAMP_TO_EDGE);
         //rh.loadTexture(t1, "grid3.png");
         // create the data mesh
         //     mb.init(MeshUtils::makeClipGrid(Rxp, Ryp), posLoc, -1, tcLoc, -1);
-
+        
         clipRect.init(MeshUtils::makeClipRectangle(), posLoc, -1, tcLoc, -1);
         
-        // Initial values for the mesh 
+        // Initial values for the mesh
         
-//        // limits
-        float xl = -1.0;
-        float yl = -1.0;
-        float xu = 1.0;
-        float yu = 1.0;
-        
+        //        // limits
         // nodes
         vec3* vs = new vec3[MeshX * MeshY];
         GLuint* is = new GLuint [2*(MeshX-1)*MeshY + 2*(MeshY-1)*MeshX ];
         
         // textu test
-          vec3* ts = new vec3[MeshX * MeshY];
+        vec3* ts = new vec3[MeshX * MeshY];
         
         
         for (int x = 0; x < MeshX; x++) {
             for (int y = 0; y < MeshY; y++) {
                 
-                vs[MeshX*y+x].x= xl +x*(xu-xl)/(float)(MeshX-1.0);
-                vs[MeshX*y+x].y= yl +y*(yu-yl)/(float)(MeshY-1.0);
+                vs[MeshX*y+x].x= VertexPos[x][y].x;
+                vs[MeshX*y+x].y= VertexPos[x][y].y;
                 vs[MeshX*y+x].z = 0.0f;
                 
-//                ts[MeshX*y+x].x = x/(float)MeshX;
-//                ts[MeshX*y+x].y = 1.0 - y/(float)MeshY;
-//                ts[MeshX*y+x].z = 0.0;
+                //                ts[MeshX*y+x].x = x/(float)MeshX;
+                //                ts[MeshX*y+x].y = 1.0 - y/(float)MeshY;
+                //                ts[MeshX*y+x].z = 0.0;
             }
         }
         //indexes
@@ -143,7 +166,7 @@ public:
         
         md.vertex(vs,MeshX*MeshY);
         md.index(is, 2*(MeshX-1)*MeshY + 2*(MeshY-1)*MeshX);
- //       md.texCoord(ts, MeshX*MeshY);
+        //       md.texCoord(ts, MeshX*MeshY);
         
         mb.init(md, posLoc, -1, -1, -1);
         delete vs;
@@ -151,19 +174,19 @@ public:
         delete ts;
         
         
-
         
         
         
         
         
-      //  mb.init(MeshUtils::makeSurface(Rxp, Ryp, -1.0, 1.0, -1.0, 1.0, true), posLoc, -1, tcLoc, -1);
+        
+        //  mb.init(MeshUtils::makeSurface(Rxp, Ryp, -1.0, 1.0, -1.0, 1.0, true), posLoc, -1, tcLoc, -1);
         
         /* Javier -- if you are planning on doing a full screen app, you don't need to use projection - ah I see you are using the z-axis for distorting the mesh */
         // Prjection for plane (-1,1,-1,1) filling the screen
         // camera at 3.0 near plane 1.0
-//        proj = glm::frustum(-1.0/10.0, 1.0/10.0, -1.0/10.0, 1.0/10.0, 1.0, 50.0);
-//        mv = glm::lookAt(vec3(0,0,10.0), vec3(0,0,-5.0), vec3(0,1,0) );
+        //        proj = glm::frustum(-1.0/10.0, 1.0/10.0, -1.0/10.0, 1.0/10.0, 1.0, 50.0);
+        //        mv = glm::lookAt(vec3(0,0,10.0), vec3(0,0,-5.0), vec3(0,1,0) );
         proj = glm::mat4();
         mv = glm::mat4();
         
@@ -203,44 +226,175 @@ public:
         
         // Gradient Calculation
         
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        fboGrad.bind(); {
         
-            programGrad.bind(); {
+        
+        programGrad.bind(); {
             
-                glUniformMatrix4fv(programGrad.uniform("mv"), 1, 0, ptr(mv));
-                glUniformMatrix4fv(programGrad.uniform("proj"), 1, 0, ptr(proj));
-                // sending the dimensions of the image
-                glUniform2fv(programGrad.uniform("CamDims"), 1, ptr(vec2(width, height)));
-                glUniform1i(programGrad.uniform("tex0"), 0);
-                //glUniform1i(program.uniform("tex1"), 1);
-                
+            glUniformMatrix4fv(programGrad.uniform("mv"), 1, 0, ptr(mv));
+            glUniformMatrix4fv(programGrad.uniform("proj"), 1, 0, ptr(proj));
+            // sending the dimensions of the image
+            glUniform2fv(programGrad.uniform("CamDims"), 1, ptr(vec2(width, height)));
+            glUniform1i(programGrad.uniform("tex0"), 0);
+            //glUniform1i(program.uniform("tex1"), 1);
+            fboGrad.bind(); {
                 cm.captureTexture.bind(GL_TEXTURE0);{
                     clipRect.draw();
                 } cm.captureTexture.unbind(GL_TEXTURE0);
-                
-            } programGrad.unbind();
-        } fboGrad.unbind();
-      
+            }fboGrad.unbind();
+            
+            // buffer for reading the texture
+            
+            
+            
+            
+        } programGrad.unbind();
         
-        glBindFramebuffer(GL_FRAMEBUFFER, getDefaultFrameBuffer());
-
-
+        
+        //NOW WE ARE IN THE CPU
+        
+        GLubyte* TextuRead = new GLubyte[texX*texY*4];
+        
+        fboGrad.bind(); {
+            
+            
+            glReadPixels(0, 0, texX, texY, GL_RGBA, GL_UNSIGNED_BYTE, TextuRead);
+            /*
+             for (int ppp = 0; ppp < 128*128*4; ppp+=4) {
+             int col = ppp % (128);
+             int row = ppp / (128*4);
+             printf("red at %d/%d = %d\n", col, row, TextuRead[ppp]);
+             }
+             */
+        }  fboGrad.unbind();
+        
         
         glViewport(0, 0, width, height);
-        glClearColor(1.0,0.0,0.0,1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        printf("wh %d %d\n",width, height);
+        glBindFramebuffer(GL_FRAMEBUFFER, getDefaultFrameBuffer());
         
-      
-    // drawing the mesh
-        programMesh.bind(); {
-            glUniformMatrix4fv(programMesh.uniform("mv"), 1, 0, ptr(mv));
-            glUniformMatrix4fv(programMesh.uniform("proj"), 1, 0, ptr(proj));
-            mb.drawLines();
-        } programMesh.unbind();
+        
+        
+        
+        
+        // updating vertex data:
+        
+        vec3* vs = new vec3[MeshX * MeshY];
+        GLuint* is = new GLuint [2*(MeshX-1)*MeshY + 2*(MeshY-1)*MeshX ];
+       // setup decente
+//        float Kg = 0.014; // gradient constant
+//        float Kt = .7; // elastic constant
+//        float Kd = 0.24; // drag
+//        float Dt = 0.4;
+        
+//        float Kg = 0.04; // gradient constant
+//        float Kt = 1.9; // elastic constant
+//        float Kd = 0.34; // drag
+//        float Dt = 0.4;
+
+        float Kg = 0.055; // gradient constant
+        float Kt = 2.5; // elastic constant
+        float Kd = 0.44; // drag
+        float Dt = 0.2;
+        float Km ; // touch costant
+        
+        // Updating velocities
+        float Tnormx,Tnormy;
+        for (int x = 0; x < MeshX; x++) {
+            for (int y = 0; y < MeshY; y++) {
+                
+                // forces update
+                if(x==0||x==MeshX-1||y==0||y==MeshY-1){
+                    vs[MeshX*y+x].x= VertexPos[x][MeshY-1-y].y;
+                    vs[MeshX*y+x].y= VertexPos[x][MeshY-1-y].x;
+                }
+                else{
+                // Text dimention = mesh dimensions;
+                    
+                    if(!touchpresent){
+                        Km = 0.0;
+                        Tnormx = Tnormy =0.0;
+                    }
+                    else{
+                        float disty = TouchCords.y - VertexPos[x][MeshY-1-y].y;
+                        float distx = ((-TouchCords.x) - VertexPos[x][MeshY-1-y].x);
+                        float magniSqu = (distx*distx +disty*disty);
+                        Km = -0.08*exp(-0.5*magniSqu/(.1*.1));
+                        Tnormx = (magniSqu!=0)?distx/sqrt(magniSqu):0.0;
+                        Tnormy = (magniSqu!=0)?disty/sqrt(magniSqu):0.0;
+                    }
+                    
+                float Fx =  -Kg*(TextuRead[4*texX*y + 4*x]/255.0 - 0.5) +
+                            Kt*(VertexPos[x+1][MeshY-1-y].y-VertexPos[x][MeshY-1-y].y) +
+                            Kt*(VertexPos[x-1][MeshY-1-y].y-VertexPos[x][MeshY-1-y].y) +
+                            Kt*(VertexPos[x][MeshY-1-(y+1)].y-VertexPos[x][MeshY-1-y].y) +
+                            Kt*(VertexPos[x][MeshY-1-(y-1)].y-VertexPos[x][MeshY-1-y].y) -
+                            Kd*VertexVel[x][MeshY-1-y].y
+                            +Km * Tnormy;
+                    
+                float Fy =   Kg*(TextuRead[4*texX*y + 4*x+1]/255.0 - 0.5) +
+                            Kt*(VertexPos[x+1][MeshY-1-y].x-VertexPos[x][MeshY-1-y].x) +
+                            Kt*(VertexPos[x-1][MeshY-1-y].x-VertexPos[x][MeshY-1-y].x) +
+                            Kt*(VertexPos[x][MeshY-1-(y+1)].x-VertexPos[x][MeshY-1-y].x) +
+                            Kt*(VertexPos[x][MeshY-1-(y-1)].x-VertexPos[x][MeshY-1-y].x) -
+                            Kd*VertexVel[x][MeshY-1-y].x
+                            +Km * Tnormx;
+                
+                    VertexVel[x][MeshY-1-y].y += Fx*Dt;
+                    VertexVel[x][MeshY-1-y].x += Fy*Dt;
+                    
+
+                }
+                    
+            }
+        }
+
+        // Updating positions:
+        
+        for (int x = 1; x < MeshX-1; x++) {
+            for (int y = 1; y < MeshY-1; y++) {
+                float newposX = VertexPos[x][MeshY-1-y].y + VertexVel[x][MeshY-1-y].y*Dt;
+                float newposY = VertexPos[x][MeshY-1-y].x + VertexVel[x][MeshY-1-y].x*Dt;
+                VertexPos[x][MeshY-1-y].y = newposX;
+                vs[MeshX*y+x].x=  newposX;
+                VertexPos[x][MeshY-1-y].x = newposY;
+                vs[MeshX*y+x].y=  newposY;
+                vs[MeshX*y+x].z = 0.0f;
+            
+            
+            }
+        }
+        
+
+        
+        
+        md.vertices().clear();
+        md.vertex(vs,MeshX*MeshY);
+        
+  //      md.index(is, 2*(MeshX-1)*MeshY + 2*(MeshY-1)*MeshX);
+        //       md.texCoord(ts, MeshX*MeshY);
+        
+        mb.update(md);
+        delete vs;
+        delete is;
+        delete TextuRead;
+        
+        
+        
+        
+                glViewport(0, 0, width, height);
+                glClearColor(1.0,1.0,1.0,1.0);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        
+        
+        
+        // drawing the mesh
+                programMesh.bind(); {
+                    glUniformMatrix4fv(programMesh.uniform("mv"), 1, 0, ptr(mv));
+                    glUniformMatrix4fv(programMesh.uniform("proj"), 1, 0, ptr(proj));
+                    mb.drawLines();
+                } programMesh.unbind();
         
         
         
@@ -256,20 +410,24 @@ public:
         cout << "touch began: " << to_string(mouse) << endl;
         TouchCords.x = 2*(mouse.x/(float)width - 0.5);
         TouchCords.y = 2*(mouse.y/(float)height - 0.5);
+        touchpresent = true;
     }
     
     virtual void touchMoved(ivec2 prevMouse, ivec2 mouse) {
         cout << "touch moved: prev:" << to_string(prevMouse) << ", current: " << to_string(prevMouse) << endl;
         TouchCords.x =  2*(mouse.x/(float)width - 0.5);
         TouchCords.y = 2*(mouse.y/(float)height - 0.5);
+        touchpresent = true;
     }
     
     virtual void touchEnded(ivec2 mouse) {
         cout << "touch ended: " << to_string(mouse) << endl;
+        touchpresent = false;
     }
     
     virtual void longPress(ivec2 mouse) {
         cout << "long press: " << to_string(mouse) << endl;
+        touchpresent = false;
     }
     
     virtual void pinch(float scale) {
