@@ -25,6 +25,7 @@ namespace aluminum{
     virtual void draw();
     virtual void drawLines();
     virtual void drawTriangleStrip();
+    virtual void drawPoints();
   protected:
     
     void checkAttributes(int p, int n, int tc, int c);

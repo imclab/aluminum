@@ -95,6 +95,7 @@ public:
         
     }
     
+ 
     
     virtual void onCreate() {
         // Load our shader program
@@ -204,7 +205,9 @@ public:
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         
-        cm = [[CaptureManager alloc] init:AVCaptureSessionPresetHigh side:AVCaptureDevicePositionFront];
+    //    cm = [[CaptureManager alloc] init:AVCaptureSessionPresetHigh side:AVCaptureDevicePositionFront];
+         cm = [[CaptureManager alloc] init:AVCaptureSessionPreset640x480 side:AVCaptureDevicePositionFront];
+        //
         [cm startCapture];
         
     }
@@ -292,8 +295,8 @@ public:
 //        float Kd = 0.34; // drag
 //        float Dt = 0.4;
 
-        float Kg = 0.055; // gradient constant
-        float Kt = 2.5; // elastic constant
+        float Kg = 0.065; // gradient constant
+        float Kt = 3.0; // elastic constant
         float Kd = 0.44; // drag
         float Dt = 0.2;
         float Km ; // touch costant
@@ -319,7 +322,7 @@ public:
                         float disty = TouchCords.y - VertexPos[x][MeshY-1-y].y;
                         float distx = ((-TouchCords.x) - VertexPos[x][MeshY-1-y].x);
                         float magniSqu = (distx*distx +disty*disty);
-                        Km = -0.08*exp(-0.5*magniSqu/(.1*.1));
+                        Km = -0.5*exp(-0.5*magniSqu/(.1*.1));
                         Tnormx = (magniSqu!=0)?distx/sqrt(magniSqu):0.0;
                         Tnormy = (magniSqu!=0)?disty/sqrt(magniSqu):0.0;
                     }
@@ -361,7 +364,10 @@ public:
                 vs[MeshX*y+x].y=  newposY;
                 vs[MeshX*y+x].z = 0.0f;
             
-            
+                
+                
+                VertexVel[x][MeshY-1-y].y*=0.5;
+                VertexVel[x][MeshY-1-y].x *= 0.5;
             }
         }
         
@@ -384,9 +390,10 @@ public:
         
                 glViewport(0, 0, width, height);
                 glClearColor(1.0,1.0,1.0,1.0);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        
+        glLineWidth(2.0);
         
         
         // drawing the mesh
@@ -440,8 +447,8 @@ public:
 };
 
 
-int main(int argc, char *argv[]) {
-    
-    MeshFlow().start();
-    
-}
+//int main(int argc, char *argv[]) {
+//    
+//    MeshFlow().start();
+//    
+//}

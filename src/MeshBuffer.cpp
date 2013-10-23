@@ -106,7 +106,34 @@ namespace aluminum {
         
     }
     
-  
+ 
+    
+    void MeshBuffer::drawPoints() {
+        
+#ifdef BUILD_IOS
+        
+        glBindVertexArrayOES( vao[0] );
+        {
+    //       glDrawArrays(GL_POINTS, 0, (GLsizei) data.vertices().size() * sizeof(vec3) ); //double check this!
+            glDrawArrays(GL_POINTS, 0, (GLsizei) data.vertices().size() ); //double check this!
+        }
+        
+        
+#else
+        
+        glBindVertexArray( vao[0] );
+        {
+ 
+           glDrawArrays(GL_POINTS, 0, (GLsizei) data.vertices().size() * 7 ); //double check this!
+
+            }
+        }
+        
+#endif
+        
+    }
+    
+    
   
   void MeshBuffer::checkAttributes(int p, int n, int tc, int c) {
     if (p < 0) {

@@ -232,8 +232,7 @@ public:
   
 };
 
-/*
-int mainX(){
-  CaptureExample().start();
-}
-*/
+
+//int main(int argc, char *argv[]){
+//  CaptureExample().start();
+//}
