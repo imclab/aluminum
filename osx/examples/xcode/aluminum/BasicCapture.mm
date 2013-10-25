@@ -35,9 +35,10 @@ public:
   mat4 proj;
   mat4 view;
   
-  MeshData md;
   MeshBuffer mb1;
-  bool bufferReady = false;
+    MeshData md;
+    
+    bool bufferReady = false;
   
   CaptureManager* cm;
   Texture safeTexture;
@@ -235,5 +236,5 @@ public:
 
 
 int __main(){
-  return CaptureEx().start("aluminum::TextureEx", 100, 100, 800, 600);
+  //return CaptureEx().start("aluminum::TextureEx", 100, 100, 800, 600);
 }

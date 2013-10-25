@@ -99,7 +99,7 @@
 		63D724F917FC9EA6000D3F87 /* javier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = javier.png; path = resources/javier.png; sourceTree = "<group>"; };
 		63D724FD17FCB078000D3F87 /* basicNew.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basicNew.fsh; path = resources/basicNew.fsh; sourceTree = "<group>"; };
 		63D724FE17FCB078000D3F87 /* basicNew.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basicNew.vsh; path = resources/basicNew.vsh; sourceTree = "<group>"; };
-		92347A7217ADAD1600DAEB61 /* Fm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fm.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		92347A7217ADAD1600DAEB61 /* Halfton.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Halfton.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92347A7517ADAD1600DAEB61 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		92347A7717ADAD1600DAEB61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		92347A7917ADAD1600DAEB61 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -188,7 +188,7 @@
 		92347A7317ADAD1600DAEB61 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				92347A7217ADAD1600DAEB61 /* Fm.app */,
+				92347A7217ADAD1600DAEB61 /* Halfton.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -320,7 +320,7 @@
 			);
 			name = Halfton;
 			productName = aluminum;
-			productReference = 92347A7217ADAD1600DAEB61 /* Fm.app */;
+			productReference = 92347A7217ADAD1600DAEB61 /* Halfton.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -333,7 +333,7 @@
 				ORGANIZATIONNAME = "Angus Forbes";
 				TargetAttributes = {
 					92347A7117ADAD1600DAEB61 = {
-						DevelopmentTeam = 3HJED4XECX;
+						DevelopmentTeam = TF6C4ANE37;
 					};
 				};
 			};

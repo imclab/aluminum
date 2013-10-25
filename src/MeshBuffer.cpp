@@ -108,6 +108,7 @@ namespace aluminum {
     
  
     
+    
     void MeshBuffer::drawPoints() {
         
 #ifdef BUILD_IOS
@@ -126,7 +127,7 @@ namespace aluminum {
  
            glDrawArrays(GL_POINTS, 0, (GLsizei) data.vertices().size() * 7 ); //double check this!
 
-            }
+            
         }
         
 #endif
@@ -215,7 +216,7 @@ namespace aluminum {
       return *this;
     }
     
-    MeshBuffer MeshBuffer::init(MeshData _data, int _p, int _n, int _tc, int _c) {
+    aluminum::MeshBuffer aluminum::MeshBuffer::init(MeshData _data, int _p, int _n, int _tc, int _c) {
       
 #ifdef BUILD_IOS
       glGenVertexArraysOES( 1, vao );

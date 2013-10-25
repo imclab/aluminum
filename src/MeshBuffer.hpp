@@ -1,14 +1,17 @@
 #ifndef INCLUDE_ALU_MESHBUFFER_HPP
 #define INCLUDE_ALU_MESHBUFFER_HPP
 
+#include "Includes.hpp"
 #include "MeshData.hpp"
 //#include "Includes.hpp"
 #ifdef BUILD_IOS
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
+//#include <OpenGLES/ES2/gl.h>
+//#include <OpenGLES/ES2/glext.h>
 #endif
 
-namespace aluminum{
+//class MeshData;
+
+namespace aluminum {
   
   class MeshBuffer {
     
@@ -51,6 +54,6 @@ namespace aluminum{
   };
   
   
-} // al::
+}
 
 #endif
