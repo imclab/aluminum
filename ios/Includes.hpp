@@ -37,6 +37,7 @@
 //#include <glm/gtc/random.hpp>
 #include <glm/gtx/random.hpp>
 
+/*
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
@@ -45,6 +46,7 @@
 #include "assimp/matrix4x4.h"
 
 #include "FreeImage.h"
+*/
 
 //#include "IOSGL.h"
 //#include "RendererIOS.h"

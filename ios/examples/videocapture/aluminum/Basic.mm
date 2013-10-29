@@ -123,9 +123,9 @@ public:
     
 };
 
-//
-//int main(int argc, char *argv[]) {
-//    
-//    Basic().start();
-//    
-//}
+
+int main(int argc, char *argv[]) {
+    printf("inin\n");
+    Basic().start();
+    printf("outout\n"); 
+}

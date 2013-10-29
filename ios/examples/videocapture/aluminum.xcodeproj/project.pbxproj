@@ -176,7 +176,6 @@
 		92347A6917ADAD1600DAEB61 = {
 			isa = PBXGroup;
 			children = (
-				B5A6F13917B305F60053B0E7 /* CoreVideo.framework */,
 				92347AA017ADAD6D00DAEB61 /* src */,
 				92347A9F17ADAD5E00DAEB61 /* ios */,
 				92347A7B17ADAD1600DAEB61 /* aluminum */,
@@ -196,6 +195,7 @@
 		92347A7417ADAD1600DAEB61 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B5A6F13917B305F60053B0E7 /* CoreVideo.framework */,
 				92347AC917ADAE8500DAEB61 /* AVFoundation.framework */,
 				92347ACA17ADAE8500DAEB61 /* CoreMedia.framework */,
 				92347ACB17ADAE8500DAEB61 /* CoreMotion.framework */,
@@ -230,9 +230,9 @@
 				634706E21816F12A002981A9 /* Meshflow.vsh */,
 				634706D71811B267002981A9 /* Fm.fsh */,
 				634706D81811B267002981A9 /* Fm.vsh */,
-				6321FC54180F79B8000DC7D0 /* basic.fsh */,
 				634706ED181708CC002981A9 /* points.fsh */,
 				6321FC55180F79B8000DC7D0 /* basic.vsh */,
+				6321FC54180F79B8000DC7D0 /* basic.fsh */,
 				634706EF181708DB002981A9 /* points.vsh */,
 				6351FE0F18071CE000817CE5 /* GradientCalc.fsh */,
 				634706EB18170790002981A9 /* GrayScale.fsh */,

@@ -34,6 +34,7 @@
 #include "MeshBuffer.hpp" 
 #include "MeshData.hpp" 
 
+#ifndef BUILD_IOS
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -44,6 +45,7 @@
 
 //#include <vector>
 
+#endif
 
 /*
 #include <glm/glm.hpp>

@@ -233,6 +233,6 @@ public:
 };
 
 
-//int main(int argc, char *argv[]){
-//  CaptureExample().start();
-//}
+int oomain(int argc, char *argv[]){
+  CaptureExample().start();
+}

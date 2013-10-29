@@ -28,7 +28,6 @@
 		92347ABE17ADAD6D00DAEB61 /* Program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AAF17ADAD6D00DAEB61 /* Program.cpp */; };
 		92347ABF17ADAD6D00DAEB61 /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AB117ADAD6D00DAEB61 /* Shapes.cpp */; };
 		92347AC017ADAD6D00DAEB61 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AB317ADAD6D00DAEB61 /* Texture.cpp */; };
-		92347AC117ADAD6D00DAEB61 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92347AB517ADAD6D00DAEB61 /* Utils.cpp */; };
 		92347AC417ADAD9500DAEB61 /* Basic.mm in Sources */ = {isa = PBXBuildFile; fileRef = 92347AC217ADAD9500DAEB61 /* Basic.mm */; };
 		92347AC717ADAE6D00DAEB61 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92347AC517ADAE6D00DAEB61 /* OpenGLES.framework */; };
 		92347AC817ADAE6D00DAEB61 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92347AC617ADAE6D00DAEB61 /* QuartzCore.framework */; };
@@ -87,7 +86,6 @@
 		92347AB217ADAD6D00DAEB61 /* Shapes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Shapes.hpp; sourceTree = "<group>"; };
 		92347AB317ADAD6D00DAEB61 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
 		92347AB417ADAD6D00DAEB61 /* Texture.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
-		92347AB517ADAD6D00DAEB61 /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		92347AB617ADAD6D00DAEB61 /* Utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
 		92347AC217ADAD9500DAEB61 /* Basic.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Basic.mm; sourceTree = "<group>"; };
 		92347AC517ADAE6D00DAEB61 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -229,7 +227,6 @@
 				92347AB217ADAD6D00DAEB61 /* Shapes.hpp */,
 				92347AB317ADAD6D00DAEB61 /* Texture.cpp */,
 				92347AB417ADAD6D00DAEB61 /* Texture.hpp */,
-				92347AB517ADAD6D00DAEB61 /* Utils.cpp */,
 				92347AB617ADAD6D00DAEB61 /* Utils.hpp */,
 			);
 			name = src;
@@ -330,7 +327,6 @@
 				B583BC2217FB5776006CD22E /* texture.vsh in Sources */,
 				92347ABF17ADAD6D00DAEB61 /* Shapes.cpp in Sources */,
 				92347AC017ADAD6D00DAEB61 /* Texture.cpp in Sources */,
-				92347AC117ADAD6D00DAEB61 /* Utils.cpp in Sources */,
 				92347AC417ADAD9500DAEB61 /* Basic.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

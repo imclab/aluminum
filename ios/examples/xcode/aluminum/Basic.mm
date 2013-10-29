@@ -141,7 +141,7 @@ public:
 };
 
 
-int __main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   
   Basic().start();
   

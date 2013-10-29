@@ -356,9 +356,10 @@ public:
     
 };
 
-
-int main(int argc, char *argv[]) {
+/*
+int pppmain(int argc, char *argv[]) {
 
     Halfton().start();
 
 }
+ */
