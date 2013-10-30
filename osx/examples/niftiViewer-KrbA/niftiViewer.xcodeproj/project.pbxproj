@@ -432,7 +432,6 @@
 				B5E385491782569800E8C57D /* Program.cpp in Sources */,
 				B5E3854A1782569B00E8C57D /* Shapes.cpp in Sources */,
 				B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */,
-				B5E3854C178256A100E8C57D,
 				B5E3854E1783564100E8C57D /* Slices.mm in Sources */,
 				924CCB6E1788F66F008566EC /* NiftiUtils.h in Sources */,
 				924DAB901789528D00922539 /* ActionProxy.mm in Sources */,
@@ -476,7 +475,7 @@
 					/usr/local/include/,
 				);
 				LIBRARY_SEARCH_PATHS = /opt/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -507,7 +506,7 @@
 					/usr/local/include/,
 				);
 				LIBRARY_SEARCH_PATHS = /opt/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 			};

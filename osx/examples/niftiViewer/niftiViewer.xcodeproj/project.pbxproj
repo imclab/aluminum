@@ -421,6 +421,7 @@
 					"\"$(SRCROOT)/niftiViewer/niftilib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -435,6 +436,7 @@
 					"\"$(SRCROOT)/niftiViewer/niftilib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
