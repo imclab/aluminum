@@ -419,22 +419,19 @@ namespace aluminum {
 */
 
 
-
         //8 texcoords
         vec3 t0 = vec3(0,0,1);
-        vec3 tb = vec3(1,0,1);
-        vec3 tc = vec3(1,1,1);
-        vec3 td = vec3(0,1,1);
-        vec3 te = vec3(0,0,0);
-        vec3 tf = vec3(1,0,0);
-        vec3 tg = vec3(1,1,0);
-        vec3 th = vec3(0,1,0);
+        vec3 t1 = vec3(1,0,1);
+        vec3 t2 = vec3(1,1,1);
+        vec3 t3 = vec3(0,1,1);
+        vec3 t4 = vec3(0,0,0);
+        vec3 t5 = vec3(1,0,0);
+        vec3 t6 = vec3(1,1,0);
+        vec3 t7 = vec3(0,1,0);
 
         const vec3 ts[] = {
-            t0, tb, tc, td, te, tf, tg, th
+            t0, t1, t2, t3, t4, t5, t6, t7
         };
-
-        printf("Assigning MeshData's texcoord\n");
         m.texCoord(ts, 8);
 
         // Cube indices
@@ -445,11 +442,19 @@ namespace aluminum {
             4,0,1,    4,1,5,
             4,7,3,    4,3,0,
             5,6,2,    5,2,1
-
         };
 
-
         m.index(indices, 36);
+/*
+  a______b
+  |     /|
+  | @  / |
+  |   /  |
+  |  /   |
+  | /  @ |
+  e/_____f
+
+*/
 
 
         return m;
