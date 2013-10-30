@@ -16,6 +16,7 @@ int main(){
     RayCast nifti = RayCast();
     nifti.initializeViews();
 
+    return 0;
 }
 
 

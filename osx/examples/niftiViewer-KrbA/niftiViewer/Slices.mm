@@ -22,8 +22,8 @@ public:
 
     // Set Global vars
     bool USE_STEREO = false;
-    string RESOURCES = (string)[NSHomeDirectory() UTF8String] + "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer/resources/";
-    int numSlices = 500;
+    string RESOURCES = (string)[NSHomeDirectory() UTF8String] + "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer-KrbA/resources/";
+    int numSlices = 100;
 
     Camera camera;
 
@@ -176,7 +176,7 @@ public:
          int nnn;
          glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &nnn);
          printf("num = %d\n", nnn);
-//exit(0);
+
     } // end of onCreate
 
 
@@ -493,7 +493,7 @@ public:
     void handleKeys_auxilliary() {
         float amt=0.001;
         float dg=0.05;
-        if (keysDown[kVK_Shift]) {
+        if (keysDown[kVK_ANSI_X]) {
             amt=-0.001;
             dg=-0.05;
         }

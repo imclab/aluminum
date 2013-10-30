@@ -41,7 +41,7 @@ public:
     float orbitRadius = 1.0;
     float opacity = 0.1;
     float percent = 0.0;
-    float cameraZ = 5.0000000;  // 0.95
+    float cameraZ = 5.0;  // 0.95
 
     bool rotateTextureX_plus = false;
     bool rotateTextureX_minus = false;
@@ -102,7 +102,7 @@ public:
         // This is effectively binding a named attribute variable ("vertexPosition"), with
         // a generic attribute index (posLoc)
                            //VVVV--p.id() returns a GLuint! Its basically the Program objects ID number
-        glBindAttribLocation(p.id(), posLoc, "vertexPosition");
+        glBindAttribLocation(p.id(), (GLuint) posLoc, "vertexPosition");
         glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
 
 
@@ -127,30 +127,33 @@ public:
         loadNiftiInto3DTextures(RESOURCES + "nifti/"); // load the nifti images into textures
         loadProgram(program, RESOURCES + "rayCast");
 
+        /*
         camera = Camera(60.0,
                         width/(height),
                         0.001,
                         100.0).translateZ(-cameraZ).convergence(10.0).eyeSep(1.0/30.0 * 10.0);
-
-        // camera = Camera(60.0, width/(height*0.5), 0.001, 100.0);
+        */
+        
+        camera = Camera(60.0, width/(height*0.5), 0.001, 100.0);
 
     /*
      *  Constructs a texture mesh of a cube which we will
      *  later pass our ray through
      */
-        meshData = MeshUtils::makeCube2(1.0f);
+        meshData = MeshUtils::makeCube2(2.0f);
         meshBuffer.init(meshData, posLoc, -1, texCoordLoc, -1);
 
 
         textureRotation = glm::mat4();
         textureRotationStart = glm::mat4();
 
+        /*
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_SCISSOR_TEST);
-
+        */
     } // end of onCreate
 
 
@@ -165,9 +168,9 @@ public:
 
 
             glUniform1i(program.uniform("brain"), 0);
-            glUniform3f(program.uniform("stepSize"), 1.0f/XDIM, 1.0f/YDIM, 1.0f/ZDIM);
             glUniform3fv(program.uniform("cameraPos"), 1, ptr(camera.posVec));
-            glUniform1f(program.uniform("opacity"), opacity);
+           // glUniform3f(program.uniform("step_Size"), 1.0f/XDIM, 1.0f/YDIM, 1.0f/ZDIM);
+            glUniform1f(program.uniform("opacity"), 1.0);
 
             brain.bind(GL_TEXTURE0);
                 meshBuffer.draw();
@@ -225,7 +228,8 @@ public:
     void onReshape() {
         // printf("\n\tIn onReshape!\n");
 
-        camera.perspective(60.0, width/(height), 0.001, 100.0);
+        camera.perspective(60.0, (float)width/(float)height, 0.001, 100.0);
+        printf("camera: %f, %f %f", camera.posVec.x,camera.posVec.y, camera.posVec.z );
     } // Angus version
 
 
@@ -391,9 +395,15 @@ public:
     void handleKeys_auxilliary() {
         float amt=0.001;
         float dg=0.05;
-        if (keysDown[kVK_Shift]) {
+        // if (keysDown[kVK_Shift]) {
+        //     amt=-0.001;
+        //     dg=-0.05;
+        // }
+        if (keysDown[kVK_ANSI_X]) {
             amt=-0.001;
             dg=-0.05;
+            camera.translateZ(dg);
+            std::cout << "Zooming!..." << glm::to_string(camera.posVec) << "\n";
         }
 
         if (keysDown[kVK_ANSI_O]) {

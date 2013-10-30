@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>C3B4FC50-1839-458E-AD94-5BAE8E472E2D</string>
+	<string>120DDF78-8F2A-4D7C-B146-9E92B20F4FB8</string>
 	<key>IDESourceControlProjectName</key>
 	<string>niftiViewer</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>248C2A50-AE8B-49F0-B0EF-0BF0DC7FAF3E</key>
-		<string>https://github.com/KrbAlmryde/aluminum.git</string>
+		<key>68698265-91A3-4B13-BD08-3955FF07CB79</key>
+		<string>https://github.com/CreativeCodingLab/aluminum.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>osx/examples/niftiViewer/niftiViewer.xcodeproj/project.xcworkspace</string>
+	<string>osx/examples/niftiViewer-KrbA/niftiViewer.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>248C2A50-AE8B-49F0-B0EF-0BF0DC7FAF3E</key>
+		<key>68698265-91A3-4B13-BD08-3955FF07CB79</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/KrbAlmryde/aluminum.git</string>
+	<string>https://github.com/CreativeCodingLab/aluminum.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>248C2A50-AE8B-49F0-B0EF-0BF0DC7FAF3E</string>
+	<string>68698265-91A3-4B13-BD08-3955FF07CB79</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>248C2A50-AE8B-49F0-B0EF-0BF0DC7FAF3E</string>
+			<string>68698265-91A3-4B13-BD08-3955FF07CB79</string>
 			<key>IDESourceControlWCCName</key>
 			<string>aluminum</string>
 		</dict>

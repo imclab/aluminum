@@ -10,7 +10,9 @@ in vec4 vertexTexCoord;
 out vec3 texCoord;
 
 void main() {
-    gl_Position = proj * view * vertexPosition;
+    
     texCoord = (textureRotation * vertexTexCoord).xyz;
+    gl_Position = proj * view * vertexPosition;
+    
 }
 
