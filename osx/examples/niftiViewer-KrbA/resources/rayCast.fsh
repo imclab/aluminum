@@ -5,7 +5,7 @@ out vec4 outputFrag;  // This is the fragment shader output
 
 uniform sampler3D brain;  // Our brain brain
 uniform vec3 cameraPos;  // camera position
-//uniform vec3 step_size;   // ray step size
+uniform vec3 step_size;   // ray step size
 
 // uniform float percent; //val between 0.0 and 1.0, used to interpolate between times...
 uniform float opacity;
@@ -18,9 +18,13 @@ const vec3 texMax = vec3(1.0);  //maximum texture access coordinate
 
 void main() {
 
+    outputFrag.rgba = vec4(0.0);
 //    vec3 color = vec3(1.0,1.0,1.0);
     vec4 brainColor = vec4(texCoord, 1.0);
-/*
+
+    brainColor.g = brainColor.r;
+    brainColor.b = brainColor.r;
+    
     // get the 3D texture coordinates for lookup into the brain dataset
     vec3 dataPos = texCoord;
 
@@ -28,7 +32,7 @@ void main() {
     //get the object space position by subracting 0.5 from the
     //3D texture coordinates. Then subtraact it from camera position
     //and normalize to get the ray marching direction
-    vec3 geomDir = vec3(texCoord.xyz);  //normalize((texCoord-vec3(0.5)) - cameraPos);
+    vec3 geomDir = normalize((texCoord-vec3(0.5)) - cameraPos);
 //    vec3 geomDir = vec3(texCoord.xyz);  //normalize((texCoord-vec3(0.5)) - cameraPos);
 
     //multiply the raymarching direction with the step size to get the
@@ -81,8 +85,8 @@ void main() {
         if( outputFrag.a>0.99)
             break;
     }
-*/
-    brainColor = texture(brain, texCoord);
-    outputFrag = vec4(brainColor.rrr, 1.0);
+
+   // brainColor = texture(brain, texCoord);
+   // outputFrag = vec4(brainColor.rrr, 1.0);
 
 }

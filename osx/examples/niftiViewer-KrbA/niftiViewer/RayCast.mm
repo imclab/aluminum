@@ -140,20 +140,20 @@ public:
      *  Constructs a texture mesh of a cube which we will
      *  later pass our ray through
      */
-        meshData = MeshUtils::makeCube2(2.0f);
+        meshData = MeshUtils::makeCube2(1.0f);
         meshBuffer.init(meshData, posLoc, -1, texCoordLoc, -1);
 
 
         textureRotation = glm::mat4();
         textureRotationStart = glm::mat4();
 
-        /*
+        
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_SCISSOR_TEST);
-        */
+        
     } // end of onCreate
 
 
@@ -169,7 +169,7 @@ public:
 
             glUniform1i(program.uniform("brain"), 0);
             glUniform3fv(program.uniform("cameraPos"), 1, ptr(camera.posVec));
-           // glUniform3f(program.uniform("step_Size"), 1.0f/XDIM, 1.0f/YDIM, 1.0f/ZDIM);
+            glUniform3f(program.uniform("step_Size"), 1.0f/XDIM, 1.0f/YDIM, 1.0f/ZDIM);
             glUniform1f(program.uniform("opacity"), 1.0);
 
             brain.bind(GL_TEXTURE0);
