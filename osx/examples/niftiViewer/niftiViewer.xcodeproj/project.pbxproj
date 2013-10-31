@@ -36,7 +36,6 @@
 		B5E385491782569800E8C57D /* Program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384F71780CC7E00E8C57D /* Program.cpp */; };
 		B5E3854A1782569B00E8C57D /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384F91780CC7E00E8C57D /* Shapes.cpp */; };
 		B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FB1780CC7E00E8C57D /* Texture.cpp */; };
-		B5E3854C178256A100E8C57D /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E384FD1780CC7E00E8C57D /* Utils.cpp */; };
 		B5E3854E1783564100E8C57D /* Slices.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E3854D1783564100E8C57D /* Slices.mm */; };
 		B5E38555178B726B00E8C57D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5E38554178B726B00E8C57D /* Carbon.framework */; };
 /* End PBXBuildFile section */
@@ -80,7 +79,6 @@
 		B5E384FA1780CC7E00E8C57D /* Shapes.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Shapes.hpp; path = ../../../src/Shapes.hpp; sourceTree = "<group>"; };
 		B5E384FB1780CC7E00E8C57D /* Texture.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = Texture.cpp; path = ../../../src/Texture.cpp; sourceTree = "<group>"; };
 		B5E384FC1780CC7E00E8C57D /* Texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Texture.hpp; path = ../../../src/Texture.hpp; sourceTree = "<group>"; };
-		B5E384FD1780CC7E00E8C57D /* Utils.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = Utils.cpp; path = ../../../src/Utils.cpp; sourceTree = "<group>"; };
 		B5E384FE1780CC7E00E8C57D /* Utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Utils.hpp; path = ../../../src/Utils.hpp; sourceTree = "<group>"; };
 		B5E385001780CCB000E8C57D /* CocoaGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaGL.h; path = ../../CocoaGL.h; sourceTree = "<group>"; };
 		B5E385011780CCB000E8C57D /* CocoaGL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaGL.mm; path = ../../CocoaGL.mm; sourceTree = "<group>"; };
@@ -195,7 +193,6 @@
 				B5E384FA1780CC7E00E8C57D /* Shapes.hpp */,
 				B5E384FB1780CC7E00E8C57D /* Texture.cpp */,
 				B5E384FC1780CC7E00E8C57D /* Texture.hpp */,
-				B5E384FD1780CC7E00E8C57D /* Utils.cpp */,
 				B5E384FE1780CC7E00E8C57D /* Utils.hpp */,
 			);
 			name = src;
@@ -328,7 +325,6 @@
 				B5E385491782569800E8C57D /* Program.cpp in Sources */,
 				B5E3854A1782569B00E8C57D /* Shapes.cpp in Sources */,
 				B5E3854B1782569E00E8C57D /* Texture.cpp in Sources */,
-				B5E3854C178256A100E8C57D /* Utils.cpp in Sources */,
 				B5E3854E1783564100E8C57D /* Slices.mm in Sources */,
 				924CCB6E1788F66F008566EC /* NiftiUtils.h in Sources */,
 				924DAB901789528D00922539 /* ActionProxy.mm in Sources */,
@@ -421,6 +417,7 @@
 					"\"$(SRCROOT)/niftiViewer/niftilib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -435,6 +432,7 @@
 					"\"$(SRCROOT)/niftiViewer/niftilib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
