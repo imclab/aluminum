@@ -12,9 +12,8 @@
 
 int main(){
 
-//    Slices nifti = Slices();
-    RayCast nifti = RayCast();
-    nifti.initializeViews();
+//    Slices().initializeViews();
+    RayCast().initializeViews();
 
     return 0;
 }

@@ -23,7 +23,7 @@ public:
     // Set Global vars
     bool USE_STEREO = false;
     string RESOURCES = (string)[NSHomeDirectory() UTF8String] + "/Dropbox/XCodeProjects/aluminum/osx/examples/niftiViewer-KrbA/resources/";
-    int numSlices = 100;
+    int numSlices = 1000;
 
     Camera camera;
 
