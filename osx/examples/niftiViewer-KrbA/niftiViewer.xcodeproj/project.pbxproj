@@ -11,6 +11,7 @@
 		924DAB901789528D00922539 /* ActionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 924DAB8F1789528D00922539 /* ActionProxy.mm */; };
 		924DAB9117895D5100922539 /* ActionProxy.h in Sources */ = {isa = PBXBuildFile; fileRef = 924DAB8E1789528D00922539 /* ActionProxy.h */; };
 		924DAB9617896A0E00922539 /* Main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 924DAB9417896A0E00922539 /* Main.mm */; };
+		AF1C6AD37E18243C98247151 /* WireFrameCube.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF1C66D3769BAEF051155ECA /* WireFrameCube.mm */; };
 		B5E384DE1780C9B400E8C57D /* Basic.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E384DD1780C9B400E8C57D /* Basic.mm */; };
 		B5E385071780CCB000E8C57D /* CocoaGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E385011780CCB000E8C57D /* CocoaGL.mm */; };
 		B5E385081780CCB000E8C57D /* RendererOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5E385041780CCB000E8C57D /* RendererOSX.mm */; };
@@ -106,6 +107,7 @@
 		924DAB8E1789528D00922539 /* ActionProxy.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = ActionProxy.h; sourceTree = "<group>"; };
 		924DAB8F1789528D00922539 /* ActionProxy.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = ActionProxy.mm; sourceTree = "<group>"; };
 		924DAB9417896A0E00922539 /* Main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Main.mm; sourceTree = "<group>"; };
+		AF1C66D3769BAEF051155ECA /* WireFrameCube.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WireFrameCube.mm; sourceTree = "<group>"; };
 		B5E384DA1780C9B400E8C57D /* niftiViewer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = niftiViewer; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5E384DD1780C9B400E8C57D /* Basic.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Basic.mm; sourceTree = "<group>"; };
 		B5E384E91780CC7E00E8C57D /* Behavior.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = Behavior.cpp; path = ../../../src/Behavior.cpp; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 				D27531B917BDAB7B006E4C28 /* RayCast.mm */,
 				924DAB9417896A0E00922539 /* Main.mm */,
 				4C0343670317F74142F9B984 /* resources */,
+				AF1C66D3769BAEF051155ECA /* WireFrameCube.mm */,
 			);
 			path = niftiViewer;
 			sourceTree = "<group>";
@@ -438,6 +441,7 @@
 				924DAB9117895D5100922539 /* ActionProxy.h in Sources */,
 				924DAB9617896A0E00922539 /* Main.mm in Sources */,
 				D27531BA17BDAB7B006E4C28 /* RayCast.mm in Sources */,
+				AF1C6AD37E18243C98247151 /* WireFrameCube.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,6 +526,7 @@
 					/opt/local/lib,
 					"\"$(SRCROOT)/niftiViewer/niftilib\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -537,6 +542,7 @@
 					/opt/local/lib,
 					"\"$(SRCROOT)/niftiViewer/niftilib\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};

@@ -9,12 +9,13 @@
 
 #include "Slices.mm"
 #include "RayCast.mm"
+#include "WireFrameCube.mm"
 
 int main(){
 
 //    Slices().initializeViews();
-    RayCast().initializeViews();
-
+    WireFrameCube().initializeViews();
+//    RayCast().initializeViews();
     return 0;
 }
 

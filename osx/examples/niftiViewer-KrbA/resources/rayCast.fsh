@@ -3,7 +3,7 @@
 in vec3 texCoord;  // 3D texture coordinates from the vertex shader
 out vec4 outputFrag;  // This is the fragment shader output
 
-uniform sampler3D brain;  // Our brain brain
+uniform sampler3D brain;  // Our brain
 uniform vec3 cameraPos;  // camera position
 uniform vec3 step_size;   // ray step size
 
@@ -24,7 +24,7 @@ void main() {
 
     brainColor.g = brainColor.r;
     brainColor.b = brainColor.r;
-    
+
     // get the 3D texture coordinates for lookup into the brain dataset
     vec3 dataPos = texCoord;
 
@@ -86,7 +86,8 @@ void main() {
             break;
     }
 
-   // brainColor = texture(brain, texCoord);
-   // outputFrag = vec4(brainColor.rrr, 1.0);
+//   brainColor = texture(brain, texCoord);
+//   outputFrag = vec4(brainColor.rrr, 1.0);
+  // outputFrag = vec4(texCoord,1.0);
 
 }

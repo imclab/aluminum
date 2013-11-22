@@ -72,6 +72,8 @@ using glm::mat4;
       static MeshData makeCube(float s);
       static MeshData makeCube2(float s);
 
+      static MeshData makeWireFrameCube(float s);
+
       static MeshData makeRectangle(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 t0, vec3 t1, vec3 t2, vec3 t3);
 
       static MeshData makeRectangle(vec3 vLL, vec3 vUR, vec3 tcLL, vec3 tcUR);

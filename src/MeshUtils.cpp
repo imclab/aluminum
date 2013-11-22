@@ -404,21 +404,21 @@ namespace aluminum {
         vec3 v7 = vec3(-s,s,-s);  // h
 
         const vec3 vs[] = {
-            v0, v1, v2, v3, //front
-            v4, v5, v6, v7, //back
+                v0, v1, v2, v3, //front
+                v4, v5, v6, v7 //back
         };
 
         printf("Assigning MeshData's vertex\n");
         m.vertex(vs, 8);
 
 /*
-           d-----c
+           3-----2
           /|    /|
-         h=====g |
+         7=====6 |
          + |   + |
-         + a---+-b
+         + 0---+-1
          +/    +/
-         e=====f
+         4=====5
 */
 
 
@@ -462,6 +462,81 @@ namespace aluminum {
 
         return m;
     }
+
+    MeshData MeshUtils::makeWireFrameCube(float s) {
+        MeshData m;
+
+        //8 vertices
+        vec3 v0 = vec3(-s,-s,s);  // a
+        vec3 v1 = vec3(s,-s,s);  // b
+        vec3 v2 = vec3(s,s,s);  // c
+        vec3 v3 = vec3(-s,s,s);  // d
+        vec3 v4 = vec3(-s,-s,-s);  // e
+        vec3 v5 = vec3(s,-s,-s);  // f
+        vec3 v6 = vec3(s,s,-s);  // g
+        vec3 v7 = vec3(-s,s,-s);  // h
+
+        const vec3 vs[] = {
+                v0, v1, v2, v3, //front
+                v4, v5, v6, v7 //back
+        };
+
+        printf("Assigning MeshData's vertex\n");
+        m.vertex(vs, 8);
+
+
+        //8 texcoords
+        vec3 t0 = vec3(0,0,1);
+        vec3 t1 = vec3(1,0,1);
+        vec3 t2 = vec3(1,1,1);
+        vec3 t3 = vec3(0,1,1);
+        vec3 t4 = vec3(0,0,0);
+        vec3 t5 = vec3(1,0,0);
+        vec3 t6 = vec3(1,1,0);
+        vec3 t7 = vec3(0,1,0);
+
+        const vec3 ts[] = {
+                t0, t1, t2, t3, t4, t5, t6, t7
+        };
+        m.texCoord(ts, 8);
+
+
+/*
+           3-----2
+          /|    /|
+         7=====6 |
+         + |   + |
+         + 0---+-1
+         +/    +/
+         4=====5
+*/
+
+        // Cube indices
+        const unsigned int indices[] = {
+            0,1,    1,2,
+            2,3,    3,0,
+            4,5,    5,6,
+            6,7,    7,4,
+            5,1,    2,6,
+            0,4,    3,7
+        };
+
+        m.index(indices, 24);
+/*
+  a______b
+  |     /|
+  | @  / |
+  |   /  |
+  |  /   |
+  | /  @ |
+  e/_____f
+
+*/
+
+
+        return m;
+    }
+
 
     MeshData MeshUtils::makeRectangle(vec3 v0, vec3 v1, vec3 v2, vec3 v3,
                                       vec3 t0, vec3 t1, vec3 t2, vec3 t3) {

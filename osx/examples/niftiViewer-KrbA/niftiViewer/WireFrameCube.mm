@@ -1,3 +1,7 @@
+//
+// Created by Kyle Almryde on 11/15/13.
+// Copyright (c) 2013 Angus Forbes. All rights reserved.
+//
 #import "Includes.hpp"
 
 #import "RendererOSX.h"
@@ -8,15 +12,11 @@
 #import "Shapes.hpp"
 #import "Texture.hpp"
 #import "Camera.hpp"
-
-#import "NiftiUtils.h"
-#import "ActionProxy.h"
-
 #define BUFFER_OFFSET(i) (reinterpret_cast<void*>(i))
 
 using namespace aluminum;
 
-class RayCast : public RendererOSX {
+class WireFrameCube : public RendererOSX {
 
 public:
 
@@ -27,35 +27,15 @@ public:
     Texture brain;
     Camera camera;
     Program program;
-    Program frameProgram;
 
     MeshData meshData;
-    MeshData wireMeshData;
     MeshBuffer meshBuffer;
 
-    vec3 stepSize;
     mat4 textureRotation, textureRotationStart, view, proj;
 
     GLint posLoc=0;
     GLint texCoordLoc=1;
 
-    float bloomAmt = 0.1;
-    float orbitRadius = 1.0;
-    float opacity = 0.1;
-    float percent = 0.0;
-    float cameraZ = 5.0;  // 0.95
-
-    bool rotateTextureX_plus = false;
-    bool rotateTextureX_minus = false;
-
-    NSSlider* opacitySlider;
-    NSSlider* percentSlider;
-    NSDrawer* drawerLeftSide;
-
-    int useCluster1 = 1;
-    int useCluster2 = 1;
-    int useCluster3 = 1;
-    int whichClusters = 0;
 
     const int XDIM = 91;
     const int YDIM = 109;
@@ -69,23 +49,6 @@ public:
         printf("\n\tIn loadTexture\n");
         t.loadTexture(t, name);
     } // end of loadTexture
-
-
-    /*******************************************************************
-     *  Using the supplied path, creates a string of the nifti file to
-     *  be loaded into a texture
-     *
-     *  Loads a nifti file into a 3D Texture
-     *******************************************************************/
-    void loadNiftiInto3DTextures(string path) {
-        printf("\n\tIn loadNiftiInto3DTextures\n");
-        // string nii_brain = (path + "TT_N27.nii").c_str();
-        string nii_brain = (path + "MNI_2mm.nii").c_str();
-
-        // Takes the string created above (1st param) and loads it into a texture (2nd param)
-        NiftiUtils::read_nifti_file(nii_brain, brain);
-
-    } // end of void loadNiftiInto3DTextures(string path)
 
 
     /*******************************************************************
@@ -103,7 +66,7 @@ public:
 
         // This is effectively binding a named attribute variable ("vertexPosition"), with
         // a generic attribute index (posLoc)
-                           //VVVV--p.id() returns a GLuint! Its basically the Program objects ID number
+        //VVVV--p.id() returns a GLuint! Its basically the Program objects ID number
         glBindAttribLocation(p.id(), (GLuint) posLoc, "vertexPosition");
         glBindAttribLocation(p.id(), texCoordLoc, "vertexTexCoord");
 
@@ -126,22 +89,17 @@ public:
     void onCreate() {
         printf("\n\tIn onCreate!\n");
 
-        loadNiftiInto3DTextures(RESOURCES + "nifti/"); // load the nifti images into textures
-        loadProgram(program, RESOURCES + "rayCast");
-        loadProgram(frameProgram, RESOURCES + "wireFrame");
+        loadProgram(program, RESOURCES + "wireFrame");
 
         camera = Camera(60.0, width/(height*1.0), 0.001, 100.0);
         camera.resetVectors();
         camera.translateZ(-5.000000);
-    /*
-     *  Constructs a texture mesh of a cube which we will
-     *  later pass our ray through
-     */
-        meshData = MeshUtils::makeCube2(1.0f);
+        /*
+         *  Constructs a texture mesh of a cube which we will
+         *  later pass our ray through
+         */
+        meshData = MeshUtils::makeWireFrameCube(1.0f);
         meshBuffer.init(meshData, posLoc, -1, texCoordLoc, -1);
-
-        wireMeshData = MeshUtils::makeWireFrameCube(1.0f);
-        meshBuffer.init(wireMeshData, posLoc, -1, texCoordLoc, -1);
 
 
         textureRotation = glm::mat4();
@@ -160,31 +118,14 @@ public:
     void draw(mat4 useproj, mat4 useview) {
         // printf("\n\tIn draw!\n");
 
-        frameProgram.bind(); {
+        program.bind(); {
 
             glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(useproj));
             glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(useview));
             glUniformMatrix4fv(program.uniform("textureRotation"), 1, 0, ptr(textureRotation));
             meshBuffer.drawLines();
 
-        } frameProgram.unbind();
-
-        program.bind(); {
-            glUniformMatrix4fv(program.uniform("proj"), 1, 0, ptr(useproj));
-            glUniformMatrix4fv(program.uniform("view"), 1, 0, ptr(useview));
-            glUniformMatrix4fv(program.uniform("textureRotation"), 1, 0, ptr(textureRotation));
-
-            glUniform1i(program.uniform("brain"), 0);
-            glUniform3fv(program.uniform("cameraPos"), 1, ptr(camera.posVec));
-            glUniform3f(program.uniform("step_Size"), 1.0f/XDIM, 1.0f/YDIM, 1.0f/ZDIM);
-            glUniform1f(program.uniform("opacity"), 1.0);
-
-            brain.bind(GL_TEXTURE0);
-                meshBuffer.draw();
-            brain.unbind(GL_TEXTURE0);
         } program.unbind();
-
-
     } // end of void draw()
 
 
@@ -233,12 +174,12 @@ public:
     *
     *   Currently Unused
     *******************************/
-//    void onReshape() {
-//        printf("\n\tIn onReshape!\n");
-//
-//        camera.perspective(60.0, (float)width/(float)height, 0.001, 100.0);
-//        printf("camera: %f, %f %f", camera.posVec.x,camera.posVec.y, camera.posVec.z );
-//    } // Angus version
+    void onReshape() {
+        printf("\n\tIn onReshape!\n");
+
+        camera.perspective(60.0, (float)width/(float)height, 0.001, 100.0);
+        printf("camera: %f, %f %f", camera.posVec.x,camera.posVec.y, camera.posVec.z );
+    } // Angus version
 
 
 
@@ -270,17 +211,17 @@ public:
 
         if(isDragging) {
             textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
-        if (movingLeft) {
-            textureRotation = glm::rotate(textureRotation, -3.0f, vec3(0.0,1.0,0.0));
-        } else if (movingRight) {
-            textureRotation = glm::rotate(textureRotation, 3.0f, vec3(0.0,1.0,0.0));
-        }
+            if (movingLeft) {
+                textureRotation = glm::rotate(textureRotation, -3.0f, vec3(0.0,1.0,0.0));
+            } else if (movingRight) {
+                textureRotation = glm::rotate(textureRotation, 3.0f, vec3(0.0,1.0,0.0));
+            }
 
-        if (movingUp) {
-            textureRotation = glm::rotate(textureRotation, 3.0f, vec3(1.0,0.0,0.0));
-        } else if (movingDown){
-            textureRotation = glm::rotate(textureRotation, -3.0f, vec3(1.0,0.0,0.0));
-        }
+            if (movingUp) {
+                textureRotation = glm::rotate(textureRotation, 3.0f, vec3(1.0,0.0,0.0));
+            } else if (movingDown){
+                textureRotation = glm::rotate(textureRotation, -3.0f, vec3(1.0,0.0,0.0));
+            }
             textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
         }
 
@@ -295,17 +236,6 @@ public:
         handleKeys_auxilliary();
         handleKeys_wasdqe();
         handleKeys_arrows();
-        if (percent >= 1.0) {
-            percent = 1.0;
-        } else if (percent <= 0.0) {
-            percent = 0.0;
-        }
-
-        if (opacity >= 1.0) {
-            opacity = 1.0;
-        } else if (opacity <= 0.0) {
-            opacity = 0.0;
-        }
     }
 
     void handleKeys_arrows() {
@@ -344,45 +274,45 @@ public:
         }
 
         if (keysDown[kVK_ANSI_W]) {
-          printf("Pressing W key!\n");
-          textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
-          textureRotation = glm::rotate(textureRotation, dg, vec3(1.0,0.0,0.0));
-          textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
+            printf("Pressing W key!\n");
+            textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
+            textureRotation = glm::rotate(textureRotation, dg, vec3(1.0,0.0,0.0));
+            textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
         }
 
         if (keysDown[kVK_ANSI_S]) {
-          printf("Pressing S key!\n");
-          textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
-          textureRotation = glm::rotate(textureRotation, -dg, vec3(1.0,0.0,0.0));
-          textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
+            printf("Pressing S key!\n");
+            textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
+            textureRotation = glm::rotate(textureRotation, -dg, vec3(1.0,0.0,0.0));
+            textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
         }
 
         if (keysDown[kVK_ANSI_A]) {
-          printf("Pressing A key!\n");
-          textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
-          textureRotation = glm::rotate(textureRotation, dg, vec3(0.0,1.0,0.0));
-          textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
+            printf("Pressing A key!\n");
+            textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
+            textureRotation = glm::rotate(textureRotation, dg, vec3(0.0,1.0,0.0));
+            textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
         }
 
         if (keysDown[kVK_ANSI_D]) {
-          printf("Pressing D key!\n");
-          textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
-          textureRotation = glm::rotate(textureRotation, -dg, vec3(0.0,1.0,0.0));
-          textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
+            printf("Pressing D key!\n");
+            textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
+            textureRotation = glm::rotate(textureRotation, -dg, vec3(0.0,1.0,0.0));
+            textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
         }
 
         if (keysDown[kVK_ANSI_Q]) {
-          printf("Pressing Q key!\n");
-          textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
-          textureRotation = glm::rotate(textureRotation, dg, vec3(0.0,0.0,1.0));
-          textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
+            printf("Pressing Q key!\n");
+            textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
+            textureRotation = glm::rotate(textureRotation, dg, vec3(0.0,0.0,1.0));
+            textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
         }
 
         if (keysDown[kVK_ANSI_E]) {
-          printf("Pressing E key!\n");
-          textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
-          textureRotation = glm::rotate(textureRotation, -dg, vec3(0.0,0.0,1.0));
-          textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
+            printf("Pressing E key!\n");
+            textureRotation = glm::translate(textureRotation, vec3(0.5,0.5,0.5));
+            textureRotation = glm::rotate(textureRotation, -dg, vec3(0.0,0.0,1.0));
+            textureRotation = glm::translate(textureRotation, vec3(-0.5,-0.5,-0.5));
         }
 
     }
@@ -391,20 +321,6 @@ public:
     void handleKeys_auxilliary() {
         float amt=0.001;
         float dg=0.05;
-        // if (keysDown[kVK_Shift]) {
-        //     amt=-0.001;
-        //     dg=-0.05;
-        // }
-        if (keysDown[kVK_ANSI_O]) {
-            opacity += amt;
-            printf("opacity: %f\n", opacity);
-        }
-
-        // Increase the Percent
-        if (keysDown[kVK_ANSI_P]) {
-            percent += amt;
-            printf("percent: %f\n", percent);
-        }
 
         // Increase Z!  Zoom In!
         if (keysDown[kVK_ANSI_Z]) {
@@ -472,8 +388,7 @@ public:
 
             std::cout << "\t\tLTran:   " << glm::to_string(camera.leftTranslate) << "\n\n";
             std::cout << "\t\tRTran:   " << glm::to_string(camera.rightTranslate) << "\n\n";
-            opacity = 0.1;
-            percent = 0.0;
+
 
         }
 
@@ -501,78 +416,6 @@ public:
             std::cout << "\t\tRTran:   " << glm::to_string(camera.rightTranslate) << "\n\n";
 
         }
-    }
-
-    /**** Begin function definitions ****/
-
-    void toggleDrawer() {
-       if (([drawerLeftSide state] == NSDrawerOpenState))  {
-           [drawerLeftSide close];
-           printf("Closing Left drawer..\n");
-       } else if (([drawerLeftSide state] == NSDrawerClosedState)) {
-            [drawerLeftSide open];
-            printf("Opening Left drawer..\n");
-       }
-    }
-
-
-    // Toggle clusters on, and off
-    // this is an ActionProxy function
-    void toggleClusters() {
-        whichClusters = (whichClusters+1) % 3;
-        if (whichClusters == 0) {
-            useCluster1 = 1;
-            useCluster2 = 1;
-        } else if (whichClusters == 1) {
-            useCluster1 = 1;
-            useCluster2 = 0;
-        } else {
-            useCluster1 = 0;
-            useCluster2 = 1;
-        }
-        printf("in toggleClusters... u1 = %d, u2 = %d\n", useCluster1, useCluster2);
-    } // end of toggleClusters()
-
-
-    void toggleTime1() {
-        printf("In toggleTime1, useCluster1 %d\n", useCluster1);
-            // whichClusters = (whichClusters+1) % 3;
-        if (useCluster1 == 0) {
-            useCluster1 = 1;
-        } else {
-            useCluster1 = 0;
-        }
-    }
-
-    void toggleTime2() {
-        printf("In toggleTime2, useCluster2 %d\n", useCluster2);
-            // whichClusters = (whichClusters+1) % 3;
-        if (useCluster2 == 0) {
-            useCluster2 = 1;
-        } else {
-            useCluster2 = 0;
-        }
-    }
-
-    void toggleTime3() {
-        printf("In toggleTime3, useCluster3 %d\n", useCluster3);
-            // whichClusters = (whichClusters+1) % 3;
-        if (useCluster3 == 0) {
-            useCluster3 = 1;
-        } else {
-            useCluster3 = 0;
-        }
-    }
-
-    void adjustOpacity() {
-        printf("In adjustOpacity, slider is == %f\n", [opacitySlider floatValue]);
-        opacity = [opacitySlider floatValue];
-    }
-
-
-    void adjustPercent() {
-        printf("In adjustPercent, slider is == %f\n", [percentSlider floatValue]);
-        percent = [percentSlider floatValue];
     }
 
 
@@ -611,5 +454,3 @@ public:
 
     }
 };
-
-
